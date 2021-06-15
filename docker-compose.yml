@@ -1,0 +1,58 @@
+version: '3.8'
+services:
+
+  bootnode:
+    container_name: bootnode
+    image: ethereum/client-go:alltools-latest
+    ports:
+      - "30301:30301/tcp"
+    volumes:
+      - ./geth/gethdata/bootnode:/key
+    entrypoint: bootnode
+    command: '-nodekey /key/boot.key -addr "bootnode:30301" -verbosity 5'
+
+  geth1:
+    container_name: geth1
+    build:
+      context: ./geth
+    ports:
+      - "30303:30303"
+      - "8545:8545"
+    volumes:
+      - ./geth/gethdata/geth1:/geth
+    entrypoint: /startup.sh
+    command: "--port 30303 --http.port 8545 "
+
+  geth2:
+    container_name: geth2
+    build:
+      context: ./geth
+    ports:
+      - "30304:30304"
+      - "8546:8546"
+    volumes:
+      - ./geth/gethdata/geth2:/geth
+    entrypoint: /startup.sh
+    command: "--port 30304 --http.port 8546"
+
+  geth3:
+    container_name: geth3
+    build:
+      context: ./geth
+    ports:
+      - "30305:30305"
+      - "8547:8547"
+    volumes:
+      - ./geth/gethdata/geth3:/geth
+    entrypoint: /startup.sh
+    command: "--port 30305 --http.port 8547"
+
+  ethdapp:
+    container_name: ethdapp
+    build:
+      context: ./ethdapp
+    ports:
+      - "4200:4200"
+    volumes:
+      - "./app/node_modules"
+      - "./ethdapp:/app"

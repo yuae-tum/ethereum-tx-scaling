@@ -1,0 +1,10 @@
+<div class="w-100 row m-2">
+    <div class="col-3">
+        account-nonce: {{nonce}}
+        <button mat-button color="warn" (click)="loop = !loop; sendTransaction()">Loop?</button>
+    </div>
+    <div>
+        <div>all tx: {{txAll}}, successfull tx: {{txSuccessfull}}</div>
+    </div>
+</div>
+

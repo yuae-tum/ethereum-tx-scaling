@@ -1,0 +1,46 @@
+<div class="w-100 container">
+  <div class="row m-3">
+    <div class="col-5">
+      <form #keyForm="ngForm">
+        <input matInput
+               type="text"
+               [(ngModel)]="privateKey"
+               name="key"
+               required minlength="66"
+               maxlength="66"
+               placeholder="Private Key...">
+      </form>
+      <button mat-button color="warn" (click)="addNewAccount()" [disabled]="keyForm.invalid || contract == null">Submit</button>
+    </div>
+    <div class="col-5">
+      <form #contractForm="ngForm">
+        <input matInput
+               type="text"
+               [(ngModel)]="contractAddress"
+               name="address"
+               required minlength="42"
+               maxlength="42"
+               placeholder="Contract Address...">
+      </form>
+      <button mat-button color="warn" (click)="getContract()" [disabled]="contractForm.invalid">Submit</button>
+    </div>
+  </div>
+
+  <div class="row m-3">
+      current text: {{currentText}}
+  </div>
+
+  <div class="row">
+    <div class="col-6">
+      <div class="m-3" *ngFor="let account of accounts">
+        <app-account [account]="account" [contractReadOnly]="contract"></app-account>
+      </div>
+    </div>
+    <div class="col-6">
+      <div>total: {{totalCount}}, success: {{successCount}}, failure: {{errorCount}}</div>
+      <div class="m-1 bg-secondary" *ngFor="let tx of pendingTransactions.values()">
+          <span>from: {{tx.from}}, nonce: {{tx.nonce}}</span>
+      </div>
+    </div>
+  </div>
+</div>
