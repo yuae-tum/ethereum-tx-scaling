@@ -22,3 +22,5 @@ for (i=0;i<11;i++){
 for (i=0;i<11;i++){
     personal.unlockAccount(addresses[i],'',0)
 }
+
+--bootnodes "enode://08e74d9a2e23038dd0a2e046b539f847f8a9409919ea2c75c44714775b6b7818e9321fc6c01119a0f0d8409312eae97bf049a96b4b5854c23c1a42aabfe742ed@bootnode:30301?discport=30301"

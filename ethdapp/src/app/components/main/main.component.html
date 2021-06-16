@@ -1,6 +1,31 @@
 <div class="w-100 container">
   <div class="row m-3">
+    <div class="col-5 bg-info">
+      <h3>Add Contracts</h3>
+      <div>AuthContract:</div>
+      <form #authContractForm="ngForm">
+        <input matInput
+               type="text"
+               [(ngModel)]="authContractAddress"
+               name="address"
+               required minlength="42"
+               maxlength="42"
+               placeholder="Contract Address...">
+      </form>
+      <div>BusinessContract:</div>
+      <form #businessContractForm="ngForm">
+        <input matInput
+               type="text"
+               [(ngModel)]="businessContractAddress"
+               name="address"
+               required minlength="42"
+               maxlength="42"
+               placeholder="Contract Address...">
+      </form>
+      <button mat-button color="warn" (click)="getContract()" [disabled]="businessContractForm.invalid || authContractForm.invalid">Submit</button>
+    </div>
     <div class="col-5">
+      <h5>Add new Account</h5>
       <form #keyForm="ngForm">
         <input matInput
                type="text"
@@ -10,30 +35,22 @@
                maxlength="66"
                placeholder="Private Key...">
       </form>
-      <button mat-button color="warn" (click)="addNewAccount()" [disabled]="keyForm.invalid || contract == null">Submit</button>
-    </div>
-    <div class="col-5">
-      <form #contractForm="ngForm">
-        <input matInput
-               type="text"
-               [(ngModel)]="contractAddress"
-               name="address"
-               required minlength="42"
-               maxlength="42"
-               placeholder="Contract Address...">
-      </form>
-      <button mat-button color="warn" (click)="getContract()" [disabled]="contractForm.invalid">Submit</button>
+      <button mat-button color="warn"
+              (click)="addNewAccount()"
+              [disabled]="keyForm.invalid || authContractAddress == null || authContractAddress == ''">
+        Submit
+      </button>
     </div>
   </div>
 
   <div class="row m-3">
-      current text: {{currentText}}
+      transactions received by business contract: {{businessContractTransactionsReceived}}
   </div>
 
   <div class="row">
     <div class="col-6">
       <div class="m-3" *ngFor="let account of accounts">
-        <app-account [account]="account" [contractReadOnly]="contract"></app-account>
+        <app-account [account]="account" [contractAddress]="authContractAddress"></app-account>
       </div>
     </div>
     <div class="col-6">

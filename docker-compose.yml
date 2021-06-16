@@ -9,7 +9,7 @@ services:
     volumes:
       - ./geth/gethdata/bootnode:/key
     entrypoint: bootnode
-    command: '-nodekey /key/boot.key -addr "bootnode:30301" -verbosity 5'
+    command: '-nodekey /key/boot.key -addr "bootnode:30301" -verbosity 3'
 
   geth1:
     container_name: geth1
@@ -47,12 +47,12 @@ services:
     entrypoint: /startup.sh
     command: "--port 30305 --http.port 8547"
 
-  ethdapp:
-    container_name: ethdapp
-    build:
-      context: ./ethdapp
-    ports:
-      - "4200:4200"
-    volumes:
-      - "./app/node_modules"
-      - "./ethdapp:/app"
+ # ethdapp:
+ #   container_name: ethdapp
+ #   build:
+ #     context: ./ethdapp
+ #   ports:
+ #     - "4200:4200"
+ #   volumes:
+ #     - "./app/node_modules"
+ #     - "./ethdapp:/app"

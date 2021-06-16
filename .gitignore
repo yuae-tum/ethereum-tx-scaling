@@ -1,3 +1,5 @@
 .idea
 ethdapp/node_modules
-geth/gethdata/*
+middleware/node_modules
+geth/gethdata/*/geth.ipc
+geth/gethdata/*/geth

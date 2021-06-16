@@ -1,20 +1,19 @@
-import {Component, Input, OnChanges, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ethers} from "ethers";
+import authContract from "../../../../../truffle/build/contracts/AuthContract.json";
 
 @Component({
     selector: 'app-account',
     templateUrl: './account.component.html',
     styleUrls: ['./account.component.scss']
 })
-export class AccountComponent implements OnInit, OnChanges {
+export class AccountComponent implements OnInit {
 
-    @Input() contractReadOnly: ethers.Contract;
     @Input() account: ethers.Wallet;
+    @Input() contractAddress: string;
 
     contract: ethers.Contract;
     nonce: number = 0;
-
-    characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
     txSuccessfull = 0;
     txAll = 0;
@@ -25,15 +24,25 @@ export class AccountComponent implements OnInit, OnChanges {
     }
 
     ngOnInit(): void {
-        this.getCurrentNonce();
-    }
-
-    ngOnChanges(): void {
-        this.contract = this.contractReadOnly.connect(this.account);
+      this.getCurrentNonce();
+      this.getContract();
     }
 
     getCurrentNonce() {
-        this.account.getTransactionCount().then(number => this.nonce = number);
+        this.account.getTransactionCount().then(number => {
+          console.log('get initial nonce: ' + number)
+          this.nonce = number
+        });
+    }
+
+    getContract() {
+        console.log("fetching contract with address: " + this.contractAddress)
+        const contractStub = new ethers.Contract(this.contractAddress, authContract.abi, this.account);
+        contractStub.deployed().then(response => {
+            console.log('new contract: ');
+            console.log(response);
+            this.contract = response;
+        });
     }
 
     sendTransaction() {
@@ -41,11 +50,10 @@ export class AccountComponent implements OnInit, OnChanges {
             setTimeout(async () => {
                 this.sendTransaction();
                 this.txAll++;
-                const text = this.characters.charAt(Math.floor(Math.random() * this.characters.length));
-                const txResponse: ethers.providers.TransactionResponse = await this.contract.functions.appendText(text, {
+                const txResponse: ethers.providers.TransactionResponse = await this.contract.forwardTransaction({
                     nonce: this.nonce++,
-                    gasLimit: 99999999999999,
-                    gasPrice: 20
+                    gasLimit: 99999,
+                    gasPrice: 100000000
                 });
                 console.log('new transaction nonce: ' + txResponse.nonce)
                 const txReceipt = await txResponse.wait();
