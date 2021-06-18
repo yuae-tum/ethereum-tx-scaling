@@ -1,15 +1,26 @@
 version: '3.8'
 services:
 
-  bootnode:
-    container_name: bootnode
-    image: ethereum/client-go:alltools-latest
+  ethdapp:
+    container_name: ethdapp
+    build:
+      context: ./ethdapp
     ports:
-      - "30301:30301/tcp"
-    volumes:
-      - ./geth/gethdata/bootnode:/key
-    entrypoint: bootnode
-    command: '-nodekey /key/boot.key -addr "bootnode:30301" -verbosity 3'
+      - "4200:4200"
+
+  load-balancer:
+    container_name: load-balancer
+    build:
+      context: ./middleware/nginx
+    ports:
+      - "8080:8080"
+
+  expressjs:
+    container_name: expressjs
+    build:
+      context: ./middleware/express
+    ports:
+      - "8085:8085"
 
   geth1:
     container_name: geth1
@@ -47,12 +58,12 @@ services:
     entrypoint: /startup.sh
     command: "--port 30305 --http.port 8547"
 
- # ethdapp:
- #   container_name: ethdapp
- #   build:
- #     context: ./ethdapp
- #   ports:
- #     - "4200:4200"
- #   volumes:
- #     - "./app/node_modules"
- #     - "./ethdapp:/app"
+  #  bootnode:
+  #    container_name: bootnode
+  #    image: ethereum/client-go:alltools-latest
+  #    ports:
+  #      - "30301:30301/tcp"
+  #    volumes:
+  #      - ./geth/gethdata/bootnode:/key
+  #    entrypoint: bootnode
+  #    command: '-nodekey /key/boot.key -addr "bootnode:30301" -verbosity 3'

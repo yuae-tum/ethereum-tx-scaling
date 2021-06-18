@@ -1,4 +1,4 @@
-FROM ethereum/client-go:alltools-latest
+FROM ethereum/client-go:alltools-stable
 
 COPY genesis.json /genesis.json
 COPY startup.sh /startup.sh

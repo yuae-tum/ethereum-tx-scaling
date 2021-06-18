@@ -1,1 +1,0 @@
-node /app/ganache-core.docker.cli.js -m "educate island unknown arena autumn lake satisfy anxiety across stadium canoe surround"

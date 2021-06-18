@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ethers} from "ethers";
-import authContract from "../../../../../truffle/build/contracts/AuthContract.json";
+import authContract from "../../../../contracts/AuthContract.json";
 
 @Component({
     selector: 'app-account',
@@ -10,10 +10,11 @@ import authContract from "../../../../../truffle/build/contracts/AuthContract.js
 export class AccountComponent implements OnInit {
 
     @Input() account: ethers.Wallet;
-    @Input() contractAddress: string;
+    contractAddress = '0xF3B6f0Ac5B976aC0bb37dB749d1d6EAeB7df9F58';
 
     contract: ethers.Contract;
-    nonce: number = 0;
+    nonce = 0;
+    balance = '';
 
     txSuccessfull = 0;
     txAll = 0;
@@ -26,6 +27,7 @@ export class AccountComponent implements OnInit {
     ngOnInit(): void {
       this.getCurrentNonce();
       this.getContract();
+      this.watchBalance();
     }
 
     getCurrentNonce() {
@@ -45,10 +47,16 @@ export class AccountComponent implements OnInit {
         });
     }
 
-    sendTransaction() {
+    watchBalance() {
+        setInterval(() => {
+            this.account.getBalance().then(number => this.balance = ethers.utils.formatEther(number))
+        }, 10000)
+    }
+
+    sendTransactions() {
         if(this.loop) {
             setTimeout(async () => {
-                this.sendTransaction();
+                this.sendTransactions();
                 this.txAll++;
                 const txResponse: ethers.providers.TransactionResponse = await this.contract.forwardTransaction({
                     nonce: this.nonce++,
@@ -59,7 +67,7 @@ export class AccountComponent implements OnInit {
                 const txReceipt = await txResponse.wait();
                 console.log('transaction receipt status: ' + txReceipt.status);
                 this.txSuccessfull++;
-            }, 1500)
+            }, 500)
         }
     }
 

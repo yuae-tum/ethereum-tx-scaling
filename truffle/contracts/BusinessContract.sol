@@ -6,6 +6,10 @@ contract BusinessContract {
 
     uint public txCounter;
 
+    constructor() public {
+        ourCompanyAccount = 0xF3B6f0Ac5B976aC0bb37dB749d1d6EAeB7df9F58;
+    }
+
     function setAccount(address _address) external {
         ourCompanyAccount = _address;
     }
