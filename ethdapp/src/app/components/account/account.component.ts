@@ -17,6 +17,7 @@ export class AccountComponent implements OnInit {
     balance = '';
 
     txSuccessfull = 0;
+    txFailed = 0;
     txAll = 0;
 
     loop = false;
@@ -61,12 +62,17 @@ export class AccountComponent implements OnInit {
                 const txResponse: ethers.providers.TransactionResponse = await this.contract.forwardTransaction({
                     nonce: this.nonce++,
                     gasLimit: 99999,
-                    gasPrice: 100000000
+                    gasPrice: 10000
                 });
                 console.log('new transaction nonce: ' + txResponse.nonce)
-                const txReceipt = await txResponse.wait();
-                console.log('transaction receipt status: ' + txReceipt.status);
-                this.txSuccessfull++;
+                txResponse.wait().then(receipt => {
+                    if(receipt.status === 1) {
+                        this.txSuccessfull++;
+                    } else {
+                        this.txFailed++;
+                    }
+                }).catch(() => this.txFailed++);
+
             }, 500)
         }
     }

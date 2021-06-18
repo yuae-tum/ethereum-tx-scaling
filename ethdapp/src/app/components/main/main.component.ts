@@ -14,7 +14,7 @@ export class MainComponent implements OnInit {
     //businessContractAddress: string = '0x17cB057648a03dE335c773C7F6b7719c63A32eB7';
     //businessContract: ethers.Contract;
 
-    provider = new ethers.providers.JsonRpcProvider('http://load-balancer:8080');
+    provider = new ethers.providers.JsonRpcProvider('http://localhost:8080');
 
     privateKey = '';
     accounts: ethers.Wallet[] = [];
@@ -53,7 +53,7 @@ export class MainComponent implements OnInit {
     }
 
     createTransactionsSingleAccount() {
-        this.http.get<ExpressResponse>('http://expressjs:8085/transaction-loop')
+        this.http.get<ExpressResponse>('http://localhost:8085/transaction-loop')
             .subscribe(response => {
                 this.snackbar.open(response.msg);
                 this.isLooping = response.isLooping;

@@ -22,6 +22,13 @@ getInitialNonce(account);
 
 ///// HTTP ENDPOINTS /////
 
+app.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', '*');
+    res.setHeader('Access-Control-Allow-Headers', '*');
+    next();
+});
+
 app.get('/new-transaction', (req, res) => {
     sendTransaction();
     res.send('created new transaction: nonce=' + nonce + ', from=' + account.address + ', to: ' + contract.address);
@@ -54,7 +61,7 @@ app.get('/status', (req, res) => {
     })
 })
 
-app.listen(8085, '0.0.0.0', () => console.log((new Date).toLocaleTimeString() + 'listening on http://localhost:8085'));
+app.listen(8085, '0.0.0.0', () => console.log((new Date).toLocaleTimeString() + ' - listening on http://localhost:8085'));
 
 
 
@@ -68,7 +75,7 @@ function getProvider(url) {
 function getContract(signer) {
     const contractStub = new ethers.Contract(contractAddress, contractFile.abi, signer);
     contractStub.deployed().then(result => contract = result).catch(error => {
-        console.log((new Date).toLocaleTimeString() + 'error while fetching contract: ' + error);
+        console.log((new Date).toLocaleTimeString() + ' - error while fetching contract: ' + error);
         console.log('retrying in 10 seconds');
         setTimeout(() => getContract(signer), 10000);
     });
@@ -77,9 +84,9 @@ function getContract(signer) {
 function getWallet(provider) {
     const wallet = new ethers.Wallet(accountKey, provider);
     wallet.getAddress().then(response => {
-        console.log((new Date).toLocaleTimeString() + 'using account with address: ' + response + ', private key: ' + accountKey);
+        console.log((new Date).toLocaleTimeString() + ' - using account with address: ' + response + ', private key: ' + accountKey);
     }).catch(() => {
-        console.log((new Date).toLocaleTimeString() + 'error while fetching account address, retrying in 10 seconds');
+        console.log((new Date).toLocaleTimeString() + ' - error while fetching account address, retrying in 10 seconds');
         setTimeout(() => getWallet(provider), 10000);
     });
     return wallet;
@@ -91,6 +98,7 @@ function getInitialNonce() {
         nonce = number;
     }).catch(error => {
         console.log((new Date).toLocaleTimeString() + ' - error while fetching nonce: ' + error);
+        console.log('retrying in 10 seconds');
         setTimeout(() => getInitialNonce(account), 10000)
     });
 }
@@ -118,7 +126,6 @@ function loopTransaction() {
 }
 
 function sendTransaction() {
-    console.log('new request');
     contract.forwardTransaction({
         nonce: nonce++,
         gasLimit: 99999,
