@@ -14,9 +14,8 @@ contract BusinessContract {
         ourCompanyAccount = _address;
     }
 
-    function processTransaction() external returns (uint) {
+    function processTransaction() external {
         require(msg.sender == ourCompanyAccount, "unauthorized");
         txCounter++;
-        return txCounter;
     }
 }

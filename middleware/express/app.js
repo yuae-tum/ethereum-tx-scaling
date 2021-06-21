@@ -1,10 +1,10 @@
 const express = require('express');
 const app = express();
 const ethers = require('ethers');
-const contractFile = require('./contracts/AuthContract.json');
+const contractFile = require('./contracts/BusinessContract.json');
 
 const accountKey = '0xbcc6d4aa1e277f085b3e11f2c1e6f14dd04e8108c823898e06fa5287c2bf1a92';
-const contractAddress = '0xF3B6f0Ac5B976aC0bb37dB749d1d6EAeB7df9F58';
+const contractAddress = '0x17cB057648a03dE335c773C7F6b7719c63A32eB7';
 
 const provider = getProvider('http://load-balancer:8080');
 const account = getWallet(provider);
@@ -69,12 +69,15 @@ app.listen(8085, '0.0.0.0', () => console.log((new Date).toLocaleTimeString() + 
 ///// INITIALIZATION //////
 
 function getProvider(url) {
-    return new ethers.providers.JsonRpcProvider(url)
+    return ethers.providers.getDefaultProvider(url);
 }
 
 function getContract(signer) {
     const contractStub = new ethers.Contract(contractAddress, contractFile.abi, signer);
-    contractStub.deployed().then(result => contract = result).catch(error => {
+    contractStub.deployed().then(result => {
+        contract = result;
+        console.log((new Date).toLocaleTimeString() + ' - added contract: ' + result.address);
+    }).catch(error => {
         console.log((new Date).toLocaleTimeString() + ' - error while fetching contract: ' + error);
         console.log('retrying in 10 seconds');
         setTimeout(() => getContract(signer), 10000);
@@ -119,15 +122,19 @@ function getInitialNonceAndStartLooping() {
 }
 
 function loopTransaction() {
-    setTimeout(() => {
-        if(shouldLoop) loopTransaction();
-        sendTransaction();
-    }, 50)
+    let interval = setInterval(() => {
+        if(shouldLoop) {
+            sendTransaction();
+        } else {
+            clearInterval(interval);
+        }
+    }, 40)
 }
 
 function sendTransaction() {
-    contract.forwardTransaction({
-        nonce: nonce++,
+    const currentNonce = nonce++;
+    contract.processTransaction({
+        nonce: currentNonce,
         gasLimit: 99999,
         gasPrice: 100
     }).then(txResponse => {
@@ -138,7 +145,7 @@ function sendTransaction() {
             transactionsSucceeded++;
         }
     }).catch(error => {
-        console.log((new Date).toLocaleTimeString() + '- error: ' + error);
+        console.log((new Date).toLocaleTimeString() + ' - transaction error: ' + error);
         transactionsFailed++;
     });
 }

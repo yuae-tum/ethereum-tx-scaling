@@ -39,13 +39,13 @@ contract AuthContract {
         proxyContract = Proxy(_address);
     }
 
-    function forwardTransaction() external returns (uint) {
+    function forwardTransaction() external {
         require(validAccounts[msg.sender], "Unknown origin account");
-        return proxyContract.processTransaction();
+        proxyContract.processTransaction();
     }
 
 }
 
 contract Proxy {
-    function processTransaction() external returns (uint);
+    function processTransaction() external;
 }

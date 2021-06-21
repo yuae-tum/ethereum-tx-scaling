@@ -64,16 +64,15 @@ export class AccountComponent implements OnInit {
                     gasLimit: 99999,
                     gasPrice: 10000
                 });
-                console.log('new transaction nonce: ' + txResponse.nonce)
                 txResponse.wait().then(receipt => {
                     if(receipt.status === 1) {
                         this.txSuccessfull++;
                     } else {
                         this.txFailed++;
                     }
-                }).catch(() => this.txFailed++);
+                });
 
-            }, 500)
+            }, 200);
         }
     }
 
