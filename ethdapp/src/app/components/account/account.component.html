@@ -1,0 +1,18 @@
+<mat-card class="p-3">
+    <mat-card-header>
+        <div class="text-break h6">{{account.address}}</div>
+    </mat-card-header>
+    <mat-card-content>
+        <ul>
+            <li>current balance: {{balance}}</li>
+            <li>current account nonce: {{nonce}}</li>
+            <li>transactions sent: {{txAll}}</li>
+            <li>successful transactions: {{txSuccessfull}}</li>
+            <li>failed transactions: {{txFailed}}</li>
+        </ul>
+    </mat-card-content>
+    <mat-card-actions align="end">
+        <button mat-raised-button color="warn" (click)="loop = !loop; sendTransactions()">{{loop ? 'Stop Loop' : 'Start Loop'}}</button>
+    </mat-card-actions>
+</mat-card>
+

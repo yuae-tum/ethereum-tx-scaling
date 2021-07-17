@@ -1,0 +1,5 @@
+.idea
+ethdapp/node_modules
+middleware/express/node_modules
+geth/gethdata/*/geth.ipc
+geth/gethdata/*/geth

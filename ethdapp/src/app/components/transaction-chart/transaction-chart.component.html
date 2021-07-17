@@ -1,0 +1,23 @@
+<div class="flex-fill">
+    <div class="mb-2">
+        <canvas baseChart
+                width="1000"
+                [datasets]="transactionData"
+                [chartType]="chartType"
+                [labels]="timeLabels"
+                [colors]="chartColors"
+                [options]="chartOptions">
+        </canvas>
+    </div>
+    <div class="d-flex align-items-start justify-content-between">
+        <div class="h6 ms-4">
+            <div>Total Transactions Sent: {{totalCount}}</div>
+            <div>Successful Transactions: {{successCount}}</div>
+            <div>Failed Transactions: {{failureCount}}</div>
+            <div>Time in Seconds: {{seconds}}</div>
+        </div>
+        <div>
+            <button mat-raised-button color="primary" (click)="toggleRecording()">{{shouldRecord ? 'Stop Recording' : 'Start recording'}}</button>
+        </div>
+    </div>
+</div>
