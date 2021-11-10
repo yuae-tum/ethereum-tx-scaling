@@ -1,4 +1,4 @@
-package approach1.model;
+package approach1.contracts;
 
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;

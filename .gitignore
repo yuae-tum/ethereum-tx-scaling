@@ -9,3 +9,4 @@ seminar/geth/gethdata/*/geth
 geth/node/geth/
 geth/node/geth.ipc
 truffle/build/
+approach*/target/
