@@ -1,5 +1,11 @@
 .idea
-ethdapp/node_modules
-middleware/express/node_modules
-geth/gethdata/*/geth.ipc
-geth/gethdata/*/geth
+**.iml
+
+seminar/ethdapp/node_modules
+seminar/middleware/express/node_modules
+seminar/geth/gethdata/*/geth.ipc
+seminar/geth/gethdata/*/geth
+
+geth/node/geth/
+geth/node/geth.ipc
+truffle/build/

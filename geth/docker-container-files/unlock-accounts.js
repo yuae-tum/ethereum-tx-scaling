@@ -1,0 +1,17 @@
+addresses=[
+    "acae83b7925a6a92e02311047b1b030b2f54ea44",
+    "897dc876771d55fb5e5fa237b66065f51a8a8fb6",
+    "270c6fda3c1dda23c5572f6a942c25c0a7754ac2",
+    "b22fe67f76598246e040a8192565b02e08eef11b",
+    "7629e1a91e0ae8be00e28aa0b81c0aeff390d9f6",
+    "fdf87b895d37d2c4bca2713656aaceff53c83c39",
+    "36d313e50e1f84aabd39a622e26e3273c7913ec4",
+    "9607ea4a0204a150a3afeeac79153e7799150e45",
+    "e64d9c60c727a37c7780755b87ab5279a5db5c58",
+    "03a518d469df70c628c78b094c2ca2f4a47f45b5",
+    "96e17975610bddd4d456c668929bb0c63ca05f51"
+]
+
+for (i=0;i<11;i++){
+    personal.unlockAccount(addresses[i],'',0)
+}
