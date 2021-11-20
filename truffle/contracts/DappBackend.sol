@@ -11,7 +11,7 @@ contract DappBackend {
 
     constructor() {
         owner = msg.sender;
-        auth = AuthContractProxy(0xe7a00277408C45ff7755CfA58084cC7d7825b534);
+        auth = AuthContractProxy(0x0b9c4c3D0a54c2bB572B830531903a9994015e34);
     }
 
     function setAuthContract(address contractAddress) external {
