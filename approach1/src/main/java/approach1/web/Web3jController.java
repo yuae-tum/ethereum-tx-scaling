@@ -1,7 +1,6 @@
 package approach1.web;
 
 import approach1.config.Web3jConfiguration;
-import approach1.contracts.DappBackend;
 import approach1.service.TransactionCreationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.web3j.crypto.Credentials;
 
 import java.io.IOException;
@@ -53,24 +51,23 @@ public class Web3jController {
     }
 
     @PostMapping("/contract")
-    public ResponseEntity<Void> setContractAddress(@RequestBody String contractAddress) {
-        this.config.setSmartContractAddress(contractAddress);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> setContractAddress(@RequestBody String contractAddress) {
+        return ResponseEntity.ok(this.config.setSmartContractAddress(contractAddress));
     }
 
     @GetMapping("/contract")
-    public ResponseEntity<DappBackend> getContract() {
-        return ResponseEntity.ok(this.config.getSmartContract());
+    public ResponseEntity<String> getContractAddress() {
+        return ResponseEntity.ok(this.config.getSmartContractAddress());
     }
 
-    @PostMapping("/tx-delay")
-    public ResponseEntity<String> setTxDelay(@RequestBody int delay) {
-        return ResponseEntity.ok("new tx delay: " + this.config.setDelay(delay));
+    @PostMapping("/tx-interval")
+    public ResponseEntity<Integer> setTxInterval(@RequestBody int delay) {
+        return ResponseEntity.ok(this.config.setInterval(delay));
     }
 
-    @GetMapping("/tx-delay")
-    public ResponseEntity<String> getTxDelay() {
-        return ResponseEntity.ok("tx delay: " + this.config.getDelay());
+    @GetMapping("/tx-interval")
+    public ResponseEntity<Integer> getTxInterval() {
+        return ResponseEntity.ok(this.config.getInterval());
     }
 
     @GetMapping("/start-tx-creation")

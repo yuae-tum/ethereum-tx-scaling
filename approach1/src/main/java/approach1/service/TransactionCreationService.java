@@ -27,7 +27,6 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -68,13 +67,15 @@ public class TransactionCreationService {
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        this.blockListener = this.config.getWeb3jInstance().blockFlowable(false).subscribe(block -> {
-            log.info("new block with number {} mined", block.getBlock().getNumber().toString());
-            this.minedBlocks.add(block.getBlock());
-        }, error -> {
-            log.error("error while listening for new blocks", error);
-            this.blockListener.dispose();
-        });
+        if(this.blockListener == null || this.blockListener.isDisposed()) {
+            this.blockListener = this.config.getWeb3jInstance().blockFlowable(false).subscribe(block -> {
+                log.info("new block with number {} mined", block.getBlock().getNumber().toString());
+                this.minedBlocks.add(block.getBlock());
+            }, error -> {
+                log.error("error while listening for new blocks", error);
+                this.blockListener.dispose();
+            });
+        }
 
         try {
             this.fetchCurrentNonce();
@@ -92,7 +93,7 @@ public class TransactionCreationService {
                 log.warn("Stopping transaction creation...");
                 this.threadpool.shutdown();
             }
-        }, 0, this.config.getDelay(), TimeUnit.MILLISECONDS);
+        }, 0, this.config.getInterval(), TimeUnit.MILLISECONDS);
     }
 
     public void stopTransactionCreation() {
@@ -164,7 +165,7 @@ public class TransactionCreationService {
                 this.currentNonce,
                 BigInteger.valueOf(2000000000), //gasPrice
                 BigInteger.valueOf(1000000), //gasLimit
-                this.config.getSmartContract().getContractAddress(),
+                this.config.getSmartContractAddress(),
                 BigInteger.ZERO, //value
                 data);
 

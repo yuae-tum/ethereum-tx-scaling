@@ -10,6 +10,6 @@ public class AppProperties {
     public String privateKey;
     public String nodeUrl;
     public String contractAddress;
-    public int txDelay;
+    public int txInterval;
 
 }

@@ -22,7 +22,7 @@ public class Web3jConfiguration {
     private Credentials credentials;
     private Web3j web3jInstance;
     private DappBackend contract;
-    private int delay = -1;
+    private int interval = -1;
 
     private final ContractGasProvider gasProvider = new StaticGasProvider(BigInteger.ONE, BigInteger.valueOf(999999999));
 
@@ -72,35 +72,36 @@ public class Web3jConfiguration {
         return this.credentials;
     }
 
-    public DappBackend getSmartContract() {
+    public String getSmartContractAddress() {
         if(this.contract == null) {
             System.out.println("~~~~~~~ contract address: " + this.appProperties.contractAddress);
             this.contract = DappBackend.load(this.appProperties.contractAddress, this.getWeb3jInstance(), this.getCredentials(), this.gasProvider);
         }
-        return this.contract;
+        return this.contract.getContractAddress();
     }
 
-    public void setSmartContractAddress(String contractAddress) {
+    public String setSmartContractAddress(String contractAddress) {
         this.contract = DappBackend.load(contractAddress, this.getWeb3jInstance(), this.getCredentials(), this.gasProvider);
         log.info("created contract reference to contract at address: " + this.contract.getContractAddress());
+        return this.contract.getContractAddress();
     }
 
-    public int getDelay() {
-        if(this.delay == -1) {
-            this.delay = this.appProperties.txDelay;
+    public int getInterval() {
+        if(this.interval == -1) {
+            this.interval = this.appProperties.txInterval;
         }
-        if(this.delay < 1) {
-            throw new RuntimeException("tx delay must not be smaller than 1 ms");
+        if(this.interval < 1) {
+            throw new RuntimeException("tx interval can not be smaller than 1 ms");
         }
-        return this.delay;
+        return this.interval;
     }
 
-    public int setDelay(int newDelay) {
-        if(newDelay < 1) {
-            throw new RuntimeException("tx delay must not be smaller than 1 ms");
+    public int setInterval(int newInterval) {
+        if(newInterval < 1) {
+            throw new RuntimeException("tx interval can not be smaller than 1 ms");
         }
-        this.delay = newDelay;
-        return this.delay;
+        this.interval = newInterval;
+        return this.interval;
     }
 
 }

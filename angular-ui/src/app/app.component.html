@@ -1,0 +1,19 @@
+<div class="min-vh-100 d-flex justify-content-center" >
+    <div class="mt-5" style="width:95%">
+        <div class="d-flex justify-content-center align-items-center">
+            <mat-form-field class="w-50 me-4">
+                <mat-label>Eth-Node URL</mat-label>
+                <input matInput [(ngModel)]="nodeUrl" type="text">
+            </mat-form-field>
+            <button mat-raised-button color="primary" (click)="connectToNode()">Connect</button>
+        </div>
+        <mat-horizontal-stepper>
+            <mat-step label="Approach 1: Distinct Account per TX-Creating Machine">
+                <app-approach1 [provider]="provider"></app-approach1>
+            </mat-step>
+            <mat-step label="Approach 2: Singleton TX-Creating Machine"></mat-step>
+            <mat-step label="Approach 3: Singleton Nonce Manager"></mat-step>
+            <mat-step label="Approach 4: Nonce Contingents"></mat-step>
+        </mat-horizontal-stepper>
+    </div>
+</div>
