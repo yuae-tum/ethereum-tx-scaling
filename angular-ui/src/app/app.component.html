@@ -7,13 +7,15 @@
             </mat-form-field>
             <button mat-raised-button color="primary" (click)="connectToNode()">Connect</button>
         </div>
-        <mat-horizontal-stepper>
-            <mat-step label="Approach 1: Distinct Account per TX-Creating Machine">
-                <app-approach1 [provider]="provider"></app-approach1>
-            </mat-step>
-            <mat-step label="Approach 2: Singleton TX-Creating Machine"></mat-step>
-            <mat-step label="Approach 3: Singleton Nonce Manager"></mat-step>
-            <mat-step label="Approach 4: Nonce Contingents"></mat-step>
-        </mat-horizontal-stepper>
+        <mat-tab-group>
+            <mat-tab label="Approach 1: Singleton TX-Creating Machine">
+                <app-approach1></app-approach1>
+            </mat-tab>
+            <mat-tab label="Approach 2: Distinct Account per TX-Creating Machine">
+                <app-approach2 [provider]="provider"></app-approach2>
+            </mat-tab>
+            <mat-tab label="Approach 3: Singleton Nonce Manager"></mat-tab>
+            <mat-tab label="Approach 4: Nonce Contingents"></mat-tab>
+        </mat-tab-group>
     </div>
 </div>

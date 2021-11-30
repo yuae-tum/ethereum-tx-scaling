@@ -7,4 +7,5 @@ export class TxData {
     blocknumber: number;
     mined: Date;
     waitingTime: number;
+    content: number;
 }
