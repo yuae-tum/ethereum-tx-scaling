@@ -17,13 +17,15 @@ import {ChartsModule} from "ng2-charts";
 import { Approach1Component } from './components/approach1/approach1.component';
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatDividerModule} from "@angular/material/divider";
+import { Approach3Component } from './components/approach3/approach3.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         Approach2Component,
         TransactionChartComponent,
-        Approach1Component
+        Approach1Component,
+        Approach3Component
     ],
   imports: [
     BrowserModule, MatStepperModule, BrowserAnimationsModule, MatFormFieldModule, FormsModule, MatInputModule, MatButtonModule,

@@ -1,0 +1,101 @@
+<div class="d-flex flex-column justify-content-center p-5">
+
+
+    <div class="d-flex justify-content-around">
+        <div class="d-flex align-items-center">
+            <div>Number of TX-Creating Machines: </div>
+            <div class="w-25 ps-3">
+                <mat-form-field>
+                    <mat-label>Number of TX-Creating Machines</mat-label>
+                    <input matInput min="0" [(ngModel)]="numberMachines" type="number" (change)="updateMachines()">
+                </mat-form-field>
+            </div>
+        </div>
+        <div>
+            <button class="me-3" mat-raised-button color="primary" (click)="startAllMachines()">Start all Machines</button>
+            <button class="me-3" mat-raised-button color="warn" (click)="stopAllMachines()">Stop all Machines</button>
+            <button class="me-5" mat-raised-button color="accent" (click)="fetchAllResults()">Fetch all results</button>
+            <button mat-raised-button color="primary" (click)="downloadResultsAsJsonFile()">Download results</button>
+        </div>
+    </div>
+
+
+    <div class="container-fluid row pe-0 ps-0">
+        <div class="col-3 mb-3" *ngFor="let machine of machines; let i = index">
+            <mat-card class="bg-light">
+                <mat-card-title class="d-flex justify-content-between align-content-center">
+                    <span>Machine {{i+1}}</span>
+                    <button *ngIf="i === 0" mat-raised-button color="primary" (click)="synchronizeNonce(machine)">Synch nonce</button>
+                </mat-card-title>
+                <mat-card-content class="d-flex flex-column">
+
+                    <mat-card class="d-flex flex-column mt-3 mb-3" *ngIf="machine.url">
+                        <div class="mb-3">
+                            <b>Transaction-Creation is currently <span [ngStyle]="{'color': machine.isRunning ? 'green' : 'red'}">{{machine.isRunning ? 'running' : 'stopped'}}</span></b>
+                        </div>
+                        <div class="d-flex justify-content-between flex-wrap">
+                            <button mat-raised-button color="primary" (click)="startTxCreation(machine)">Start</button>
+                            <button mat-raised-button color="warn" (click)="stopTxCreation(machine)">Stop</button>
+                            <button mat-raised-button color="accent" (click)="fetchResults(machine)">Fetch Results</button>
+                        </div>
+                    </mat-card>
+
+                    <mat-card class="d-flex flex-column mb-3">
+                        <div class="mb-3">
+                            <mat-form-field class="me-3">
+                                <mat-label>Base URL</mat-label>
+                                <input #urlInput matInput type="text">
+                            </mat-form-field>
+                            <button mat-raised-button color="primary" (click)="setBaseUrl(machine, urlInput.value)">Set URL</button>
+                        </div>
+                        <div>Base URL: {{machine.url}}</div>
+                    </mat-card>
+
+                    <mat-card class="d-flex flex-column mb-3" *ngIf="machine.url">
+                        <div class="d-flex flex-wrap justify-content-between mb-3">
+                            <mat-form-field class="me-3">
+                                <mat-label>Eth private key</mat-label>
+                                <input #privateKeyInput matInput type="text">
+                            </mat-form-field>
+                            <button mat-raised-button color="primary" (click)="setAccount(machine, privateKeyInput.value)">Set Account</button>
+                            <button mat-raised-button color="accent" (click)="getCurrentAccount(machine)">Fetch Account</button>
+                        </div>
+                        <div class="text-break">account address: {{machine.accountAddress}}</div>
+                        <div class="text-break">private key: {{machine.privateKey}}</div>
+                    </mat-card>
+
+                    <mat-card class="d-flex flex-column mb-3" *ngIf="machine.url">
+                        <div class="d-flex flex-wrap justify-content-between mb-3">
+                            <mat-form-field class="me-3">
+                                <mat-label>Contract address</mat-label>
+                                <input #contractAddressInput matInput type="text">
+                            </mat-form-field>
+                            <button mat-raised-button color="primary" (click)="setContractAddress(machine, contractAddressInput.value)">Set Address</button>
+                            <button mat-raised-button color="accent" (click)="getCurrentContractAddress(machine)">Fetch Address</button>
+                        </div>
+                        <div class="text-break">contract address: {{machine.contractAddress}}</div>
+                    </mat-card>
+
+                    <mat-card class="d-flex flex-column mb-3" *ngIf="machine.url">
+                        <div class="d-flex flex-wrap justify-content-between mb-3">
+                            <mat-form-field class="me-3">
+                                <mat-label>TX-Creation Interval</mat-label>
+                                <input #intervalInput matInput type="number">
+                            </mat-form-field>
+                            <button mat-raised-button color="primary" (click)="setTxInterval(machine, intervalInput.value)">Set Interval</button>
+                            <button mat-raised-button color="accent" (click)="getCurrentTxInterval(machine)">Fetch Interval</button>
+                        </div>
+                        <div>current interval: {{machine.interval}}</div>
+                    </mat-card>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+
+
+    <div class="mt-5">
+        <div><button mat-raised-button color="primary" (click)="updateCharts()">Update Charts</button></div>
+        <app-transaction-chart #xa [yAxesData]="waitingTimeDistributionYAxes" [xAxesData]="waitingTimeDistributionXAxes"></app-transaction-chart>
+    </div>
+
+</div>

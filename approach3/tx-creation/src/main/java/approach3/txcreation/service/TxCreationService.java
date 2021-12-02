@@ -1,11 +1,12 @@
-package approach2.txcreation.service;
+package approach3.txcreation.service;
 
-import approach2.txcreation.web.TxData;
-import approach2.txcreation.config.Web3jConfiguration;
 import approach2.txcreation.contracts.DappBackend;
+import approach3.txcreation.config.Web3jConfiguration;
+import approach3.txcreation.web.TxData;
 import io.reactivex.disposables.Disposable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
@@ -14,6 +15,7 @@ import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
@@ -30,11 +32,11 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
-public class TransactionCreationService {
+public class TxCreationService {
 
     private final Web3jConfiguration config;
+    private final RedisAtomicLong nonceManager;
     private RawTransactionManager transactionManager;
-    private BigInteger currentNonce = BigInteger.ZERO;
 
     private ScheduledExecutorService threadpool;
     private Disposable blockListener;
@@ -45,8 +47,9 @@ public class TransactionCreationService {
     private final Random random = new Random();
 
     @Autowired
-    public TransactionCreationService(Web3jConfiguration config) {
+    public TxCreationService(Web3jConfiguration config, RedisAtomicLong nonceManager) {
         this.config = config;
+        this.nonceManager = nonceManager;
     }
 
     public String getNodeVersion() {
@@ -74,13 +77,6 @@ public class TransactionCreationService {
                 log.error("error while listening for new blocks", error);
                 this.blockListener.dispose();
             });
-        }
-
-        try {
-            this.fetchCurrentNonce();
-        } catch (IOException e) {
-            log.error("error while fetching current nonce", e);
-            return;
         }
 
         this.threadpool = Executors.newScheduledThreadPool(1);
@@ -127,10 +123,17 @@ public class TransactionCreationService {
         return result;
     }
 
-    private void fetchCurrentNonce() throws IOException {
-        this.currentNonce = this.config.getWeb3jInstance()
+    public long synchronizeNonce() {
+        try {
+            long nonce = this.config.getWeb3jInstance()
                     .ethGetTransactionCount(this.config.getCredentials().getAddress(), DefaultBlockParameterName.PENDING)
-                    .send().getTransactionCount();
+                    .send().getTransactionCount().longValue();
+            this.nonceManager.set(nonce);
+            return this.nonceManager.get();
+        } catch (IOException e) {
+            log.error("Error while synchronizing nonce", e);
+            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     private RawTransactionManager getTransactionManager() {
@@ -151,7 +154,7 @@ public class TransactionCreationService {
     private void submitTransaction() throws IOException {
 
         TxData txData = new TxData();
-        txData.nonce = this.currentNonce.intValue();
+        txData.nonce = this.nonceManager.getAndIncrement();
         txData.content = random.nextInt(100);
 
         Function function = new Function(
@@ -162,7 +165,7 @@ public class TransactionCreationService {
         String data = FunctionEncoder.encode(function);
 
         RawTransaction rawTransaction = RawTransaction.createTransaction(
-                this.currentNonce,
+                BigInteger.valueOf(txData.nonce),
                 BigInteger.valueOf(2000000000), //gasPrice
                 BigInteger.valueOf(1000000), //gasLimit
                 this.config.getSmartContractAddress(),
@@ -170,7 +173,6 @@ public class TransactionCreationService {
                 data);
 
         txData.created = new Date();
-        this.currentNonce = this.currentNonce.add(BigInteger.ONE);
         EthSendTransaction tx = this.getTransactionManager().signAndSend(rawTransaction);
         log.info("Transaction submitted, hash: {}", tx.getTransactionHash());
         txData.txhash = tx.getTransactionHash();
