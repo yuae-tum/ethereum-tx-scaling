@@ -1,52 +1,42 @@
-package approach2.txcreation.service;
+package approach4.txcreation.service;
 
-import approach2.txcreation.web.TxData;
-import approach2.txcreation.config.Web3jConfiguration;
-import approach2.txcreation.contracts.DappBackend;
+import approach4.txcreation.config.Web3jConfiguration;
+import approach4.txcreation.web.TxData;
 import io.reactivex.disposables.Disposable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
-import org.web3j.abi.FunctionEncoder;
-import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.Type;
-import org.web3j.crypto.RawTransaction;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthBlock;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.tx.RawTransactionManager;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
-public class TransactionCreationService {
+public class TxCreationService {
 
     private final Web3jConfiguration config;
+    private final RedisAtomicLong nonceManager;
     private RawTransactionManager transactionManager;
-    private BigInteger currentNonce = BigInteger.ZERO;
 
-    private TransactionCreationThread txCreationThread;
+    private TxCreationThread txCreationThread;
     private Disposable blockListener;
 
     private LinkedList<TxData> txRecords = new LinkedList<>();
     private LinkedList<EthBlock.Block> minedBlocks = new LinkedList<>();
 
-    private final Random random = new Random();
-
     @Autowired
-    public TransactionCreationService(Web3jConfiguration config) {
+    public TxCreationService(Web3jConfiguration config, RedisAtomicLong nonceManager) {
         this.config = config;
+        this.nonceManager = nonceManager;
     }
 
     public String getNodeVersion() {
@@ -76,13 +66,8 @@ public class TransactionCreationService {
             });
         }
 
-        try {
-            this.fetchCurrentNonce();
-            this.txCreationThread = new TransactionCreationThread(this.config, this.getTransactionManager(), this.currentNonce, this.txRecords);
-            this.txCreationThread.start();
-        } catch (IOException e) {
-            log.error("Error while fetching nonce", e);
-        }
+        this.txCreationThread = new TxCreationThread(this.nonceManager, this.config, this.getTransactionManager(), this.txRecords);
+        this.txCreationThread.start();
     }
 
     public void stopTransactionCreation() {
@@ -119,11 +104,17 @@ public class TransactionCreationService {
         return result;
     }
 
-    private void fetchCurrentNonce() throws IOException {
-        this.currentNonce = this.config.getWeb3jInstance()
+    public long synchronizeNonce() {
+        try {
+            long nonce = this.config.getWeb3jInstance()
                     .ethGetTransactionCount(this.config.getCredentials().getAddress(), DefaultBlockParameterName.PENDING)
-                    .send().getTransactionCount();
-        log.info("current nonce: " + this.currentNonce.intValue());
+                    .send().getTransactionCount().longValue();
+            this.nonceManager.set(nonce);
+            return this.nonceManager.get();
+        } catch (IOException e) {
+            log.error("Error while synchronizing nonce", e);
+            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     private RawTransactionManager getTransactionManager() {

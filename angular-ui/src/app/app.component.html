@@ -7,7 +7,7 @@
             </mat-form-field>
             <button mat-raised-button color="primary" (click)="connectToNode()">Connect</button>
         </div>
-        <mat-tab-group>
+        <mat-tab-group mat-align-tabs="center">
             <mat-tab label="Approach 1: Singleton TX-Creating Machine">
                 <app-approach1></app-approach1>
             </mat-tab>
@@ -17,7 +17,9 @@
             <mat-tab label="Approach 3: Singleton Nonce Manager">
                 <app-approach3></app-approach3>
             </mat-tab>
-            <mat-tab label="Approach 4: Nonce Contingents"></mat-tab>
+            <mat-tab label="Approach 4: Nonce Contingents">
+                <app-approach4></app-approach4>
+            </mat-tab>
         </mat-tab-group>
     </div>
 </div>

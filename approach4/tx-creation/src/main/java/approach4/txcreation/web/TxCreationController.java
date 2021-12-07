@@ -1,7 +1,7 @@
-package approach1.txcreation.web;
+package approach4.txcreation.web;
 
-import approach1.txcreation.config.Web3jConfiguration;
-import approach1.txcreation.service.TransactionCreationService;
+import approach4.txcreation.config.Web3jConfiguration;
+import approach4.txcreation.service.TxCreationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,20 +18,25 @@ import java.util.List;
 @Controller
 @RequestMapping
 @Slf4j
-public class TransactionCreationController {
+public class TxCreationController {
 
+    private final TxCreationService service;
     private final Web3jConfiguration config;
-    private final TransactionCreationService service;
 
     @Autowired
-    public TransactionCreationController(Web3jConfiguration config, TransactionCreationService service) {
-        this.config = config;
+    public TxCreationController(TxCreationService service, Web3jConfiguration config) {
         this.service = service;
+        this.config = config;
     }
 
     @GetMapping("/node-version")
     public ResponseEntity<String> getNodeVersion() {
         return ResponseEntity.ok(this.service.getNodeVersion());
+    }
+
+    @GetMapping("/sync-nonce")
+    public ResponseEntity<Long> synchronizeNonce() {
+        return ResponseEntity.ok(this.service.synchronizeNonce());
     }
 
     @PostMapping("/account")
@@ -62,21 +67,46 @@ public class TransactionCreationController {
         return ResponseEntity.ok(this.config.getSmartContractAddress());
     }
 
-    @PostMapping("/submit-tx")
-    public ResponseEntity<Void> submitTransaction(@RequestBody TxData txData) {
-        try {
-            this.service.submitTransaction(txData);
-            return ResponseEntity.noContent().build();
-        } catch (IOException e) {
-            log.error("error during transaction creation", e);
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
+    @PostMapping("/tx-interval")
+    public ResponseEntity<Integer> setTxInterval(@RequestBody int delay) {
+        return ResponseEntity.ok(this.config.setInterval(delay));
+    }
+
+    @GetMapping("/tx-interval")
+    public ResponseEntity<Integer> getTxInterval() {
+        return ResponseEntity.ok(this.config.getInterval());
+    }
+
+    @PostMapping("/contingent-size")
+    public ResponseEntity<Integer> setContingentSize(@RequestBody int size) {
+        return ResponseEntity.ok(this.config.setContingentSize(size));
+    }
+
+    @GetMapping("/contingent-size")
+    public ResponseEntity<Integer> getContingentSize() {
+        return ResponseEntity.ok(this.config.getContingentSize());
+    }
+
+    @GetMapping("/start-tx-creation")
+    public ResponseEntity<Void> startTransactionCreation() {
+        this.service.startTransactionCreation();
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/stop-tx-creation")
+    public ResponseEntity<Void> stopTransactionCreation() {
+        this.service.stopTransactionCreation();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/receipts")
     public ResponseEntity<List<TxData>> getReceipts() {
-        return ResponseEntity.ok(this.service.collectReceipts());
+        try {
+            return ResponseEntity.ok(this.service.collectReceipts());
+        } catch (IOException e) {
+            log.error("error while collecting receipts", e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     private static class Account {

@@ -18,6 +18,7 @@ import { Approach1Component } from './components/approach1/approach1.component';
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatDividerModule} from "@angular/material/divider";
 import { Approach3Component } from './components/approach3/approach3.component';
+import { Approach4Component } from './components/approach4/approach4.component';
 
 @NgModule({
     declarations: [
@@ -25,7 +26,8 @@ import { Approach3Component } from './components/approach3/approach3.component';
         Approach2Component,
         TransactionChartComponent,
         Approach1Component,
-        Approach3Component
+        Approach3Component,
+        Approach4Component
     ],
   imports: [
     BrowserModule, MatStepperModule, BrowserAnimationsModule, MatFormFieldModule, FormsModule, MatInputModule, MatButtonModule,

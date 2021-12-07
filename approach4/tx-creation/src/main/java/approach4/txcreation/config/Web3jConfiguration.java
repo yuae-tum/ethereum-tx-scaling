@@ -1,4 +1,4 @@
-package approach2.txcreation.config;
+package approach4.txcreation.config;
 
 import approach2.txcreation.contracts.DappBackend;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +23,7 @@ public class Web3jConfiguration {
     private Web3j web3jInstance;
     private DappBackend contract;
     private int interval = -1;
+    private int contingentSize = -1;
 
     private final ContractGasProvider gasProvider = new StaticGasProvider(BigInteger.ONE, BigInteger.valueOf(999999999));
 
@@ -106,4 +107,25 @@ public class Web3jConfiguration {
         return this.interval;
     }
 
+    public int getContingentSize() {
+        if(this.contingentSize == -1) {
+            this.contingentSize = this.appProperties.contingentSize;
+            log.info("nonce contingent size: " + this.contingentSize);
+        }
+        if(this.contingentSize < 1) {
+            throw new RuntimeException("nonce contingent size can not be smaller than 1 ms");
+        }
+        return this.contingentSize;
+    }
+
+    public int setContingentSize(int newSize) {
+        if(newSize < 1) {
+            throw new RuntimeException("nonce contingent size can not be smaller than 1 ms");
+        }
+        this.contingentSize = newSize;
+        log.info("nonce contingent size: " + this.contingentSize);
+        return this.contingentSize;
+    }
+
 }
+

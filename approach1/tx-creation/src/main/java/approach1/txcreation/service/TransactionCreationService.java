@@ -49,7 +49,7 @@ public class TransactionCreationService {
         }
     }
 
-    public String submitTransaction(TxData txData) throws IOException {
+    public void submitTransaction(TxData txData) throws IOException {
 
         BigInteger nonce = this.getNonceAndIncrement();
         txData.nonce = nonce.intValue();
@@ -67,12 +67,13 @@ public class TransactionCreationService {
                 this.config.getSmartContractAddress(),
                 BigInteger.ZERO, //value
                 data);
-        EthSendTransaction tx = this.getTransactionManager().signAndSend(rawTransaction);
 
-        log.info("Transaction submitted, hash: {}", tx.getTransactionHash());
-        txData.txhash = tx.getTransactionHash();
-        this.txRecords.add(txData);
-        return tx.getTransactionHash();
+        this.config.getWeb3jInstance().ethSendRawTransaction(this.getTransactionManager().sign(rawTransaction))
+                .sendAsync().thenAccept(tx -> {
+                    log.info("{} Transaction submitted, hash: {}", txData.nonce, tx.getTransactionHash());
+                    txData.txhash = tx.getTransactionHash();
+                    this.txRecords.add(txData);
+                });
     }
 
     public List<TxData> collectReceipts() {

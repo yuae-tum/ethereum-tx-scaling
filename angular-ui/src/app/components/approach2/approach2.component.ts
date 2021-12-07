@@ -140,6 +140,7 @@ export class Approach2Component implements OnInit {
 
     fetchResults(machine: MachineData): void {
         this.http.get<TxData[]>(machine.url + '/receipts').subscribe(response => {
+            this.snackBar.open('Successful');
             response.forEach(txData => txData.machineIndex = machine.index);
             this.results.push(...response);
         }, error => {
@@ -150,7 +151,7 @@ export class Approach2Component implements OnInit {
 
     startAllMachines(): void {
         if (this.machines.some(machine => machine.url == null)) {
-            this.snackBar.open('Failed, set base URL for every machine');
+            this.snackBar.open('Failed, set base URL for all machines');
         } else {
             this.machines.forEach(machine => this.startTxCreation(machine));
         }

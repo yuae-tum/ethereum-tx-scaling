@@ -23,14 +23,17 @@
     <div class="container-fluid row pe-0 ps-0">
         <div class="col-3 mb-3" *ngFor="let machine of machines; let i = index">
             <mat-card class="bg-light">
-                <mat-card-title>Machine {{i+1}}</mat-card-title>
+                <mat-card-title class="d-flex justify-content-between align-content-center">
+                    <span>Machine {{i+1}}</span>
+                    <button *ngIf="i === 0" mat-raised-button color="primary" (click)="synchronizeNonce(machine)">Synch nonce</button>
+                </mat-card-title>
                 <mat-card-content class="d-flex flex-column">
 
                     <mat-card class="d-flex flex-column mt-3 mb-3" *ngIf="machine.url">
                         <div class="mb-3">
                             <b>Transaction-Creation is currently <span [ngStyle]="{'color': machine.isRunning ? 'green' : 'red'}">{{machine.isRunning ? 'running' : 'stopped'}}</span></b>
                         </div>
-                        <div class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-between flex-wrap">
                             <button mat-raised-button color="primary" (click)="startTxCreation(machine)">Start</button>
                             <button mat-raised-button color="warn" (click)="stopTxCreation(machine)">Stop</button>
                             <button mat-raised-button color="accent" (click)="fetchResults(machine)">Fetch Results</button>
@@ -84,6 +87,19 @@
                         </div>
                         <div>current interval: {{machine.interval}}</div>
                     </mat-card>
+
+                    <mat-card class="d-flex flex-column mb-3" *ngIf="machine.url">
+                        <div class="d-flex flex-wrap justify-content-between mb-3">
+                            <mat-form-field class="me-3">
+                                <mat-label>Nonce Contingent Size</mat-label>
+                                <input #contingentSizeInput matInput type="number">
+                            </mat-form-field>
+                            <button mat-raised-button color="primary" (click)="setContingentSize(machine, contingentSizeInput.value)">Set Interval</button>
+                            <button mat-raised-button color="accent" (click)="getContingentSize(machine)">Fetch Interval</button>
+                        </div>
+                        <div>current contingent size: {{machine.contingentSize}}</div>
+                    </mat-card>
+
                 </mat-card-content>
             </mat-card>
         </div>

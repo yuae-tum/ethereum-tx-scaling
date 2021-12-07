@@ -17,7 +17,7 @@ services:
   tx-creation:
     container_name: tx-creation
     build:
-      context: ./approach1
+      context: ./approach2
       dockerfile: Dockerfile
     ports:
       - "8080:8080"

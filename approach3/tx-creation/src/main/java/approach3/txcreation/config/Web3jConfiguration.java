@@ -74,8 +74,8 @@ public class Web3jConfiguration {
 
     public String getSmartContractAddress() {
         if(this.contract == null) {
-            System.out.println("~~~~~~~ contract address: " + this.appProperties.contractAddress);
             this.contract = DappBackend.load(this.appProperties.contractAddress, this.getWeb3jInstance(), this.getCredentials(), this.gasProvider);
+            log.info("created contract reference to contract at address: " + this.contract.getContractAddress());
         }
         return this.contract.getContractAddress();
     }
@@ -89,6 +89,7 @@ public class Web3jConfiguration {
     public int getInterval() {
         if(this.interval == -1) {
             this.interval = this.appProperties.txInterval;
+            log.info("tx creation interval: " + this.interval);
         }
         if(this.interval < 1) {
             throw new RuntimeException("tx interval can not be smaller than 1 ms");
@@ -101,6 +102,7 @@ public class Web3jConfiguration {
             throw new RuntimeException("tx interval can not be smaller than 1 ms");
         }
         this.interval = newInterval;
+        log.info("tx creation interval: " + this.interval);
         return this.interval;
     }
 

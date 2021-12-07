@@ -27,7 +27,7 @@ services:
   tx-creation:
     container_name: tx-creation
     build:
-      context: ./approach3/tx-creation
+      context: ./approach4/tx-creation
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
@@ -38,5 +38,6 @@ services:
       - NODE_URL=ws://geth:8546
       - CONTRACT_ADDRESS=0x17cB057648a03dE335c773C7F6b7719c63A32eB7
       - TX_INTERVAL=250
+      - CONTINGENT_SIZE=100
       - REDIS_HOST=nonce-manager
       - REDIS_PORT=6379

@@ -38,7 +38,7 @@ public class TxCreationService {
     private final RedisAtomicLong nonceManager;
     private RawTransactionManager transactionManager;
 
-    private ScheduledExecutorService threadpool;
+    private TxCreationThread txCreationThread;
     private Disposable blockListener;
 
     private LinkedList<TxData> txRecords = new LinkedList<>();
@@ -64,7 +64,7 @@ public class TxCreationService {
 
     public void startTransactionCreation() {
 
-        if(!(this.threadpool == null || this.threadpool.isShutdown())) {
+        if(this.txCreationThread != null && this.txCreationThread.isAlive()) {
             log.error("cannot start transaction creation: already running");
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -79,20 +79,14 @@ public class TxCreationService {
             });
         }
 
-        this.threadpool = Executors.newScheduledThreadPool(1);
-        this.threadpool.scheduleAtFixedRate(() -> {
-            try {
-                this.submitTransaction();
-            } catch (IOException e) {
-                log.error("error while submitting transaction", e);
-                log.warn("Stopping transaction creation...");
-                this.threadpool.shutdown();
-            }
-        }, 0, this.config.getInterval(), TimeUnit.MILLISECONDS);
+        this.txCreationThread = new TxCreationThread(this.nonceManager, this.config, this.getTransactionManager(), this.txRecords);
+        this.txCreationThread.start();
     }
 
     public void stopTransactionCreation() {
-        this.threadpool.shutdown();
+        if(this.txCreationThread != null) {
+            this.txCreationThread.createTransactions = false;
+        }
     }
 
     public List<TxData> collectReceipts() throws IOException {
@@ -149,34 +143,6 @@ public class TxCreationService {
             this.transactionManager = new RawTransactionManager(this.config.getWeb3jInstance(), this.config.getCredentials(), Long.parseLong(chainId));
         }
         return this.transactionManager;
-    }
-
-    private void submitTransaction() throws IOException {
-
-        TxData txData = new TxData();
-        txData.nonce = this.nonceManager.getAndIncrement();
-        txData.content = random.nextInt(100);
-
-        Function function = new Function(
-                DappBackend.FUNC_PROCESSTRANSACTION,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Int256(BigInteger.valueOf(txData.content))),
-                Collections.emptyList());
-
-        String data = FunctionEncoder.encode(function);
-
-        RawTransaction rawTransaction = RawTransaction.createTransaction(
-                BigInteger.valueOf(txData.nonce),
-                BigInteger.valueOf(2000000000), //gasPrice
-                BigInteger.valueOf(1000000), //gasLimit
-                this.config.getSmartContractAddress(),
-                BigInteger.ZERO, //value
-                data);
-
-        txData.created = new Date();
-        EthSendTransaction tx = this.getTransactionManager().signAndSend(rawTransaction);
-        log.info("Transaction submitted, hash: {}", tx.getTransactionHash());
-        txData.txhash = tx.getTransactionHash();
-        this.txRecords.add(txData);
     }
 
 }

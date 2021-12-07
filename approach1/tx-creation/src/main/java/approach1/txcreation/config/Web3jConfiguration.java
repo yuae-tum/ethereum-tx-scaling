@@ -73,8 +73,8 @@ public class Web3jConfiguration {
 
     public String getSmartContractAddress() {
         if(this.contract == null) {
-            System.out.println("~~~~~~~ contract address: " + this.appProperties.contractAddress);
             this.contract = DappBackend.load(this.appProperties.contractAddress, this.getWeb3jInstance(), this.getCredentials(), this.gasProvider);
+            log.info("created contract reference to contract at address: " + this.contract.getContractAddress());
         }
         return this.contract.getContractAddress();
     }

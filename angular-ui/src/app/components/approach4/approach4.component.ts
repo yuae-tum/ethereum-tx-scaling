@@ -1,14 +1,14 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {TxData} from "../../model/TxData";
 import {HttpClient} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
-    selector: 'app-approach3',
-    templateUrl: './approach3.component.html',
-    styleUrls: ['./approach3.component.scss']
+    selector: 'app-approach4',
+    templateUrl: './approach4.component.html',
+    styleUrls: ['./approach4.component.scss']
 })
-export class Approach3Component implements OnInit {
+export class Approach4Component implements OnInit {
 
     numberMachines = 1;
     machines: MachineData[] = [];
@@ -22,6 +22,7 @@ export class Approach3Component implements OnInit {
     ngOnInit(): void {
         this.updateMachines();
     }
+
 
     updateMachines(): void {
         // tslint:disable-next-line:triple-equals
@@ -49,6 +50,7 @@ export class Approach3Component implements OnInit {
             this.getCurrentAccount(machine);
             this.getCurrentContractAddress(machine);
             this.getCurrentTxInterval(machine);
+            this.getContingentSize(machine);
         }, error => {
             console.log(error);
             this.snackBar.open('Connection failed');
@@ -122,6 +124,24 @@ export class Approach3Component implements OnInit {
         }, error => {
             console.log(error);
             this.snackBar.open('Error while fetching tx interval');
+        });
+    }
+
+    getContingentSize(machine: MachineData): void {
+        this.http.get<number>(machine.url + '/contingent-size').subscribe(response => {
+            machine.contingentSize = response;
+        }, error => {
+            console.log(error);
+            this.snackBar.open('Error while fetching nonce contingent size');
+        });
+    }
+
+    setContingentSize(machine: MachineData, size: string): void {
+        this.http.post<number>(machine.url + '/contingent-size', parseInt(size, 10)).subscribe(response => {
+            machine.contingentSize = response;
+        }, error => {
+            console.log(error);
+            this.snackBar.open('Error while setting nonce contingent size');
         });
     }
 
@@ -206,6 +226,7 @@ class MachineData {
     url: string;
     isRunning = false;
     interval: number;
+    contingentSize: number;
     privateKey: string;
     publicKey: string;
     accountAddress: string;
