@@ -10,3 +10,5 @@ geth/node/geth/
 geth/node/geth.ipc
 truffle/build/
 approach*/target/
+performance-test/target/
+performance-test/performance-test.iml

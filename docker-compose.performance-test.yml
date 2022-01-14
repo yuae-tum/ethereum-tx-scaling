@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+
+  test-service-1:
+    container_name: test-service-1
+    build:
+      context: ./performance-test
+      dockerfile: Dockerfile
+    deploy:
+      resources:
+        limits:
+          cpus: 0.25
+
+  test-service-2:
+    container_name: test-service-2
+    build:
+      context: ./performance-test
+      dockerfile: Dockerfile
+    deploy:
+      resources:
+        limits:
+          cpus: 0.5
+
+  test-service-3:
+    container_name: test-service-3
+    build:
+      context: ./performance-test
+      dockerfile: Dockerfile
+    deploy:
+      resources:
+        limits:
+          cpus: 1
