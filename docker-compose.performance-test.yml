@@ -9,7 +9,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: 0.25
+          cpus: 0.3
 
   test-service-2:
     container_name: test-service-2
@@ -19,7 +19,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: 0.5
+          cpus: 0.2
 
   test-service-3:
     container_name: test-service-3
@@ -29,4 +29,4 @@ services:
     deploy:
       resources:
         limits:
-          cpus: 1
+          cpus: 0.1

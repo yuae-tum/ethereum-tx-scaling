@@ -4,7 +4,7 @@ public class PerformanceTest
 {
     public static void main( String[] args )
     {
-        int n = 48;
+        int n = 47;
         System.out.println("Starting performance test, n = " + n);
         while(true) {
             long timeStarted = System.currentTimeMillis();
