@@ -1,8 +1,10 @@
+# https://docs.docker.com/engine/swarm/stack-deploy/
+
 version: "3.8"
 services:
 
   geth:
-    container_name: geth
+    image: 127.0.0.1:5000/geth-node
     build:
       context: ./geth
       dockerfile: Dockerfile
@@ -11,16 +13,28 @@ services:
       - "8546:8546"
     environment:
       - TZ=Europe/Berlin
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '1'
+          memory: 500m
     volumes:
       - ./geth/node:/geth
 
   tx-creation:
-    container_name: tx-creation
+    image: 127.0.0.1:5000/tx-creation-machine
     build:
       context: ./approach1/tx-creation
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 500m
     environment:
       - TZ=Europe/Berlin
       - PORT=8080
@@ -29,12 +43,22 @@ services:
       - CONTRACT_ADDRESS=0x17cB057648a03dE335c773C7F6b7719c63A32eB7
 
   tx-requesting:
-    container_name: tx-requesting
+    image: 127.0.0.1:5000/tx-requesting-machine
     build:
       context: ./approach1/tx-requests
       dockerfile: Dockerfile
     ports:
       - "8090:8090"
+    deploy:
+      replicas: 1
+      placement:
+        # max_replicas_per_node: 1
+        constraints:
+          - "node.labels.txcreation==yes"
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 500m
     environment:
       - TZ=Europe/Berlin
       - PORT=8090

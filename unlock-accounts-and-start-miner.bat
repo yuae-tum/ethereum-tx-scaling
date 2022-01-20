@@ -1,1 +1,1 @@
-docker exec geth geth attach /geth/geth.ipc --preload "/unlock-accounts.js,/start-mining.js"
+docker exec %1 geth attach /geth/geth.ipc --preload "/unlock-accounts.js,/start-mining.js"
