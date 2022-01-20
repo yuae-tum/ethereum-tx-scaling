@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {TxData} from "../../model/TxData";
-import {HttpClient} from "@angular/common/http";
-import {MatSnackBar} from "@angular/material/snack-bar";
+import {TxData} from '../../model/TxData';
+import {HttpClient} from '@angular/common/http';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
     selector: 'app-approach4',
@@ -41,8 +41,7 @@ export class Approach4Component implements OnInit {
     }
 
     setBaseUrl(machine: MachineData, url: string): void {
-        // @ts-ignore
-        this.http.get<string>(url + '/node-version', { responseType: 'text' }).subscribe(response => {
+        this.http.get(url + '/node-version', { responseType: 'text' }).subscribe(response => {
             console.log(response);
             machine.url = url;
             console.log('geth node version: ' + response);
@@ -90,8 +89,7 @@ export class Approach4Component implements OnInit {
     }
 
     getCurrentContractAddress(machine: MachineData): void {
-        // @ts-ignore
-        this.http.get<string>(machine.url + '/contract', { responseType: 'text' }).subscribe(response => {
+        this.http.get(machine.url + '/contract', { responseType: 'text' }).subscribe(response => {
             // @ts-ignore
             machine.contractAddress = response;
         }, error => {
@@ -168,7 +166,6 @@ export class Approach4Component implements OnInit {
     fetchResults(machine: MachineData): void {
         this.http.get<TxData[]>(machine.url + '/receipts').subscribe(response => {
             this.snackBar.open('Successful');
-            response.forEach(txData => txData.machineIndex = machine.index);
             this.results.push(...response);
         }, error => {
             console.log(error);

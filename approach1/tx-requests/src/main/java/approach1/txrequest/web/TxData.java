@@ -12,5 +12,6 @@ public class TxData {
     public Date mined;
     public Long waitingTime;
     public int content;
+    public String machineId;
 
 }

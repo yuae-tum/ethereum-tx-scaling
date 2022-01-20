@@ -22,7 +22,6 @@ public class Web3jConfiguration {
     private Credentials credentials;
     private Web3j web3jInstance;
     private DappBackend contract;
-    private int interval = -1;
 
     private final ContractGasProvider gasProvider = new StaticGasProvider(BigInteger.ONE, BigInteger.valueOf(999999999));
 
@@ -86,24 +85,8 @@ public class Web3jConfiguration {
         return this.contract.getContractAddress();
     }
 
-    public int getInterval() {
-        if(this.interval == -1) {
-            this.interval = this.appProperties.txInterval;
-            log.info("tx creation interval: " + this.interval);
-        }
-        if(this.interval < 1) {
-            throw new RuntimeException("tx interval can not be smaller than 1 ms");
-        }
-        return this.interval;
-    }
-
-    public int setInterval(int newInterval) {
-        if(newInterval < 1) {
-            throw new RuntimeException("tx interval can not be smaller than 1 ms");
-        }
-        this.interval = newInterval;
-        log.info("tx creation interval: " + this.interval);
-        return this.interval;
+    public String getMachineId() {
+        return this.appProperties.machineId;
     }
 
 }

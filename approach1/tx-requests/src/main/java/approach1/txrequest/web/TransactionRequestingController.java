@@ -30,16 +30,6 @@ public class TransactionRequestingController {
         return ResponseEntity.ok(this.client.setUrl(url));
     }
 
-    @GetMapping("/tx-interval")
-    public ResponseEntity<Integer> getInterval() {
-        return ResponseEntity.ok(this.service.getInterval());
-    }
-
-    @PostMapping("/tx-interval")
-    public ResponseEntity<Integer> setInterval(@RequestBody int interval) {
-        return ResponseEntity.ok(this.service.setInterval(interval));
-    }
-
     @GetMapping("/start-tx-creation")
     public ResponseEntity<Void> startTxRequests() {
         this.service.startTransactionRequests();

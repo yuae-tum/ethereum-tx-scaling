@@ -1,8 +1,8 @@
 import {Component, OnInit, Input} from '@angular/core';
-import {ethers} from "ethers";
-import {HttpClient} from "@angular/common/http";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {TxData} from "../../model/TxData";
+import {ethers} from 'ethers';
+import {HttpClient} from '@angular/common/http';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {TxData} from '../../model/TxData';
 
 @Component({
     selector: 'app-approach2',
@@ -141,7 +141,6 @@ export class Approach2Component implements OnInit {
     fetchResults(machine: MachineData): void {
         this.http.get<TxData[]>(machine.url + '/receipts').subscribe(response => {
             this.snackBar.open('Successful');
-            response.forEach(txData => txData.machineIndex = machine.index);
             this.results.push(...response);
         }, error => {
             console.log(error);

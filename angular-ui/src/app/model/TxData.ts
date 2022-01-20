@@ -1,5 +1,5 @@
 export class TxData {
-    machineIndex: number;
+    machineId: string;
     txhash: string;
     nonce: number;
     succeeded: boolean;

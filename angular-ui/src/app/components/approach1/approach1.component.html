@@ -3,7 +3,13 @@
     <!-- TX Creation Machine -->
     <div>
         <mat-card class="bg-light">
-            <mat-card-title>TX Creation Machine</mat-card-title>
+            <mat-card-title class="d-flex align-items-center justify-content-between">
+                <div>TX Creation Machine</div>
+                <div>
+                    <button class="ms-5" mat-raised-button color="accent" (click)="fetchResults()">Fetch Results</button>
+                    <button mat-raised-button color="primary" (click)="downloadResultsAsJsonFile()">Download results</button>
+                </div>
+            </mat-card-title>
             <mat-card-content class="d-flex align-items-stretch justify-content-between mt-3">
 
                 <mat-card class="d-flex flex-column flex-fill">
@@ -82,7 +88,6 @@
                         <div class="d-flex justify-content-between">
                             <button mat-raised-button color="primary" (click)="startTxRequesting(machine)">Start</button>
                             <button mat-raised-button color="warn" (click)="stopTxRequesting(machine)">Stop</button>
-                            <button mat-raised-button color="accent">Fetch Results</button>
                         </div>
                     </mat-card>
 

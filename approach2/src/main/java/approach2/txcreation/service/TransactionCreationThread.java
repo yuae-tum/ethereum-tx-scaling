@@ -8,7 +8,6 @@ import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.crypto.RawTransaction;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.tx.RawTransactionManager;
 
 import java.io.IOException;
@@ -41,35 +40,22 @@ public class TransactionCreationThread extends Thread {
 
     @Override
     public void run() {
-        if(this.config.getInterval() > 0) {
-            while (this.createTransactions) {
-                try {
-                    this.submitTransaction();
-                    Thread.sleep(this.config.getInterval());
-                } catch (IOException e) {
-                    log.error("error while submitting transaction", e);
-                    log.warn("Stopping transaction creation...");
-                    return;
-                } catch (InterruptedException e) {
-                    return;
-                }
-            }
-        } else {
-            while (this.createTransactions) {
-                try {
-                    this.submitTransaction();
-                } catch (IOException e) {
-                    log.error("error while submitting transaction", e);
-                    log.warn("Stopping transaction creation...");
-                    return;
-                }
+        while (this.createTransactions) {
+            try {
+                this.submitTransaction();
+            } catch (IOException e) {
+                log.error("error while submitting transaction", e);
+                log.warn("Stopping transaction creation...");
+                return;
             }
         }
+
     }
 
     private void submitTransaction() throws IOException {
 
         TxData txData = new TxData();
+        txData.machineId = this.config.getMachineId();
         txData.nonce = this.currentNonce.intValue();
         txData.content = random.nextInt(100);
 

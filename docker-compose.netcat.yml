@@ -1,0 +1,20 @@
+version: "3.8"
+services:
+
+  netcat:
+    image: subfuzion/netcat:latest
+    command: -vl 8090
+    ports:
+      - target: 8090
+        # published: 9000
+        mode: host
+    deploy:
+      replicas: 1
+      placement:
+        # max_replicas_per_node: 1
+        constraints:
+          - "node.labels.txcreation==yes"
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1g

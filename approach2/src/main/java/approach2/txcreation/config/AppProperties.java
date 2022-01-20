@@ -3,13 +3,13 @@ package approach2.txcreation.config;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "eth")
+@ConfigurationProperties(prefix = "app")
 @Setter
 public class AppProperties {
 
     public String privateKey;
     public String nodeUrl;
     public String contractAddress;
-    public int txInterval;
+    public String machineId;
 
 }

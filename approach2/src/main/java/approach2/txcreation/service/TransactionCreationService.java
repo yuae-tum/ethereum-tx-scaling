@@ -2,21 +2,15 @@ package approach2.txcreation.service;
 
 import approach2.txcreation.web.TxData;
 import approach2.txcreation.config.Web3jConfiguration;
-import approach2.txcreation.contracts.DappBackend;
 import io.reactivex.disposables.Disposable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
-import org.web3j.abi.FunctionEncoder;
-import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.Type;
-import org.web3j.crypto.RawTransaction;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthBlock;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.tx.RawTransactionManager;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
@@ -24,9 +18,6 @@ import reactor.util.function.Tuples;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -41,8 +32,6 @@ public class TransactionCreationService {
 
     private LinkedList<TxData> txRecords = new LinkedList<>();
     private LinkedList<EthBlock.Block> minedBlocks = new LinkedList<>();
-
-    private final Random random = new Random();
 
     @Autowired
     public TransactionCreationService(Web3jConfiguration config) {

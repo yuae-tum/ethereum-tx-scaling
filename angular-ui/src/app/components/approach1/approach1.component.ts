@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {MatSnackBar} from "@angular/material/snack-bar";
+import {HttpClient} from '@angular/common/http';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {TxData} from '../../model/TxData';
 
 @Component({
     selector: 'app-approach1',
@@ -11,8 +12,9 @@ export class Approach1Component implements OnInit {
 
     numberRequestMachines = 1;
     requestMachines: RequestMachine[] = [];
-
     creatingMachine = new CreatingMachine();
+
+    results: TxData[] = [];
 
     constructor(private http: HttpClient, private snackbar: MatSnackBar) { }
 
@@ -137,7 +139,7 @@ export class Approach1Component implements OnInit {
             machine.txCreationUrl = response;
         }, error => {
             console.log(error);
-            this.snackbar.open('Error while updating url')
+            this.snackbar.open('Error while updating url');
         });
     }
 
@@ -167,6 +169,30 @@ export class Approach1Component implements OnInit {
 
     stopAllMachines(): void {
         this.requestMachines.forEach(machine => this.stopTxRequesting(machine));
+    }
+
+    fetchResults(): void {
+        this.http.get<TxData[]>(this.creatingMachine.url + '/receipts').subscribe(response => {
+            this.snackbar.open('Successful');
+            this.results.push(...response);
+        }, error => {
+            console.log(error);
+            this.snackbar.open('Error while fetching results');
+        });
+    }
+
+    downloadResultsAsJsonFile(): void {
+        /*
+        const sJson = JSON.stringify(this.results);
+        const element = document.createElement('a');
+        element.style.display = 'none';
+        element.setAttribute('href', 'data:text/json;charset=UTF-8,' + encodeURIComponent(sJson));
+        element.setAttribute('download', 'result.json');
+        document.body.appendChild(element);
+        element.click(); // simulate click
+        document.body.removeChild(element);
+        */
+        console.log(this.results);
     }
 
 }

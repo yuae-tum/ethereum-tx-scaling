@@ -2,7 +2,7 @@ version: "3.8"
 services:
 
   geth:
-    container_name: geth
+    image: 127.0.0.1:5000/geth-node:approach4
     build:
       context: ./geth
       dockerfile: Dockerfile
@@ -11,21 +11,39 @@ services:
       - "8546:8546"
     environment:
       - TZ=Europe/Berlin
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - "node.role==manager"
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1g
     volumes:
       - ./geth/node:/geth
 
   nonce-manager:
-    container_name: nonce-manager
+    image: 127.0.0.1:5000/nonce-manager:approach4
     build:
       context: redis
       dockerfile: Dockerfile
     ports:
       - "6379:6379"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - "node.role==manager"
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1g
     environment:
       - TZ=Europe/Berlin
 
   tx-creation:
-    container_name: tx-creation
+    image: 127.0.0.1:5000/tx-creation-machine:approach4
     build:
       context: ./approach4/tx-creation
       dockerfile: Dockerfile
@@ -37,7 +55,17 @@ services:
       - PRIVATE_KEY=bcc6d4aa1e277f085b3e11f2c1e6f14dd04e8108c823898e06fa5287c2bf1a92
       - NODE_URL=ws://geth:8546
       - CONTRACT_ADDRESS=0x17cB057648a03dE335c773C7F6b7719c63A32eB7
-      - TX_INTERVAL=250
+      - MACHINE_ID={{.Task.Name}}
       - CONTINGENT_SIZE=100
       - REDIS_HOST=nonce-manager
       - REDIS_PORT=6379
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.txcreation==yes"
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1g

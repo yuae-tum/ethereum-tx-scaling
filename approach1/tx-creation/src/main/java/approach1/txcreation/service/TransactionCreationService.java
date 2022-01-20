@@ -4,6 +4,7 @@ import approach1.txcreation.config.Web3jConfiguration;
 import approach1.txcreation.web.TxData;
 import approach2.txcreation.contracts.DappBackend;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
@@ -14,7 +15,6 @@ import org.web3j.crypto.RawTransaction;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthBlock;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.tx.RawTransactionManager;
 
 import java.io.IOException;
@@ -30,10 +30,11 @@ public class TransactionCreationService {
     private BigInteger currentNonce = BigInteger.ZERO;
 
     private LinkedList<TxData> txRecords = new LinkedList<>();
-    private LinkedList<EthBlock.Block> minedBlocks = new LinkedList<>();
+    // private LinkedList<EthBlock.Block> minedBlocks = new LinkedList<>();
 
     private static final Object lock = new Object();
 
+    @Autowired
     public TransactionCreationService(Web3jConfiguration config) {
         this.config = config;
     }

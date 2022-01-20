@@ -67,16 +67,6 @@ public class TxCreationController {
         return ResponseEntity.ok(this.config.getSmartContractAddress());
     }
 
-    @PostMapping("/tx-interval")
-    public ResponseEntity<Integer> setTxInterval(@RequestBody int delay) {
-        return ResponseEntity.ok(this.config.setInterval(delay));
-    }
-
-    @GetMapping("/tx-interval")
-    public ResponseEntity<Integer> getTxInterval() {
-        return ResponseEntity.ok(this.config.getInterval());
-    }
-
     @PostMapping("/contingent-size")
     public ResponseEntity<Integer> setContingentSize(@RequestBody int size) {
         return ResponseEntity.ok(this.config.setContingentSize(size));

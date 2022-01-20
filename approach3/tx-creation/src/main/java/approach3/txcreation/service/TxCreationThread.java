@@ -42,28 +42,13 @@ public class TxCreationThread extends Thread {
 
     @Override
     public void run() {
-        if(this.config.getInterval() > 0) {
-            while (this.createTransactions) {
-                try {
-                    this.submitTransaction();
-                    Thread.sleep(this.config.getInterval());
-                } catch (IOException e) {
-                    log.error("error while submitting transaction", e);
-                    log.warn("Stopping transaction creation...");
-                    return;
-                } catch (InterruptedException e) {
-                    return;
-                }
-            }
-        } else {
-            while (this.createTransactions) {
-                try {
-                    this.submitTransaction();
-                } catch (IOException e) {
-                    log.error("error while submitting transaction", e);
-                    log.warn("Stopping transaction creation...");
-                    return;
-                }
+        while (this.createTransactions) {
+            try {
+                this.submitTransaction();
+            } catch (IOException e) {
+                log.error("error while submitting transaction", e);
+                log.warn("Stopping transaction creation...");
+                return;
             }
         }
     }
@@ -71,6 +56,7 @@ public class TxCreationThread extends Thread {
     private void submitTransaction() throws IOException {
 
         TxData txData = new TxData();
+        txData.machineId = this.config.getMachineId();
         txData.nonce = this.nonceManager.getAndIncrement();
         txData.content = random.nextInt(100);
 

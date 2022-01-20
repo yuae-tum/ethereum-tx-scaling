@@ -24,21 +24,21 @@ public class DappClient {
     }
 
     public void sendTransactionRequest(TxData txData) {
-        String url = this.getUrl() + "/submit-tx";
-        log.info("Sending tx request to url " + url);
+        String url = this.getUrl();
+        log.debug("Sending tx request to url " + url);
         this.client.post().uri(url).bodyValue(txData).retrieve().bodyToMono(String.class)
                 .subscribe(txHash -> log.info("Submitted transaction with hash " + txHash));
     }
 
     public String setUrl(String url) {
-        this.txCreationMachineUrl = url;
+        this.txCreationMachineUrl = url + "/submit-tx";
         log.info("Set URL for transaction creating machine: " + this.txCreationMachineUrl);
         return this.txCreationMachineUrl;
     }
 
     public String getUrl() {
         if(this.txCreationMachineUrl == null) {
-            this.txCreationMachineUrl = this.properties.txCreationMachineUrl;
+            this.txCreationMachineUrl = this.properties.txCreationMachineUrl + "/submit-tx";
             log.info("Set URL for transaction creating machine: " + this.txCreationMachineUrl);
         }
         return this.txCreationMachineUrl;

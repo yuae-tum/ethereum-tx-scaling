@@ -10,7 +10,7 @@ public class AppProperties {
     public String privateKey;
     public String nodeUrl;
     public String contractAddress;
-    public int txInterval;
     public int contingentSize;
+    public String machineId;
 
 }

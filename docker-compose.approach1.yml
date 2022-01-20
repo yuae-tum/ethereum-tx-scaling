@@ -4,7 +4,7 @@ version: "3.8"
 services:
 
   geth:
-    image: 127.0.0.1:5000/geth-node
+    image: 127.0.0.1:5000/geth-node:approach1
     build:
       context: ./geth
       dockerfile: Dockerfile
@@ -15,15 +15,18 @@ services:
       - TZ=Europe/Berlin
     deploy:
       replicas: 1
+      placement:
+        constraints:
+          - "node.role==manager"
       resources:
         limits:
           cpus: '1'
-          memory: 500m
+          memory: 1g
     volumes:
       - ./geth/node:/geth
 
   tx-creation:
-    image: 127.0.0.1:5000/tx-creation-machine
+    image: 127.0.0.1:5000/tx-creation-machine:approach1
     build:
       context: ./approach1/tx-creation
       dockerfile: Dockerfile
@@ -31,10 +34,13 @@ services:
       - "8080:8080"
     deploy:
       replicas: 1
+      placement:
+        constraints:
+          - "node.role==manager"
       resources:
         limits:
-          cpus: '0.5'
-          memory: 500m
+          cpus: '1'
+          memory: 1g
     environment:
       - TZ=Europe/Berlin
       - PORT=8080
@@ -43,12 +49,13 @@ services:
       - CONTRACT_ADDRESS=0x17cB057648a03dE335c773C7F6b7719c63A32eB7
 
   tx-requesting:
-    image: 127.0.0.1:5000/tx-requesting-machine
+    image: 127.0.0.1:5000/tx-requesting-machine:approach1
     build:
       context: ./approach1/tx-requests
       dockerfile: Dockerfile
     ports:
-      - "8090:8090"
+      - target: 8090
+        mode: host
     deploy:
       replicas: 1
       placement:
@@ -58,9 +65,9 @@ services:
       resources:
         limits:
           cpus: '0.50'
-          memory: 500m
+          memory: 1g
     environment:
       - TZ=Europe/Berlin
       - PORT=8090
-      - REQUEST_INTERVAL=250
       - TX_CREATION_MACHINE_URL=http://tx-creation:8080
+      - MACHINE_ID={{.Task.Name}}

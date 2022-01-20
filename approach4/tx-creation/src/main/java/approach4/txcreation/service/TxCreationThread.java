@@ -41,41 +41,19 @@ public class TxCreationThread extends Thread {
 
     @Override
     public void run() {
-        if(this.config.getInterval() > 0) {
-            while (true) {
-                long nonce = this.nonceManager.getAndAdd(this.config.getContingentSize());
-                long boundary = nonce + this.config.getContingentSize();
-                for (; nonce < boundary; nonce++) {
-                    try {
-                        this.submitTransaction(nonce);
-                        Thread.sleep(this.config.getInterval());
-                    } catch (IOException e) {
-                        log.error("error while submitting transaction", e);
-                        log.warn("Stopping transaction creation...");
-                        return;
-                    } catch (InterruptedException e) {
-                        return;
-                    }
-                    if (!this.createTransactions) {
-                        return;
-                    }
+        while (true) {
+            long nonce = this.nonceManager.getAndAdd(this.config.getContingentSize());
+            long boundary = nonce + this.config.getContingentSize();
+            for (; nonce < boundary; nonce++) {
+                try {
+                    this.submitTransaction(nonce);
+                } catch (IOException e) {
+                    log.error("error while submitting transaction", e);
+                    log.warn("Stopping transaction creation...");
+                    return;
                 }
-            }
-        } else {
-            while (true) {
-                long nonce = this.nonceManager.getAndAdd(this.config.getContingentSize());
-                long boundary = nonce + this.config.getContingentSize();
-                for (; nonce < boundary; nonce++) {
-                    try {
-                        this.submitTransaction(nonce);
-                    } catch (IOException e) {
-                        log.error("error while submitting transaction", e);
-                        log.warn("Stopping transaction creation...");
-                        return;
-                    }
-                    if (!this.createTransactions) {
-                        return;
-                    }
+                if (!this.createTransactions) {
+                    return;
                 }
             }
         }
@@ -84,6 +62,7 @@ public class TxCreationThread extends Thread {
     private void submitTransaction(long nonce) throws IOException {
 
         TxData txData = new TxData();
+        txData.machineId = this.config.getMachineId();
         txData.nonce = nonce;
         txData.content = random.nextInt(100);
 

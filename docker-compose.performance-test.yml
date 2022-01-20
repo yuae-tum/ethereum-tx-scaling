@@ -2,7 +2,7 @@ version: "3.8"
 services:
 
   test-service-1:
-    container_name: test-service-1
+    image: 127.0.0.1:5000/test-service-1
     build:
       context: ./performance-test
       dockerfile: Dockerfile
@@ -12,7 +12,7 @@ services:
           cpus: 0.3
 
   test-service-2:
-    container_name: test-service-2
+    image: 127.0.0.1:5000/test-service-2
     build:
       context: ./performance-test
       dockerfile: Dockerfile
@@ -22,7 +22,7 @@ services:
           cpus: 0.2
 
   test-service-3:
-    container_name: test-service-3
+    image: 127.0.0.1:5000/test-service-3
     build:
       context: ./performance-test
       dockerfile: Dockerfile

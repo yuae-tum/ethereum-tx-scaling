@@ -64,16 +64,6 @@ public class TxCreationController {
         return ResponseEntity.ok(this.config.getSmartContractAddress());
     }
 
-    @PostMapping("/tx-interval")
-    public ResponseEntity<Integer> setTxInterval(@RequestBody int delay) {
-        return ResponseEntity.ok(this.config.setInterval(delay));
-    }
-
-    @GetMapping("/tx-interval")
-    public ResponseEntity<Integer> getTxInterval() {
-        return ResponseEntity.ok(this.config.getInterval());
-    }
-
     @GetMapping("/start-tx-creation")
     public ResponseEntity<Void> startTransactionCreation() {
         this.service.startTransactionCreation();
