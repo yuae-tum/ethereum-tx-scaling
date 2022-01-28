@@ -43,18 +43,26 @@ export class Approach2Component implements OnInit {
     }
 
     setBaseUrl(machine: MachineData, url: string): void {
-        // @ts-ignore
-        this.http.get<string>(url + '/node-version', { responseType: 'text' }).subscribe(response => {
+        this.http.get(url + '/node-version', { responseType: 'text' }).subscribe(response => {
             console.log(response);
             machine.url = url;
             console.log('geth node version: ' + response);
             this.snackBar.open('Connection successful');
+            this.getMachineId(machine);
             this.getCurrentAccount(machine);
             this.getCurrentContractAddress(machine);
-            this.getCurrentTxInterval(machine);
         }, error => {
             console.log(error);
             this.snackBar.open('Connection failed');
+        });
+    }
+
+    getMachineId(machine: MachineData): void {
+        this.http.get(machine.url + '/machineId', { responseType: 'text' }).subscribe(response => {
+            machine.machineId = response;
+        }, error => {
+            console.log(error);
+            this.snackBar.open('Error while fetching machine id');
         });
     }
 
@@ -81,9 +89,7 @@ export class Approach2Component implements OnInit {
     }
 
     getCurrentContractAddress(machine: MachineData): void {
-        // @ts-ignore
-        this.http.get<string>(machine.url + '/contract', { responseType: 'text' }).subscribe(response => {
-            // @ts-ignore
+        this.http.get(machine.url + '/contract', { responseType: 'text' }).subscribe(response => {
             machine.contractAddress = response;
         }, error => {
             console.log(error);
@@ -92,29 +98,11 @@ export class Approach2Component implements OnInit {
     }
 
     setContractAddress(machine: MachineData, contractAddress: string): void {
-        this.http.post<string>(machine.url + '/contract', contractAddress).subscribe(response => {
+        this.http.post(machine.url + '/contract', contractAddress, { responseType: 'text' }).subscribe(response => {
             machine.contractAddress = response;
         }, error => {
             console.log(error);
             this.snackBar.open('Error while setting contract address');
-        });
-    }
-
-    getCurrentTxInterval(machine: MachineData): void {
-        this.http.get<number>(machine.url + '/tx-interval').subscribe(response => {
-            machine.interval = response;
-        }, error => {
-            console.log(error);
-            this.snackBar.open('Error while fetching tx interval');
-        });
-    }
-
-    setTxInterval(machine: MachineData, interval: string): void {
-        this.http.post<number>(machine.url + '/tx-interval', parseInt(interval, 10)).subscribe(response => {
-            machine.interval = response;
-        }, error => {
-            console.log(error);
-            this.snackBar.open('Error while fetching tx interval');
         });
     }
 
@@ -195,9 +183,9 @@ export class Approach2Component implements OnInit {
 
 class MachineData {
     index: number;
+    machineId: string;
     url: string;
     isRunning = false;
-    interval: number;
     privateKey: string;
     publicKey: string;
     accountAddress: string;

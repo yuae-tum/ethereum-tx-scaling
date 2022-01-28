@@ -29,7 +29,9 @@ services:
       context: ./approach2
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - target: 8080
+        published: 8080
+        # mode: host
     environment:
       - TZ=Europe/Berlin
       - PORT=8080

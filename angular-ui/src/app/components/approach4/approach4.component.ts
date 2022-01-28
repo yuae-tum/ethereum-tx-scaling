@@ -48,11 +48,20 @@ export class Approach4Component implements OnInit {
             this.snackBar.open('Connection successful');
             this.getCurrentAccount(machine);
             this.getCurrentContractAddress(machine);
-            this.getCurrentTxInterval(machine);
+            this.getMachineId(machine);
             this.getContingentSize(machine);
         }, error => {
             console.log(error);
             this.snackBar.open('Connection failed');
+        });
+    }
+
+    getMachineId(machine: MachineData): void {
+        this.http.get(machine.url + '/machineId', { responseType: 'text' }).subscribe(response => {
+            machine.machineId = response;
+        }, error => {
+            console.log(error);
+            this.snackBar.open('Error while fetching machine id');
         });
     }
 
@@ -63,7 +72,7 @@ export class Approach4Component implements OnInit {
         }, error => {
             console.log(error);
             this.snackBar.open('error while synchronizing nonce');
-        })
+        });
     }
 
     getCurrentAccount(machine: MachineData): void {
@@ -90,7 +99,6 @@ export class Approach4Component implements OnInit {
 
     getCurrentContractAddress(machine: MachineData): void {
         this.http.get(machine.url + '/contract', { responseType: 'text' }).subscribe(response => {
-            // @ts-ignore
             machine.contractAddress = response;
         }, error => {
             console.log(error);
@@ -99,29 +107,11 @@ export class Approach4Component implements OnInit {
     }
 
     setContractAddress(machine: MachineData, contractAddress: string): void {
-        this.http.post<string>(machine.url + '/contract', contractAddress).subscribe(response => {
+        this.http.post(machine.url + '/contract', contractAddress, { responseType: 'text' }).subscribe(response => {
             machine.contractAddress = response;
         }, error => {
             console.log(error);
             this.snackBar.open('Error while setting contract address');
-        });
-    }
-
-    getCurrentTxInterval(machine: MachineData): void {
-        this.http.get<number>(machine.url + '/tx-interval').subscribe(response => {
-            machine.interval = response;
-        }, error => {
-            console.log(error);
-            this.snackBar.open('Error while fetching tx interval');
-        });
-    }
-
-    setTxInterval(machine: MachineData, interval: string): void {
-        this.http.post<number>(machine.url + '/tx-interval', parseInt(interval, 10)).subscribe(response => {
-            machine.interval = response;
-        }, error => {
-            console.log(error);
-            this.snackBar.open('Error while fetching tx interval');
         });
     }
 
@@ -144,7 +134,7 @@ export class Approach4Component implements OnInit {
     }
 
     startTxCreation(machine: MachineData): void {
-        this.http.get<void>(machine.url + '/start-tx-creation').subscribe(() => {
+        this.http.get(machine.url + '/start-tx-creation').subscribe(() => {
             machine.isRunning = true;
             this.snackBar.open('Started transaction creation');
         }, error => {
@@ -220,9 +210,9 @@ export class Approach4Component implements OnInit {
 
 class MachineData {
     index: number;
+    machineId: string;
     url: string;
     isRunning = false;
-    interval: number;
     contingentSize: number;
     privateKey: string;
     publicKey: string;

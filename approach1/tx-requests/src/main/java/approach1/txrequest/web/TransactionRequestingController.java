@@ -1,5 +1,6 @@
 package approach1.txrequest.web;
 
+import approach1.txrequest.config.AppProperties;
 import approach1.txrequest.service.TransactionRequestService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,10 +15,12 @@ public class TransactionRequestingController {
 
     private final DappClient client;
     private final TransactionRequestService service;
+    private final AppProperties properties;
 
-    public TransactionRequestingController(DappClient client, TransactionRequestService service) {
+    public TransactionRequestingController(DappClient client, TransactionRequestService service, AppProperties properties) {
         this.client = client;
         this.service = service;
+        this.properties = properties;
     }
 
     @GetMapping("/txCreationMachineUrl")
@@ -40,5 +43,10 @@ public class TransactionRequestingController {
     public ResponseEntity<Void> stopTxRequests() {
         this.service.stopTransactionRequests();
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/machineId")
+    public ResponseEntity<String> getMachineId() {
+        return ResponseEntity.ok(this.properties.machineId);
     }
 }

@@ -86,6 +86,11 @@ public class TxCreationController {
         }
     }
 
+    @GetMapping("/machineId")
+    public ResponseEntity<String> getMachineId() {
+        return ResponseEntity.ok(this.config.getMachineId());
+    }
+
     private static class Account {
         public String privateKey;
         public String publicKey;

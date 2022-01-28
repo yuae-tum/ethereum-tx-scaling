@@ -18,10 +18,10 @@ services:
       placement:
         constraints:
           - "node.role==manager"
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1g
+      #resources:
+      #  limits:
+      #    cpus: '1'
+      #    memory: 1g
     volumes:
       - ./geth/node:/geth
 
@@ -37,10 +37,10 @@ services:
       placement:
         constraints:
           - "node.role==manager"
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1g
+      #resources:
+      #  limits:
+      #    cpus: '1'
+      #    memory: 1g
     environment:
       - TZ=Europe/Berlin
       - PORT=8080
@@ -55,16 +55,17 @@ services:
       dockerfile: Dockerfile
     ports:
       - target: 8090
-        mode: host
+        published: 8090
+        # mode: host
     deploy:
       replicas: 1
       placement:
-        # max_replicas_per_node: 1
+        max_replicas_per_node: 1
         constraints:
           - "node.labels.txcreation==yes"
       resources:
         limits:
-          cpus: '0.50'
+          cpus: '0.25'
           memory: 1g
     environment:
       - TZ=Europe/Berlin

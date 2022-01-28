@@ -79,14 +79,16 @@
         <div class="col-3 mb-3" *ngFor="let machine of requestMachines; let i = index">
             <mat-card class="bg-light">
                 <mat-card-title>Requesting Machine {{i+1}}</mat-card-title>
-                <mat-card-content class="d-flex flex-column mt-2">
+                <mat-card-content class="d-flex flex-column mt-3">
+
+                    <div *ngIf="machine.url">ID: {{machine.machineId}}</div>
 
                     <mat-card class="d-flex flex-column mt-3 mb-3" *ngIf="machine.url">
                         <div class="mb-3">
                             <b>Transaction-Requesting is currently <span [ngStyle]="{'color': machine.isRunning ? 'green' : 'red'}">{{machine.isRunning ? 'running' : 'stopped'}}</span></b>
                         </div>
-                        <div class="d-flex justify-content-between">
-                            <button mat-raised-button color="primary" (click)="startTxRequesting(machine)">Start</button>
+                        <div>
+                            <button class="me-2" mat-raised-button color="primary" (click)="startTxRequesting(machine)">Start</button>
                             <button mat-raised-button color="warn" (click)="stopTxRequesting(machine)">Stop</button>
                         </div>
                     </mat-card>
@@ -103,25 +105,15 @@
                     </mat-card>
 
                     <mat-card class="d-flex flex-column mb-3" *ngIf="machine.url">
-                        <div class="d-flex flex-wrap justify-content-between mb-3">
-                            <mat-form-field class="me-3">
-                                <mat-label>Request Interval</mat-label>
-                                <input #intervalInput matInput type="number">
-                            </mat-form-field>
-                            <button mat-raised-button color="primary" (click)="setTxInterval(machine, intervalInput.value)">Set Interval</button>
-                            <button mat-raised-button color="accent" (click)="getCurrentTxInterval(machine)">Fetch Interval</button>
-                        </div>
-                        <div>current interval: {{machine.interval}}</div>
-                    </mat-card>
-
-                    <mat-card class="d-flex flex-column mb-3" *ngIf="machine.url">
-                        <div class="d-flex flex-wrap justify-content-between mb-3">
-                            <mat-form-field class="me-3">
+                        <div>
+                            <mat-form-field>
                                 <mat-label>TX-Creation Machine URL</mat-label>
                                 <input #creationUrlInput2 matInput type="text">
                             </mat-form-field>
-                            <button mat-raised-button color="primary" (click)="setTxCreationMachineUrl(machine, creationUrlInput2.value)">Set Interval</button>
-                            <button mat-raised-button color="accent" (click)="getTxCreationMachineUrl(machine)">Fetch Interval</button>
+                        </div>
+                        <div class="mb-3">
+                            <button class="me-2" mat-raised-button color="primary" (click)="setTxCreationMachineUrl(machine, creationUrlInput2.value)">Set URL</button>
+                            <button mat-raised-button color="accent" (click)="getTxCreationMachineUrl(machine)">Fetch current URL</button>
                         </div>
                         <div>current url: {{machine.txCreationUrl}}</div>
                     </mat-card>

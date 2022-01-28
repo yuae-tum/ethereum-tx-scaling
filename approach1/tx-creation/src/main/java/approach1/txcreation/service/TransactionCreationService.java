@@ -78,6 +78,7 @@ public class TransactionCreationService {
     }
 
     public List<TxData> collectReceipts() {
+        System.out.println("collecting receipts of " + this.txRecords.size() + " TXs");
         LinkedList<TxData> receipts = this.txRecords;
         this.txRecords = null;
         return receipts;

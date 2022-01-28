@@ -27,7 +27,9 @@
                     <span>Machine {{i+1}}</span>
                     <button *ngIf="i === 0" mat-raised-button color="primary" (click)="synchronizeNonce(machine)">Synch nonce</button>
                 </mat-card-title>
-                <mat-card-content class="d-flex flex-column">
+                <mat-card-content class="d-flex flex-column mt-3">
+
+                    <div *ngIf="machine.url">ID: {{machine.machineId}}</div>
 
                     <mat-card class="d-flex flex-column mt-3 mb-3" *ngIf="machine.url">
                         <div class="mb-3">
@@ -76,17 +78,6 @@
                         <div class="text-break">contract address: {{machine.contractAddress}}</div>
                     </mat-card>
 
-                    <mat-card class="d-flex flex-column mb-3" *ngIf="machine.url">
-                        <div class="d-flex flex-wrap justify-content-between mb-3">
-                            <mat-form-field class="me-3">
-                                <mat-label>TX-Creation Interval</mat-label>
-                                <input #intervalInput matInput type="number">
-                            </mat-form-field>
-                            <button mat-raised-button color="primary" (click)="setTxInterval(machine, intervalInput.value)">Set Interval</button>
-                            <button mat-raised-button color="accent" (click)="getCurrentTxInterval(machine)">Fetch Interval</button>
-                        </div>
-                        <div>current interval: {{machine.interval}}</div>
-                    </mat-card>
                 </mat-card-content>
             </mat-card>
         </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {TxData} from '../../model/TxData';
@@ -16,6 +16,9 @@ export class Approach1Component implements OnInit {
 
     results: TxData[] = [];
 
+    @Input()
+    transactionMap: Map<string, [number, Date]>;
+
     constructor(private http: HttpClient, private snackbar: MatSnackBar) { }
 
     ngOnInit(): void {
@@ -23,9 +26,7 @@ export class Approach1Component implements OnInit {
     }
 
     setBaseUrlCreationMachine(url: string): void {
-        // @ts-ignore
-        this.http.get<string>(url + '/node-version', { responseType: 'text' }).subscribe(response => {
-            console.log(response);
+        this.http.get(url + '/node-version', { responseType: 'text' }).subscribe(response => {
             this.creatingMachine.url = url;
             console.log('geth node version: ' + response);
             this.snackbar.open('Connection successful');
@@ -60,9 +61,7 @@ export class Approach1Component implements OnInit {
     }
 
     getCurrentContractAddress(): void {
-        // @ts-ignore
-        this.http.get<string>(this.creatingMachine.url + '/contract', { responseType: 'text' }).subscribe(response => {
-            // @ts-ignore
+        this.http.get(this.creatingMachine.url + '/contract', { responseType: 'text' }).subscribe(response => {
             this.creatingMachine.contractAddress = response;
         }, error => {
             console.log(error);
@@ -71,9 +70,7 @@ export class Approach1Component implements OnInit {
     }
 
     setContractAddress(contractAddress: string): void {
-        // @ts-ignore
-        this.http.post<string>(this.creatingMachine.url + '/contract', contractAddress, { responseType: 'text' }).subscribe(response => {
-            // @ts-ignore
+        this.http.post(this.creatingMachine.url + '/contract', contractAddress, { responseType: 'text' }).subscribe(response => {
             this.creatingMachine.contractAddress = response;
         }, error => {
             console.log(error);
@@ -99,32 +96,21 @@ export class Approach1Component implements OnInit {
 
     setBaseUrlRequestingMachine(machine: RequestMachine, url: string): void {
         machine.url = url;
-        this.getCurrentTxInterval(machine);
+        this.getRequestingMachineId(machine);
         this.getTxCreationMachineUrl(machine);
     }
 
-    getCurrentTxInterval(machine: RequestMachine): void {
-        this.http.get<number>(machine.url + '/tx-interval').subscribe(response => {
-            machine.interval = response;
+    getRequestingMachineId(machine: RequestMachine): void {
+        this.http.get(machine.url + '/machineId', { responseType: 'text' }).subscribe(response => {
+            machine.machineId = response;
         }, error => {
             console.log(error);
-            this.snackbar.open('Error while fetching tx interval');
-        });
-    }
-
-    setTxInterval(machine: RequestMachine, interval: string): void {
-        this.http.post<number>(machine.url + '/tx-interval', parseInt(interval, 10)).subscribe(response => {
-            machine.interval = response;
-        }, error => {
-            console.log(error);
-            this.snackbar.open('Error while fetching tx interval');
+            this.snackbar.open('Error while fetching machine id');
         });
     }
 
     getTxCreationMachineUrl(machine: RequestMachine): void {
-        // @ts-ignore
-        this.http.get<string>(machine.url + '/txCreationMachineUrl', {responseType: 'text'}).subscribe(response => {
-            // @ts-ignore
+        this.http.get(machine.url + '/txCreationMachineUrl', {responseType: 'text'}).subscribe(response => {
             machine.txCreationUrl = response;
         }, error => {
             console.log(error);
@@ -133,9 +119,7 @@ export class Approach1Component implements OnInit {
     }
 
     setTxCreationMachineUrl(machine: RequestMachine, url: string): void {
-        // @ts-ignore
-        this.http.post<string>(machine.url + '/txCreationMachineUrl', url, {responseType: 'text'}).subscribe(response => {
-            // @ts-ignore
+        this.http.post(machine.url + '/txCreationMachineUrl', url, {responseType: 'text'}).subscribe(response => {
             machine.txCreationUrl = response;
         }, error => {
             console.log(error);
@@ -174,6 +158,18 @@ export class Approach1Component implements OnInit {
     fetchResults(): void {
         this.http.get<TxData[]>(this.creatingMachine.url + '/receipts').subscribe(response => {
             this.snackbar.open('Successful');
+            console.log('response: ');
+            console.log(response);
+            response.forEach(txData => {
+                txData.created = new Date(txData.created);
+                const blocknumberAndTimestamp = this.transactionMap.get(txData.txhash);
+                if (blocknumberAndTimestamp) {
+                    txData.succeeded = true;
+                    txData.blocknumber = blocknumberAndTimestamp[0];
+                    txData.mined = blocknumberAndTimestamp[1];
+                    txData.waitingTime = (new Date(txData.mined)).getTime() - (new Date(txData.created)).getTime();
+                }
+            });
             this.results.push(...response);
         }, error => {
             console.log(error);
@@ -199,10 +195,10 @@ export class Approach1Component implements OnInit {
 
 class RequestMachine {
     index: number;
+    machineId: string;
     url: string;
     txCreationUrl: string;
     isRunning = false;
-    interval: number;
 }
 
 class CreatingMachine {
