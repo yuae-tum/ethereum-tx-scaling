@@ -1,8 +1,8 @@
 import {Component, OnInit, Input} from '@angular/core';
-import {ethers} from 'ethers';
 import {HttpClient} from '@angular/common/http';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {TxData} from '../../model/TxData';
+import {EthereumService} from '../../services/ethereum.service';
 
 @Component({
     selector: 'app-approach2',
@@ -11,16 +11,18 @@ import {TxData} from '../../model/TxData';
 })
 export class Approach2Component implements OnInit {
 
-    @Input() provider: ethers.providers.WebSocketProvider;
-
     numberMachines = 1;
     machines: MachineData[] = [];
 
-    results: TxData[] = [];
+    @Input()
+    results = new Map<string, TxData>();
     waitingTimeDistributionXAxes: string[] = [];
     waitingTimeDistributionYAxes: number[] = [];
 
-    constructor(private http: HttpClient, private snackBar: MatSnackBar) { }
+    constructor(private http: HttpClient,
+                private snackBar: MatSnackBar,
+                private etherService: EthereumService) {
+    }
 
     ngOnInit(): void {
         this.updateMachines();
@@ -127,13 +129,7 @@ export class Approach2Component implements OnInit {
     }
 
     fetchResults(machine: MachineData): void {
-        this.http.get<TxData[]>(machine.url + '/receipts').subscribe(response => {
-            this.snackBar.open('Successful');
-            this.results.push(...response);
-        }, error => {
-            console.log(error);
-            this.snackBar.open('Error while fetching results');
-        });
+        this.etherService.fetchResults(machine.url + '/receipts', this.results);
     }
 
     startAllMachines(): void {
@@ -169,14 +165,14 @@ export class Approach2Component implements OnInit {
     }
 
     updateCharts(): void {
-        const waitingTimes = this.results.filter(tx => tx.succeeded).map(tx => Math.round(tx.waitingTime / 1000) * 1000);
+        /*const waitingTimes = this.results.filter(tx => tx.succeeded).map(tx => Math.round(tx.waitingTime / 1000) * 1000);
         const distribution: Map<number, number> = new Map<number, number>();
         waitingTimes.forEach(time => {
             const amount = distribution.get(time);
             distribution.set(time, amount == null ? 1 : amount + 1);
         });
         this.waitingTimeDistributionXAxes = Array.from(distribution.keys()).map(String);
-        this.waitingTimeDistributionYAxes = Array.from(distribution.values());
+        this.waitingTimeDistributionYAxes = Array.from(distribution.values());*/
     }
 
 }

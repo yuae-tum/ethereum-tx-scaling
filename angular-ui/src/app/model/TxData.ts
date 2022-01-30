@@ -3,9 +3,9 @@ export class TxData {
     txhash: string;
     nonce: number;
     succeeded: boolean;
-    created: Date;
+    created: number;
     blocknumber: number;
-    mined: Date;
+    mined: number;
     waitingTime: number;
     content: number;
 }

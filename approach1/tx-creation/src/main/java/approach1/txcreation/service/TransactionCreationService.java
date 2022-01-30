@@ -14,7 +14,6 @@ import org.web3j.abi.datatypes.Type;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.tx.RawTransactionManager;
 
 import java.io.IOException;
@@ -30,7 +29,6 @@ public class TransactionCreationService {
     private BigInteger currentNonce = BigInteger.ZERO;
 
     private LinkedList<TxData> txRecords = new LinkedList<>();
-    // private LinkedList<EthBlock.Block> minedBlocks = new LinkedList<>();
 
     private static final Object lock = new Object();
 
@@ -78,7 +76,12 @@ public class TransactionCreationService {
     }
 
     public List<TxData> collectReceipts() {
-        System.out.println("collecting receipts of " + this.txRecords.size() + " TXs");
+        log.info("collecting receipts of " + this.txRecords.size() + " TXs");
+        return txRecords;
+    }
+
+    public List<TxData> deleteReceipts() {
+        log.info("Deleting " + this.txRecords.size() + " receipts");
         LinkedList<TxData> receipts = this.txRecords;
         this.txRecords = null;
         return receipts;
@@ -96,6 +99,7 @@ public class TransactionCreationService {
         this.currentNonce = this.config.getWeb3jInstance()
                 .ethGetTransactionCount(this.config.getCredentials().getAddress(), DefaultBlockParameterName.PENDING)
                 .send().getTransactionCount();
+        log.info("current nonce: " + this.currentNonce.intValue());
     }
 
     private RawTransactionManager getTransactionManager() {

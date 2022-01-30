@@ -1,15 +1,13 @@
 package approach2.txcreation.web;
 
-import java.util.Date;
-
 public class TxData {
 
     public String txhash;
     public int nonce;
     public boolean succeeded;
-    public Date created;
+    public long created;
     public Integer blocknumber;
-    public Date mined;
+    public long mined;
     public Long waitingTime;
     public int content;
     public String machineId;

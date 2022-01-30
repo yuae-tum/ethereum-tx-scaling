@@ -25,7 +25,7 @@ public class TxRequestingThread extends Thread {
     public void run() {
         while(this.sendTxRequests) {
             TxData txData = new TxData();
-            txData.created = new Date();
+            txData.created = new Date().getTime();
             txData.content = this.random.nextInt(100);
             txData.machineId = this.properties.machineId;
             this.client.sendTransactionRequest(txData);

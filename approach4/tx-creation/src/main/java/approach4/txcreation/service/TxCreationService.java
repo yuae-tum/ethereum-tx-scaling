@@ -28,10 +28,10 @@ public class TxCreationService {
     private RawTransactionManager transactionManager;
 
     private TxCreationThread txCreationThread;
-    private Disposable blockListener;
+    //private Disposable blockListener;
 
     private LinkedList<TxData> txRecords = new LinkedList<>();
-    private LinkedList<EthBlock.Block> minedBlocks = new LinkedList<>();
+    //private LinkedList<EthBlock.Block> minedBlocks = new LinkedList<>();
 
     @Autowired
     public TxCreationService(Web3jConfiguration config, RedisAtomicLong nonceManager) {
@@ -56,7 +56,7 @@ public class TxCreationService {
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if(this.blockListener == null || this.blockListener.isDisposed()) {
+        /*if(this.blockListener == null || this.blockListener.isDisposed()) {
             this.blockListener = this.config.getWeb3jInstance().blockFlowable(false).subscribe(block -> {
                 log.info("new block with number {} mined", block.getBlock().getNumber().toString());
                 this.minedBlocks.add(block.getBlock());
@@ -64,7 +64,7 @@ public class TxCreationService {
                 log.error("error while listening for new blocks", error);
                 this.blockListener.dispose();
             });
-        }
+        }*/
 
         this.txCreationThread = new TxCreationThread(this.nonceManager, this.config, this.getTransactionManager(), this.txRecords);
         this.txCreationThread.start();
@@ -76,24 +76,25 @@ public class TxCreationService {
         }
     }
 
-    public List<TxData> collectReceipts() throws IOException {
+    public List<TxData> collectReceipts() {
+        log.info("Collecting receipts of " + this.txRecords.size() + " TXs");
+        return this.txRecords;
 
-        this.blockListener.dispose();
+        /*this.blockListener.dispose();
 
-        HashMap<String, Tuple2<Integer, Date>> blockData = new HashMap<>();
+        HashMap<String, Tuple2<Integer, Long>> blockData = new HashMap<>();
         this.minedBlocks.forEach(block -> {
-            Tuple2<Integer, Date> numberAndTimestamp = Tuples.of(block.getNumber().intValue(),
-                    new Date(block.getTimestamp().longValue() * 1000));
+            Tuple2<Integer, Long> numberAndTimestamp = Tuples.of(block.getNumber().intValue(), block.getTimestamp().longValue() * 1000);
             block.getTransactions().forEach(tx -> blockData.put(((EthBlock.TransactionHash) tx).get(), numberAndTimestamp));
         });
 
         for(TxData txData : this.txRecords) {
-            Tuple2<Integer, Date> numberAndTimestamp = blockData.get(txData.txhash);
+            Tuple2<Integer, Long> numberAndTimestamp = blockData.get(txData.txhash);
             if(numberAndTimestamp != null) {
                 txData.blocknumber = numberAndTimestamp.getT1();
                 txData.mined = numberAndTimestamp.getT2();
                 txData.succeeded = true;
-                txData.waitingTime = txData.mined.getTime() - txData.created.getTime();
+                txData.waitingTime = txData.mined - txData.created;
             }
         }
 
@@ -101,7 +102,18 @@ public class TxCreationService {
         this.minedBlocks = new LinkedList<>();
         this.txRecords = new LinkedList<>();
 
-        return result;
+        return result;*/
+    }
+
+    public List<TxData> deleteReceipts() {
+        if(this.txCreationThread == null || !this.txCreationThread.createTransactions) {
+            log.info("Collecting receipts of " + this.txRecords.size() + " TXs");
+            List<TxData> receipts = this.txRecords;
+            this.txRecords = new LinkedList<>();
+            return receipts;
+        } else {
+            throw  new RuntimeException("Can't delete receipts while tx creation is running");
+        }
     }
 
     public long synchronizeNonce() {
@@ -110,7 +122,9 @@ public class TxCreationService {
                     .ethGetTransactionCount(this.config.getCredentials().getAddress(), DefaultBlockParameterName.PENDING)
                     .send().getTransactionCount().longValue();
             this.nonceManager.set(nonce);
-            return this.nonceManager.get();
+            nonce = this.nonceManager.get();
+            log.info("current nonce: " + nonce);
+            return nonce;
         } catch (IOException e) {
             log.error("Error while synchronizing nonce", e);
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);

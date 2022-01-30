@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {TxData} from '../../model/TxData';
+import {EthereumService} from '../../services/ethereum.service';
 
 @Component({
     selector: 'app-approach1',
@@ -14,12 +15,12 @@ export class Approach1Component implements OnInit {
     requestMachines: RequestMachine[] = [];
     creatingMachine = new CreatingMachine();
 
-    results: TxData[] = [];
-
     @Input()
-    transactionMap: Map<string, [number, Date]>;
+    results = new Map<string, TxData>();
 
-    constructor(private http: HttpClient, private snackbar: MatSnackBar) { }
+    constructor(private http: HttpClient,
+                private snackbar: MatSnackBar,
+                private etherService: EthereumService) { }
 
     ngOnInit(): void {
         this.updateRequestMachines();
@@ -156,25 +157,7 @@ export class Approach1Component implements OnInit {
     }
 
     fetchResults(): void {
-        this.http.get<TxData[]>(this.creatingMachine.url + '/receipts').subscribe(response => {
-            this.snackbar.open('Successful');
-            console.log('response: ');
-            console.log(response);
-            response.forEach(txData => {
-                txData.created = new Date(txData.created);
-                const blocknumberAndTimestamp = this.transactionMap.get(txData.txhash);
-                if (blocknumberAndTimestamp) {
-                    txData.succeeded = true;
-                    txData.blocknumber = blocknumberAndTimestamp[0];
-                    txData.mined = blocknumberAndTimestamp[1];
-                    txData.waitingTime = (new Date(txData.mined)).getTime() - (new Date(txData.created)).getTime();
-                }
-            });
-            this.results.push(...response);
-        }, error => {
-            console.log(error);
-            this.snackbar.open('Error while fetching results');
-        });
+        this.etherService.fetchResults(this.creatingMachine.url + '/receipts', this.results);
     }
 
     downloadResultsAsJsonFile(): void {

@@ -75,7 +75,7 @@ public class TxCreationThread extends Thread {
                 BigInteger.ZERO, //value
                 data);
 
-        txData.created = new Date();
+        txData.created = new Date().getTime();
         this.config.getWeb3jInstance().ethSendRawTransaction(this.transactionManager.sign(rawTransaction))
                 .sendAsync().thenAccept(tx -> {
                     log.info("{} Transaction submitted, hash: {}", txData.nonce, tx.getTransactionHash());

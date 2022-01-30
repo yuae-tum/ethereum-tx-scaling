@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Random;
+import java.util.Date;
 
 @Service
 @Slf4j
@@ -27,7 +27,7 @@ public class DappClient {
         String url = this.getUrl();
         log.debug("Sending tx request to url " + url);
         this.client.post().uri(url).bodyValue(txData).retrieve().bodyToMono(Void.class)
-                .subscribe(x -> log.info("Submitted transaction (created at " + txData.created.toString() + ")"));
+                .subscribe(x -> log.info("Submitted transaction (created at " + new Date(txData.created) + ")"));
     }
 
     public String setUrl(String url) {

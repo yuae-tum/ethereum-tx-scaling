@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -74,12 +75,12 @@ public class Web3jController {
 
     @GetMapping("/receipts")
     public ResponseEntity<List<TxData>> getReceipts() {
-        try {
-            return ResponseEntity.ok(this.service.collectReceipts());
-        } catch (IOException e) {
-            log.error("error while collecting receipts", e);
-            return ResponseEntity.internalServerError().build();
-        }
+        return ResponseEntity.ok(this.service.collectReceipts());
+    }
+
+    @DeleteMapping("/receipts")
+    public ResponseEntity<List<TxData>> deleteReceipts() {
+        return ResponseEntity.ok(this.service.deleteReceipts());
     }
 
     @GetMapping("/machineId")
