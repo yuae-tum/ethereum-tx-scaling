@@ -52,9 +52,9 @@ public class TxCreationThread extends Thread {
                     log.warn("Stopping transaction creation...");
                     return;
                 }
-                if (!this.createTransactions) {
-                    return;
-                }
+            }
+            if (!this.createTransactions) {
+                return;
             }
         }
     }

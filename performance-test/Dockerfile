@@ -1,6 +1,7 @@
-FROM openjdk:11.0.13-jdk
+FROM maven:3.8.4-openjdk-17
 
+COPY ./ /app
 WORKDIR /app
-COPY target/performance-test.jar performance-test.jar
+RUN mvn clean install
 
-ENTRYPOINT ["java", "-jar", "./performance-test.jar"]
+ENTRYPOINT ["java", "-jar", "./target/performance-test.jar"]

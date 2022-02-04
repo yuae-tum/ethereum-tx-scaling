@@ -1,6 +1,8 @@
-FROM openjdk:11.0.13-jdk
+FROM maven:3.8.4-openjdk-17
 
+COPY ./ /app
 WORKDIR /app
-COPY target/tx-creation.jar tx-creation.jar
 
-ENTRYPOINT ["java", "-jar", "./tx-creation.jar"]
+RUN mvn clean install
+
+ENTRYPOINT ["java", "-jar", "./target/tx-creation.jar"]

@@ -3,6 +3,21 @@
 version: "3.8"
 services:
 
+  frontend:
+    image: 127.0.0.1:5000/angular-ui:approach1
+    build:
+      context: ./angular-ui
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    environment:
+      - TZ=Europe/Berlin
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - "node.role==manager"
+
   geth:
     image: 127.0.0.1:5000/geth-node:approach1
     build:

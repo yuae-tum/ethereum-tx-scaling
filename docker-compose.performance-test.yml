@@ -1,32 +1,15 @@
 version: "3.8"
 services:
 
-  test-service-1:
-    image: 127.0.0.1:5000/test-service-1
+  test-service:
+    image: 127.0.0.1:5000/test-service
     build:
       context: ./performance-test
       dockerfile: Dockerfile
+    command:
+      - "45"
     deploy:
+      replicas: 1
       resources:
         limits:
-          cpus: 0.3
-
-  test-service-2:
-    image: 127.0.0.1:5000/test-service-2
-    build:
-      context: ./performance-test
-      dockerfile: Dockerfile
-    deploy:
-      resources:
-        limits:
-          cpus: 0.2
-
-  test-service-3:
-    image: 127.0.0.1:5000/test-service-3
-    build:
-      context: ./performance-test
-      dockerfile: Dockerfile
-    deploy:
-      resources:
-        limits:
-          cpus: 0.1
+          cpus: "0.5"

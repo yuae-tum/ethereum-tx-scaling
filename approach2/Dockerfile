@@ -1,6 +1,8 @@
-FROM openjdk:11.0.13-jdk
+FROM maven:3.8.4-openjdk-17
 
+COPY ./ /app
 WORKDIR /app
-COPY target/approach2.jar approach2.jar
 
-ENTRYPOINT ["java", "-jar", "./approach2.jar"]
+RUN mvn clean install
+
+ENTRYPOINT ["java", "-jar", "./target/approach2.jar"]
