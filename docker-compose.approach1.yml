@@ -70,8 +70,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - target: 8090
-        published: 8090
-        # mode: host
+        # published: 8090
+        mode: host
     deploy:
       replicas: 1
       placement:
@@ -81,7 +81,6 @@ services:
       resources:
         limits:
           cpus: '0.25'
-          memory: 1g
     environment:
       - TZ=Europe/Berlin
       - PORT=8090

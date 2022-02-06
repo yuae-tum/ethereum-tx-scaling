@@ -31,10 +31,10 @@ services:
       placement:
         constraints:
           - "node.role==manager"
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1g
+      #resources:
+      #  limits:
+      #    cpus: '1'
+      #    memory: 1g
     volumes:
       - ./geth/node:/geth
 
@@ -50,10 +50,10 @@ services:
       placement:
         constraints:
           - "node.role==manager"
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1g
+      #resources:
+      #  limits:
+      #    cpus: '1'
+      #    memory: 1g
     environment:
       - TZ=Europe/Berlin
 
@@ -64,8 +64,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - target: 8080
-        published: 8080
-        # mode: host
+        # published: 8080
+        mode: host
     environment:
       - TZ=Europe/Berlin
       - PORT=8080
@@ -83,5 +83,4 @@ services:
           - "node.labels.txcreation==yes"
       resources:
         limits:
-          cpus: '0.50'
-          memory: 1g
+          cpus: '0.25'

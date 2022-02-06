@@ -26,8 +26,13 @@ public class DappClient {
     public void sendTransactionRequest(TxData txData) {
         String url = this.getUrl();
         log.debug("Sending tx request to url " + url);
-        this.client.post().uri(url).bodyValue(txData).retrieve().bodyToMono(Void.class)
-                .subscribe(x -> log.info("Submitted transaction (created at " + new Date(txData.created) + ")"));
+        this.client.post()
+                .uri(url)
+                .bodyValue(txData)
+                .retrieve()
+                .bodyToMono(String.class)
+                .defaultIfEmpty("Submitted transaction (created at " + new Date(txData.created) + ")")
+                .subscribe(log::info);
     }
 
     public String setUrl(String url) {

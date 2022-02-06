@@ -26,7 +26,7 @@ public class WebConfig implements WebFluxConfigurer {
     public WebClient getWebclient() {
         // increase maxConnections to 3000 (default 1000)
         HttpClient httpClient = HttpClient.create(
-                ConnectionProvider.create("connectionProvider", 3000)
+                ConnectionProvider.create("connectionProvider", 5000)
         );
         return WebClient.builder()
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
