@@ -80,7 +80,7 @@ services:
           - "node.labels.txcreation==yes"
       resources:
         limits:
-          cpus: '0.1'
+          cpus: '0.2'
     environment:
       - TZ=Europe/Berlin
       - PORT=8090

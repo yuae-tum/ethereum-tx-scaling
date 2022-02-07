@@ -83,4 +83,4 @@ services:
           - "node.labels.txcreation==yes"
       resources:
         limits:
-          cpus: '0.25'
+          cpus: '0.2'

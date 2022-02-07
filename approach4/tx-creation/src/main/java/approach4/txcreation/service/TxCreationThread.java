@@ -58,7 +58,7 @@ public class TxCreationThread extends Thread {
                 try {
                     this.submitTransaction(nonce);
                     this.numberSentTX++;
-                } catch (IOException e) {
+                } catch (Exception e) {
                     log.error("error while submitting transaction", e);
                     log.warn("Stopping transaction creation...");
                     this.threadpool.shutdown();
@@ -96,9 +96,9 @@ public class TxCreationThread extends Thread {
         );
 
         txData.created = new Date().getTime();
-
         txData.txhash = this.transactionManager.signAndSend(rawTransaction).getTransactionHash();
         this.txRecords.add(txData);
+
         /*this.config.getWeb3jInstance().ethSendRawTransaction(this.transactionManager.sign(rawTransaction))
                 .sendAsync().thenAccept(tx -> {
                     log.debug("{} Transaction submitted, hash: {}", txData.nonce, tx.getTransactionHash());

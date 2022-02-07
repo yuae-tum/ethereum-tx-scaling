@@ -40,8 +40,16 @@ public class TxRequestingThread extends Thread {
             txData.created = new Date().getTime();
             txData.content = this.random.nextInt(100);
             txData.machineId = this.properties.machineId;
-            this.client.sendTransactionRequest(txData);
-            this.numberSentTX++;
+            try {
+                this.client.sendTransactionRequest(txData);
+                this.numberSentTX++;
+            } catch (Exception e) {
+                log.error("Error while sending TX Request", e);
+                this.threadpool.shutdown();
+                this.sendTxRequests = false;
+                return;
+            }
+
         }
         this.threadpool.shutdown();
     }

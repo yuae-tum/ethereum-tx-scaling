@@ -67,12 +67,16 @@ public class TransactionCreationService {
                 BigInteger.ZERO, //value
                 data);
 
-        this.config.getWeb3jInstance().ethSendRawTransaction(this.getTransactionManager().sign(rawTransaction))
+        txData.txhash = this.getTransactionManager().signAndSend(rawTransaction).getTransactionHash();
+        log.info("{} Transaction submitted, hash: {}", txData.nonce, txData.txhash);
+        this.txRecords.add(txData);
+
+        /*this.config.getWeb3jInstance().ethSendRawTransaction(this.getTransactionManager().sign(rawTransaction))
                 .sendAsync().thenAccept(tx -> {
                     log.info("{} Transaction submitted, hash: {}", txData.nonce, tx.getTransactionHash());
                     txData.txhash = tx.getTransactionHash();
                     this.txRecords.add(txData);
-                });
+                });*/
     }
 
     public List<TxData> collectReceipts() {
