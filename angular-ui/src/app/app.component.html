@@ -2,8 +2,8 @@
     <div class="mt-5" style="width:95%">
         <div class="d-flex justify-content-center align-items-center">
             <mat-form-field class="w-50 me-4">
-                <mat-label>Eth-Node URL</mat-label>
-                <input matInput [(ngModel)]="nodeUrl" type="text">
+                <mat-label>Eth-Node Address</mat-label>
+                <input matInput [(ngModel)]="nodeAddress" type="text">
             </mat-form-field>
             <button class="me-3" mat-raised-button color="primary" (click)="connectToNode()">Connect</button>
             <button *ngIf="provider" mat-raised-button color="primary" (click)="toggleBlockListener()">{{listenForBlocks ? 'Stop Listening for Blocks' : 'Listen for new Blocks'}}</button>

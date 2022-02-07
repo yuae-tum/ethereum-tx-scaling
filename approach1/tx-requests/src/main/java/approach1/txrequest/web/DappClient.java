@@ -32,7 +32,7 @@ public class DappClient {
                 .retrieve()
                 .bodyToMono(String.class)
                 .defaultIfEmpty("Submitted transaction (created at " + new Date(txData.created) + ")")
-                .subscribe(log::info);
+                .subscribe(log::debug);
     }
 
     public String setUrl(String url) {

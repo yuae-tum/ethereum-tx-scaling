@@ -12,7 +12,7 @@ export class AppComponent {
 
     title = 'angular-ui';
 
-    nodeUrl = 'localhost:8546';
+    nodeAddress = 'localhost';
     provider: ethers.providers.WebSocketProvider;
 
     listenForBlocks = false;
@@ -27,10 +27,10 @@ export class AppComponent {
     }
 
     connectToNode(): void {
-        this.provider = new ethers.providers.WebSocketProvider('ws://' + this.nodeUrl);
+        this.provider = new ethers.providers.WebSocketProvider('ws://' + this.nodeAddress + ':8546');
         this.provider.ready.then(network => {
             this.snackBar.open('Connected to Node');
-            console.log('Node: ' + this.nodeUrl + '; network name: ' + network.name + '; chainId: ' + network.chainId);
+            console.log('Node: ' + this.nodeAddress + '; network name: ' + network.name + '; chainId: ' + network.chainId);
         }, error => {
             this.snackBar.open('Unable to connect');
             console.log('could not connect to node: ' + error);
@@ -54,7 +54,7 @@ export class AppComponent {
             this.provider.on('block', (blocknumber: number) => {
                 this.provider.getBlock(blocknumber).then(block => {
 
-                    ethers.utils.fetchJson('http://localhost:8545',
+                    ethers.utils.fetchJson('http://' + this.nodeAddress + ':8545',
                         '{"jsonrpc":"2.0","method":"txpool_status","params":[],"id":1}').then(response => {
                         const seconds = block.timestamp - startTimeSeconds;
                         this.pendingTx.set(seconds, parseInt(response.result.pending, 16));

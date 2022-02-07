@@ -14,6 +14,9 @@ import org.web3j.tx.RawTransactionManager;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class TxCreationThread extends Thread {
@@ -28,6 +31,9 @@ public class TxCreationThread extends Thread {
 
     private final Random random = new Random();
 
+    private int numberSentTX = 0;
+    private final ScheduledExecutorService threadpool = Executors.newScheduledThreadPool(1);
+
     public TxCreationThread(RedisAtomicLong nonceManager,
                             Web3jConfiguration config,
                             RawTransactionManager transactionManager,
@@ -41,19 +47,26 @@ public class TxCreationThread extends Thread {
 
     @Override
     public void run() {
+        this.threadpool.scheduleAtFixedRate(() -> {
+            log.info("created " + this.numberSentTX + " tx requests in 5 seconds");
+            this.numberSentTX = 0;
+        }, 0, 5, TimeUnit.SECONDS);
         while (true) {
             long nonce = this.nonceManager.getAndAdd(this.config.getContingentSize());
             long boundary = nonce + this.config.getContingentSize();
             for (; nonce < boundary; nonce++) {
                 try {
                     this.submitTransaction(nonce);
+                    this.numberSentTX++;
                 } catch (IOException e) {
                     log.error("error while submitting transaction", e);
                     log.warn("Stopping transaction creation...");
+                    this.threadpool.shutdown();
                     return;
                 }
             }
             if (!this.createTransactions) {
+                this.threadpool.shutdown();
                 return;
             }
         }
@@ -85,7 +98,7 @@ public class TxCreationThread extends Thread {
         txData.created = new Date().getTime();
         this.config.getWeb3jInstance().ethSendRawTransaction(this.transactionManager.sign(rawTransaction))
                 .sendAsync().thenAccept(tx -> {
-                    log.info("{} Transaction submitted, hash: {}", txData.nonce, tx.getTransactionHash());
+                    log.debug("{} Transaction submitted, hash: {}", txData.nonce, tx.getTransactionHash());
                     txData.txhash = tx.getTransactionHash();
                     this.txRecords.add(txData);
                 });
