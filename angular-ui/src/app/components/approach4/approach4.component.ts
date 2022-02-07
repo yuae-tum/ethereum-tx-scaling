@@ -193,7 +193,7 @@ export class Approach4Component implements OnInit {
         element.click(); // simulate click
         document.body.removeChild(element);
         */
-        console.log(this.results);
+        console.log(this.txPoolStatus);
         console.log(this.results);
     }
 

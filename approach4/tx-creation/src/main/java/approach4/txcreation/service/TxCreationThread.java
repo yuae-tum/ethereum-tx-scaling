@@ -96,11 +96,14 @@ public class TxCreationThread extends Thread {
         );
 
         txData.created = new Date().getTime();
-        this.config.getWeb3jInstance().ethSendRawTransaction(this.transactionManager.sign(rawTransaction))
+
+        txData.txhash = this.transactionManager.signAndSend(rawTransaction).getTransactionHash();
+        this.txRecords.add(txData);
+        /*this.config.getWeb3jInstance().ethSendRawTransaction(this.transactionManager.sign(rawTransaction))
                 .sendAsync().thenAccept(tx -> {
                     log.debug("{} Transaction submitted, hash: {}", txData.nonce, tx.getTransactionHash());
                     txData.txhash = tx.getTransactionHash();
                     this.txRecords.add(txData);
-                });
+                });*/
     }
 }
