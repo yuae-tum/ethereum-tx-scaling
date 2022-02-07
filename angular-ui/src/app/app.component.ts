@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {ethers} from 'ethers';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {TxData} from './model/TxData';
+import {TxPool} from './model/TxPool';
 
 @Component({
     selector: 'app-root',
@@ -18,10 +19,7 @@ export class AppComponent {
     listenForBlocks = false;
 
     results = new Map<string, TxData>();
-
-    minedTx = new Map<number, number>();
-    pendingTx = new Map<number, number>();
-    queuedTx = new Map<number, number>();
+    txPoolStatus: TxPool[] = [];
 
     constructor(private snackBar: MatSnackBar) {
     }
@@ -43,8 +41,7 @@ export class AppComponent {
         if (this.listenForBlocks) {
 
             this.provider.off('block');
-            this.pendingTx.clear();
-            this.queuedTx.clear();
+            this.txPoolStatus = [];
             this.listenForBlocks = false;
 
         } else {
@@ -56,10 +53,13 @@ export class AppComponent {
 
                     ethers.utils.fetchJson('http://' + this.nodeAddress + ':8545',
                         '{"jsonrpc":"2.0","method":"txpool_status","params":[],"id":1}').then(response => {
-                        const seconds = block.timestamp - startTimeSeconds;
-                        this.pendingTx.set(seconds, parseInt(response.result.pending, 16));
-                        this.queuedTx.set(seconds, parseInt(response.result.queued, 16));
-                        console.log('tx pool: pending=' + this.pendingTx.get(seconds) + ', queued=' + this.queuedTx.get(seconds));
+                        const txPool = new TxPool();
+                        txPool.mined = block.transactions.length;
+                        txPool.pending = parseInt(response.result.pending, 16);
+                        txPool.queued = parseInt(response.result.queued, 16);
+                        txPool.timestampSeconds = block.timestamp - startTimeSeconds;
+                        this.txPoolStatus.push(txPool);
+                        console.log('tx pool: pending=' + txPool.pending + ', queued=' + txPool.queued);
                     });
 
                     block.transactions.forEach(txHash => {

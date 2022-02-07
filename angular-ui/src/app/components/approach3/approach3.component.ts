@@ -3,6 +3,7 @@ import {TxData} from '../../model/TxData';
 import {HttpClient} from '@angular/common/http';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {EthereumService} from '../../services/ethereum.service';
+import {TxPool} from "../../model/TxPool";
 
 @Component({
     selector: 'app-approach3',
@@ -16,6 +17,10 @@ export class Approach3Component implements OnInit {
 
     @Input()
     results = new Map<string, TxData>();
+
+    @Input()
+    txPoolStatus: TxPool[];
+
     waitingTimeDistributionXAxes: string[] = [];
     waitingTimeDistributionYAxes: number[] = [];
 
@@ -168,9 +173,8 @@ export class Approach3Component implements OnInit {
         element.click(); // simulate click
         document.body.removeChild(element);
         */
+        console.log(this.txPoolStatus);
         console.log(this.results);
-        console.log(this.waitingTimeDistributionXAxes);
-        console.log(this.waitingTimeDistributionYAxes);
     }
 
     updateCharts(): void {

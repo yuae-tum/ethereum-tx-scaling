@@ -10,16 +10,16 @@
         </div>
         <mat-tab-group mat-align-tabs="center">
             <mat-tab label="Approach 1: Singleton TX-Creating Machine">
-                <app-approach1 [results]="results"></app-approach1>
+                <app-approach1 [results]="results" [txPoolStatus]="txPoolStatus"></app-approach1>
             </mat-tab>
             <mat-tab label="Approach 2: Distinct Account per TX-Creating Machine">
-                <app-approach2 [results]="results"></app-approach2>
+                <app-approach2 [results]="results" [txPoolStatus]="txPoolStatus"></app-approach2>
             </mat-tab>
             <mat-tab label="Approach 3: Singleton Nonce Manager">
-                <app-approach3 [results]="results"></app-approach3>
+                <app-approach3 [results]="results" [txPoolStatus]="txPoolStatus"></app-approach3>
             </mat-tab>
             <mat-tab label="Approach 4: Nonce Contingents">
-                <app-approach4 [results]="results"></app-approach4>
+                <app-approach4 [results]="results" [txPoolStatus]="txPoolStatus"></app-approach4>
             </mat-tab>
         </mat-tab-group>
     </div>

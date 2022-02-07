@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {TxData} from '../../model/TxData';
 import {EthereumService} from '../../services/ethereum.service';
+import {TxPool} from "../../model/TxPool";
 
 @Component({
     selector: 'app-approach1',
@@ -17,6 +18,9 @@ export class Approach1Component implements OnInit {
 
     @Input()
     results = new Map<string, TxData>();
+
+    @Input()
+    txPoolStatus: TxPool[];
 
     constructor(private http: HttpClient,
                 private snackbar: MatSnackBar,
@@ -171,6 +175,7 @@ export class Approach1Component implements OnInit {
         element.click(); // simulate click
         document.body.removeChild(element);
         */
+        console.log(this.txPoolStatus);
         console.log(this.results);
     }
 
