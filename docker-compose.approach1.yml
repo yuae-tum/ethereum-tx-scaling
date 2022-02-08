@@ -88,3 +88,22 @@ services:
       - PORT=8090
       - TX_CREATION_MACHINE_URL=http://tx-creation:8080
       - MACHINE_ID={{.Task.Name}}
+
+  test-service:
+    image: 127.0.0.1:5000/test-service
+    build:
+      context: ./performance-test
+      dockerfile: Dockerfile
+    command:
+      - "49"
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.txcreation==yes"
+      resources:
+        limits:
+          cpus: '0.95'
+        reservations:
+          cpus: '0.9'
