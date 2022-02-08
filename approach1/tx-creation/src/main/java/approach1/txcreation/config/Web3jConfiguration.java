@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.websocket.WebSocketService;
+import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
 
@@ -33,10 +33,8 @@ public class Web3jConfiguration {
     public Web3j getWeb3jInstance() {
         if(this.web3jInstance == null) {
             System.out.println("node url: " + this.appProperties.nodeUrl);
-            WebSocketService socket = new WebSocketService(this.appProperties.nodeUrl, true);
             try {
-                socket.connect();
-                this.web3jInstance = Web3j.build(socket);
+                this.web3jInstance = Web3j.build(new HttpService(this.appProperties.nodeUrl));
                 log.info("connected to geth node {}, {}", this.appProperties.nodeUrl, this.web3jInstance.web3ClientVersion().send().getWeb3ClientVersion());
             } catch (IOException e) {
                 log.error("connection to geth node failed", e);

@@ -70,7 +70,7 @@ services:
       - TZ=Europe/Berlin
       - PORT=8080
       - PRIVATE_KEY=bcc6d4aa1e277f085b3e11f2c1e6f14dd04e8108c823898e06fa5287c2bf1a92
-      - NODE_URL=ws://geth:8546
+      - NODE_URL=http://geth:8545
       - CONTRACT_ADDRESS=0x17cB057648a03dE335c773C7F6b7719c63A32eB7
       - MACHINE_ID={{.Task.Name}}
       - REDIS_HOST=nonce-manager
@@ -83,4 +83,6 @@ services:
           - "node.labels.txcreation==yes"
       resources:
         limits:
-          cpus: '0.2'
+          cpus: '0.05'
+        reservations:
+          cpus: '0.05'
