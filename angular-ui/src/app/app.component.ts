@@ -41,15 +41,13 @@ export class AppComponent {
         if (this.listenForBlocks) {
 
             this.provider.off('block');
-            this.txPoolStatus = [];
             this.listenForBlocks = false;
 
         } else {
 
-            const startTimeSeconds = Math.round((new Date().getTime() / 1000));
-
             this.provider.on('block', (blocknumber: number) => {
                 this.provider.getBlock(blocknumber).then(block => {
+                    const timestamp = block.timestamp * 1000;
 
                     ethers.utils.fetchJson('http://' + this.nodeAddress + ':8545',
                         '{"jsonrpc":"2.0","method":"txpool_status","params":[],"id":1}').then(response => {
@@ -57,9 +55,11 @@ export class AppComponent {
                         txPool.mined = block.transactions.length;
                         txPool.pending = parseInt(response.result.pending, 16);
                         txPool.queued = parseInt(response.result.queued, 16);
-                        txPool.timestampSeconds = block.timestamp - startTimeSeconds;
+                        txPool.timestamp = timestamp;
+                        txPool.blocknumber = block.number;
                         this.txPoolStatus.push(txPool);
-                        console.log('tx pool: pending=' + txPool.pending + ', queued=' + txPool.queued);
+                        console.log('new block ' + blocknumber + ' with ' + block.transactions.length + ' TXs, '
+                            + 'pending=' + txPool.pending + ', queued=' + txPool.queued);
                     });
 
                     block.transactions.forEach(txHash => {
@@ -67,11 +67,10 @@ export class AppComponent {
                         txData.txhash = txHash;
                         txData.succeeded = true;
                         txData.blocknumber = block.number;
-                        txData.mined = block.timestamp * 1000;
+                        txData.mined = timestamp;
                         this.results.set(txHash, txData);
                     });
 
-                    console.log('new block ' + blocknumber + ' with ' + block.transactions.length + ' TXs');
                 });
             });
             this.listenForBlocks = true;
