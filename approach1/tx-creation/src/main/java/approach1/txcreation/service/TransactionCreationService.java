@@ -30,7 +30,8 @@ public class TransactionCreationService {
 
     private LinkedList<TxData> txRecords = new LinkedList<>();
 
-    private static final Object lock = new Object();
+    private static final Object nonceLock = new Object();
+    private static final Object listLock = new Object();
 
     @Autowired
     public TransactionCreationService(Web3jConfiguration config) {
@@ -69,7 +70,9 @@ public class TransactionCreationService {
 
         txData.txhash = this.getTransactionManager().signAndSend(rawTransaction).getTransactionHash();
         log.info("{} Transaction submitted, hash: {}", txData.nonce, txData.txhash);
-        this.txRecords.add(txData);
+        synchronized (listLock) {
+            this.txRecords.add(txData);
+        }
 
         /*this.config.getWeb3jInstance().ethSendRawTransaction(this.getTransactionManager().sign(rawTransaction))
                 .sendAsync().thenAccept(tx -> {
@@ -92,7 +95,7 @@ public class TransactionCreationService {
     }
 
     private BigInteger getNonceAndIncrement() {
-        synchronized (lock) {
+        synchronized (nonceLock) {
             BigInteger nonce = this.currentNonce;
             this.currentNonce = this.currentNonce.add(BigInteger.ONE);
             return nonce;
