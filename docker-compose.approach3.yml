@@ -31,10 +31,6 @@ services:
       placement:
         constraints:
           - "node.role==manager"
-      #resources:
-      #  limits:
-      #    cpus: '1'
-      #    memory: 1g
     volumes:
       - ./geth/node:/geth
 
@@ -50,10 +46,6 @@ services:
       placement:
         constraints:
           - "node.role==manager"
-      #resources:
-      #  limits:
-      #    cpus: '1'
-      #    memory: 1g
     environment:
       - TZ=Europe/Berlin
 
@@ -81,8 +73,3 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.txcreation==yes"
-      resources:
-        limits:
-          cpus: '0.05'
-        reservations:
-          cpus: '0.05'
