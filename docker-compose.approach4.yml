@@ -31,8 +31,6 @@ services:
       placement:
         constraints:
           - "node.role==manager"
-    volumes:
-      - ./geth/node:/geth
 
   nonce-manager:
     image: 127.0.0.1:5000/nonce-manager:approach4
@@ -50,9 +48,9 @@ services:
       - TZ=Europe/Berlin
 
   tx-creation:
-    image: 127.0.0.1:5000/tx-creation-machine:approach4
+    image: 127.0.0.1:5000/tx-creating-machine:approach4
     build:
-      context: ./approach4/tx-creation
+      context: ./approach4
       dockerfile: Dockerfile
     ports:
       - target: 8080

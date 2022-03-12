@@ -3,7 +3,7 @@ import {TxData} from '../../model/TxData';
 import {HttpClient} from '@angular/common/http';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {EthereumService} from '../../services/ethereum.service';
-import {TxPool} from "../../model/TxPool";
+import {TxPool} from '../../model/TxPool';
 
 @Component({
     selector: 'app-approach4',
@@ -21,12 +21,10 @@ export class Approach4Component implements OnInit {
     @Input()
     txPoolStatus: TxPool[];
 
-    waitingTimeDistributionXAxes: string[] = [];
-    waitingTimeDistributionYAxes: number[] = [];
-
     constructor(private http: HttpClient,
                 private snackBar: MatSnackBar,
-                private etherService: EthereumService) { }
+                private etherService: EthereumService) {
+    }
 
     ngOnInit(): void {
         this.updateMachines();
@@ -50,7 +48,7 @@ export class Approach4Component implements OnInit {
     }
 
     setBaseUrl(machine: MachineData, url: string): void {
-        this.http.get(url + '/node-version', { responseType: 'text' }).subscribe(response => {
+        this.http.get(url + '/node-version', {responseType: 'text'}).subscribe(response => {
             console.log(response);
             machine.url = url;
             console.log('geth node version: ' + response);
@@ -66,7 +64,7 @@ export class Approach4Component implements OnInit {
     }
 
     getMachineId(machine: MachineData): void {
-        this.http.get(machine.url + '/machineId', { responseType: 'text' }).subscribe(response => {
+        this.http.get(machine.url + '/machineId', {responseType: 'text'}).subscribe(response => {
             machine.machineId = response;
         }, error => {
             console.log(error);
@@ -107,7 +105,7 @@ export class Approach4Component implements OnInit {
     }
 
     getCurrentContractAddress(machine: MachineData): void {
-        this.http.get(machine.url + '/contract', { responseType: 'text' }).subscribe(response => {
+        this.http.get(machine.url + '/contract', {responseType: 'text'}).subscribe(response => {
             machine.contractAddress = response;
         }, error => {
             console.log(error);
@@ -116,7 +114,7 @@ export class Approach4Component implements OnInit {
     }
 
     setContractAddress(machine: MachineData, contractAddress: string): void {
-        this.http.post(machine.url + '/contract', contractAddress, { responseType: 'text' }).subscribe(response => {
+        this.http.post(machine.url + '/contract', contractAddress, {responseType: 'text'}).subscribe(response => {
             machine.contractAddress = response;
         }, error => {
             console.log(error);
@@ -145,20 +143,20 @@ export class Approach4Component implements OnInit {
     startTxCreation(machine: MachineData): void {
         this.http.get(machine.url + '/start-tx-creation').subscribe(() => {
             machine.isRunning = true;
-            this.snackBar.open('Started transaction creation');
+            this.snackBar.open('Started TX creation on Machine ' + (machine.index + 1));
         }, error => {
             console.log(error);
-            this.snackBar.open('Error while starting transaction creation');
+            this.snackBar.open('Error while starting TX creation on Machine ' + (machine.index + 1));
         });
     }
 
     stopTxCreation(machine: MachineData): void {
         this.http.get(machine.url + '/stop-tx-creation').subscribe(() => {
             machine.isRunning = false;
-            this.snackBar.open('Stopped transaction creation');
+            this.snackBar.open('Stopped TX creation on Machine ' + (machine.index + 1));
         }, error => {
             console.log(error);
-            this.snackBar.open('Error while stopping transaction creation');
+            this.snackBar.open('Error while stopping TX creation on Machine ' + (machine.index + 1));
         });
     }
 
@@ -183,8 +181,11 @@ export class Approach4Component implements OnInit {
     }
 
     downloadResultsAsJsonFile(): void {
-        /*
-        const sJson = JSON.stringify(this.results);
+        const content = {
+            txData: [...this.results.values()],
+            miningNodeData: this.txPoolStatus
+        };
+        const sJson = JSON.stringify(content);
         const element = document.createElement('a');
         element.style.display = 'none';
         element.setAttribute('href', 'data:text/json;charset=UTF-8,' + encodeURIComponent(sJson));
@@ -192,20 +193,8 @@ export class Approach4Component implements OnInit {
         document.body.appendChild(element);
         element.click(); // simulate click
         document.body.removeChild(element);
-        */
         console.log(this.txPoolStatus);
-        console.log(this.results);
-    }
-
-    updateCharts(): void {
-        /*const waitingTimes = this.results.filter(tx => tx.succeeded).map(tx => Math.round(tx.waitingTime / 1000) * 1000);
-        const distribution: Map<number, number> = new Map<number, number>();
-        waitingTimes.forEach(time => {
-            const amount = distribution.get(time);
-            distribution.set(time, amount == null ? 1 : amount + 1);
-        });
-        this.waitingTimeDistributionXAxes = Array.from(distribution.keys()).map(String);
-        this.waitingTimeDistributionYAxes = Array.from(distribution.values());*/
+        console.log([...this.results.values()]);
     }
 
 }

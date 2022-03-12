@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {TxData} from '../../model/TxData';
 import {EthereumService} from '../../services/ethereum.service';
-import {TxPool} from "../../model/TxPool";
+import {TxPool} from '../../model/TxPool';
 
 @Component({
     selector: 'app-approach2',
@@ -20,9 +20,6 @@ export class Approach2Component implements OnInit {
 
     @Input()
     txPoolStatus: TxPool[];
-
-    waitingTimeDistributionXAxes: string[] = [];
-    waitingTimeDistributionYAxes: number[] = [];
 
     constructor(private http: HttpClient,
                 private snackBar: MatSnackBar,
@@ -116,20 +113,20 @@ export class Approach2Component implements OnInit {
     startTxCreation(machine: MachineData): void {
         this.http.get<void>(machine.url + '/start-tx-creation').subscribe(() => {
             machine.isRunning = true;
-            this.snackBar.open('Started transaction creation');
+            this.snackBar.open('Started TX creation on Machine ' + (machine.index + 1));
         }, error => {
             console.log(error);
-            this.snackBar.open('Error while starting transaction creation');
+            this.snackBar.open('Error while starting TX creation on Machine ' + (machine.index + 1));
         });
     }
 
     stopTxCreation(machine: MachineData): void {
         this.http.get(machine.url + '/stop-tx-creation').subscribe(() => {
             machine.isRunning = false;
-            this.snackBar.open('Stopped transaction creation');
+            this.snackBar.open('Stopped TX creation on Machine ' + (machine.index + 1));
         }, error => {
             console.log(error);
-            this.snackBar.open('Error while stopping transaction creation');
+            this.snackBar.open('Error while stopping TX creation on Machine ' + (machine.index + 1));
         });
     }
 
@@ -154,8 +151,11 @@ export class Approach2Component implements OnInit {
     }
 
     downloadResultsAsJsonFile(): void {
-        /*
-        const sJson = JSON.stringify(this.results);
+        const content = {
+            txData: [...this.results.values()],
+            miningNodeData: this.txPoolStatus
+        };
+        const sJson = JSON.stringify(content);
         const element = document.createElement('a');
         element.style.display = 'none';
         element.setAttribute('href', 'data:text/json;charset=UTF-8,' + encodeURIComponent(sJson));
@@ -163,20 +163,8 @@ export class Approach2Component implements OnInit {
         document.body.appendChild(element);
         element.click(); // simulate click
         document.body.removeChild(element);
-        */
         console.log(this.txPoolStatus);
-        console.log(this.results);
-    }
-
-    updateCharts(): void {
-        /*const waitingTimes = this.results.filter(tx => tx.succeeded).map(tx => Math.round(tx.waitingTime / 1000) * 1000);
-        const distribution: Map<number, number> = new Map<number, number>();
-        waitingTimes.forEach(time => {
-            const amount = distribution.get(time);
-            distribution.set(time, amount == null ? 1 : amount + 1);
-        });
-        this.waitingTimeDistributionXAxes = Array.from(distribution.keys()).map(String);
-        this.waitingTimeDistributionYAxes = Array.from(distribution.values());*/
+        console.log([...this.results.values()]);
     }
 
 }

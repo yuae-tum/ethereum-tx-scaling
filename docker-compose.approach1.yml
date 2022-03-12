@@ -33,13 +33,11 @@ services:
       placement:
         constraints:
           - "node.role==manager"
-    volumes:
-      - ./geth/node:/geth
 
-  tx-creation:
-    image: 127.0.0.1:5000/tx-creation-machine:approach1
+  middleware:
+    image: 127.0.0.1:5000/middleware:approach1
     build:
-      context: ./approach1/tx-creation
+      context: ./approach1/middleware
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
@@ -55,10 +53,10 @@ services:
       - NODE_URL=http://geth:8545
       - CONTRACT_ADDRESS=0x17cB057648a03dE335c773C7F6b7719c63A32eB7
 
-  tx-requesting:
-    image: 127.0.0.1:5000/tx-requesting-machine:approach1
+  tx-creation:
+    image: 127.0.0.1:5000/tx-creating-machine:approach1
     build:
-      context: ./approach1/tx-requests
+      context: ./approach1/tx-creation
       dockerfile: Dockerfile
     ports:
       - target: 8090
@@ -73,5 +71,5 @@ services:
     environment:
       - TZ=Europe/Berlin
       - PORT=8090
-      - TX_CREATION_MACHINE_URL=http://tx-creation:8080
+      - MIDDLEWARE_URL=http://middleware:8080
       - MACHINE_ID={{.Task.Name}}

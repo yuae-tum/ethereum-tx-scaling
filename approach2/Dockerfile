@@ -5,4 +5,4 @@ WORKDIR /app
 
 RUN mvn clean install
 
-ENTRYPOINT ["java", "-jar", "./target/approach2.jar"]
+ENTRYPOINT ["java", "-jar", "./target/tx-creation.jar"]

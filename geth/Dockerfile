@@ -1,6 +1,7 @@
 FROM ethereum/client-go:alltools-release-1.10
 
 COPY docker-container-files/* /
+COPY keystore/* /geth/keystore/
 COPY truffle /truffle
 
 RUN chmod a+x /startup.sh

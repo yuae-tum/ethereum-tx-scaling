@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.6.0</version>
+		<version>2.5.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>approach1.tx-creation</groupId>
+	<groupId>tx-scaling.approach1</groupId>
 	<artifactId>tx-creation</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>tx-creation</name>
-	<description>Singleton Creator</description>
+	<description>transaction creation, but without setting the nonce</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
@@ -22,11 +22,6 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-configuration-processor</artifactId>
-			<optional>true</optional>
-		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -42,22 +37,7 @@
 			<artifactId>reactor-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.web3j</groupId>
-			<artifactId>core</artifactId>
-			<version>5.0.0</version>
-		</dependency>
 	</dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.squareup.okhttp3</groupId>
-                <artifactId>okhttp</artifactId>
-                <version>4.9.0</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
 	<build>
 		<finalName>${project.artifactId}</finalName>

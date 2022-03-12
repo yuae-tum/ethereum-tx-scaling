@@ -31,11 +31,9 @@ services:
       placement:
         constraints:
           - "node.role==manager"
-    volumes:
-      - ./geth/node:/geth
 
   tx-creation:
-    image: 127.0.0.1:5000/tx-creation-machine:approach2
+    image: 127.0.0.1:5000/tx-creating-machine:approach2
     build:
       context: ./approach2
       dockerfile: Dockerfile

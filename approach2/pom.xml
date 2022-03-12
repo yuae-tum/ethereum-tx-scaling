@@ -8,10 +8,10 @@
 		<version>2.5.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>approach2</groupId>
-	<artifactId>approach2</artifactId>
+	<groupId>tx-scaling.approach2</groupId>
+	<artifactId>tx-creation</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>approach2</name>
+	<name>tx-creation</name>
 	<description>One Account per Machine</description>
 	<properties>
 		<java.version>11</java.version>

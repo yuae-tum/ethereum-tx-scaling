@@ -9,7 +9,7 @@
             <button *ngIf="provider" mat-raised-button color="primary" (click)="toggleBlockListener()">{{listenForBlocks ? 'Stop Listening for Blocks' : 'Listen for new Blocks'}}</button>
         </div>
         <mat-tab-group mat-align-tabs="center">
-            <mat-tab label="Approach 1: Singleton TX-Creating Machine">
+            <mat-tab label="Approach 1: Middleware for setting the Nonce">
                 <app-approach1 [results]="results" [txPoolStatus]="txPoolStatus"></app-approach1>
             </mat-tab>
             <mat-tab label="Approach 2: Distinct Account per TX-Creating Machine">

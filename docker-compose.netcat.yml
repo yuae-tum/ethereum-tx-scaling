@@ -1,9 +1,0 @@
-version: "3.8"
-services:
-
-  netcat:
-    image: subfuzion/netcat:latest
-    command: -vl 8090
-    ports:
-      - target: 8090
-        mode: host

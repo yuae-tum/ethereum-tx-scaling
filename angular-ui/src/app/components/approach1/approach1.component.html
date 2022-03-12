@@ -1,10 +1,10 @@
 <div class="d-flex flex-column justify-content-center p-5">
 
-    <!-- TX Creation Machine -->
+    <!-- Middleware -->
     <div>
         <mat-card class="bg-light">
             <mat-card-title class="d-flex align-items-center justify-content-between">
-                <div>TX Creation Machine</div>
+                <div>Middleware</div>
                 <div>
                     <button class="ms-5" mat-raised-button color="accent" (click)="fetchResults()">Fetch Results</button>
                     <button mat-raised-button color="primary" (click)="downloadResultsAsJsonFile()">Download results</button>
@@ -16,13 +16,13 @@
                     <div>
                         <mat-form-field>
                             <mat-label>Base URL</mat-label>
-                            <input #creationUrlInput1 matInput type="text">
+                            <input #middlewareUrlInput1 matInput type="text">
                         </mat-form-field>
                     </div>
                     <div class="mb-3">
-                        <button mat-raised-button color="primary" (click)="setBaseUrlCreationMachine(creationUrlInput1.value)">Set URL</button>
+                        <button mat-raised-button color="primary" (click)="setBaseUrlMiddleware(middlewareUrlInput1.value)">Set URL</button>
                     </div>
-                    <div>Base URL: {{creatingMachine.url}}</div>
+                    <div>Base URL: {{middleware.url}}</div>
                 </mat-card>
 
                 <mat-card class="d-flex flex-column flex-fill">
@@ -36,8 +36,8 @@
                         <button mat-raised-button color="primary" class="me-2" (click)="setAccount(privateKeyInput.value)">Set Account</button>
                         <button mat-raised-button color="accent" (click)="getCurrentAccount()">Fetch Account</button>
                     </div>
-                    <div class="text-break">account address: {{creatingMachine.accountAddress}}</div>
-                    <div class="text-break">private key: {{creatingMachine.privateKey}}</div>
+                    <div class="text-break">account address: {{middleware.accountAddress}}</div>
+                    <div class="text-break">private key: {{middleware.privateKey}}</div>
                 </mat-card>
 
                 <mat-card class="d-flex flex-column flex-fill">
@@ -51,21 +51,21 @@
                         <button mat-raised-button color="primary" class="me-2" (click)="setContractAddress(contractAddressInput.value)">Set Address</button>
                         <button mat-raised-button color="accent" (click)="getCurrentContractAddress()">Fetch Address</button>
                     </div>
-                    <div class="text-break">contract address: {{creatingMachine.contractAddress}}</div>
+                    <div class="text-break">contract address: {{middleware.contractAddress}}</div>
                 </mat-card>
 
             </mat-card-content>
         </mat-card>
     </div>
 
-    <!-- Number of TX Request Machines -->
+    <!-- Number of TX-Creating Machines -->
     <div class="d-flex justify-content-around mt-5 mb-4">
         <div class="d-flex align-items-center">
-            <div>Number of Machines requesting TX Creation: </div>
+            <div>Number of TX-Creating Machines: </div>
             <div class="w-25 ps-3">
                 <mat-form-field>
-                    <mat-label>Number of requesting machines</mat-label>
-                    <input matInput min="0" [(ngModel)]="numberRequestMachines" type="number" (change)="updateRequestMachines()">
+                    <mat-label>Number of TX-Creating Machines</mat-label>
+                    <input matInput min="0" [(ngModel)]="numberMachines" type="number" (change)="updateNumberOfMachines()">
                 </mat-form-field>
             </div>
         </div>
@@ -76,20 +76,20 @@
     </div>
 
     <div class="container-fluid row pe-0 ps-0">
-        <div class="col-3 mb-3" *ngFor="let machine of requestMachines; let i = index">
+        <div class="col-3 mb-3" *ngFor="let machine of machines; let i = index">
             <mat-card class="bg-light">
-                <mat-card-title>Requesting Machine {{i+1}}</mat-card-title>
+                <mat-card-title>Machine {{i+1}}</mat-card-title>
                 <mat-card-content class="d-flex flex-column mt-3">
 
                     <div *ngIf="machine.url">ID: {{machine.machineId}}</div>
 
                     <mat-card class="d-flex flex-column mt-3 mb-3" *ngIf="machine.url">
                         <div class="mb-3">
-                            <b>Transaction-Requesting is currently <span [ngStyle]="{'color': machine.isRunning ? 'green' : 'red'}">{{machine.isRunning ? 'running' : 'stopped'}}</span></b>
+                            <b>Transaction-Creation is currently <span [ngStyle]="{'color': machine.isRunning ? 'green' : 'red'}">{{machine.isRunning ? 'running' : 'stopped'}}</span></b>
                         </div>
                         <div>
-                            <button class="me-2" mat-raised-button color="primary" (click)="startTxRequesting(machine)">Start</button>
-                            <button mat-raised-button color="warn" (click)="stopTxRequesting(machine)">Stop</button>
+                            <button class="me-2" mat-raised-button color="primary" (click)="startTxCreation(machine)">Start</button>
+                            <button mat-raised-button color="warn" (click)="stopTxCreation(machine)">Stop</button>
                         </div>
                     </mat-card>
 
@@ -97,9 +97,9 @@
                         <div class="mb-3">
                             <mat-form-field class="me-3">
                                 <mat-label>Base URL</mat-label>
-                                <input #requestingUrlInput matInput type="text">
+                                <input #machineUrlInput matInput type="text">
                             </mat-form-field>
-                            <button mat-raised-button color="primary" (click)="setBaseUrlRequestingMachine(machine, requestingUrlInput.value)">Set URL</button>
+                            <button mat-raised-button color="primary" (click)="setBaseUrlTxCreatingMachine(machine, machineUrlInput.value)">Set URL</button>
                         </div>
                         <div>Base URL: {{machine.url}}</div>
                     </mat-card>
@@ -107,15 +107,15 @@
                     <mat-card class="d-flex flex-column mb-3" *ngIf="machine.url">
                         <div>
                             <mat-form-field>
-                                <mat-label>TX-Creation Machine URL</mat-label>
-                                <input #creationUrlInput2 matInput type="text">
+                                <mat-label>Middleware URL</mat-label>
+                                <input #middlewareUrlInput2 matInput type="text">
                             </mat-form-field>
                         </div>
                         <div class="mb-3">
-                            <button class="me-2" mat-raised-button color="primary" (click)="setTxCreationMachineUrl(machine, creationUrlInput2.value)">Set URL</button>
-                            <button mat-raised-button color="accent" (click)="getTxCreationMachineUrl(machine)">Fetch current URL</button>
+                            <button class="me-2" mat-raised-button color="primary" (click)="setMiddlewareUrl(machine, middlewareUrlInput2.value)">Set URL</button>
+                            <button mat-raised-button color="accent" (click)="getMiddlewareUrl(machine)">Fetch current URL</button>
                         </div>
-                        <div>current url: {{machine.txCreationUrl}}</div>
+                        <div>current url: {{machine.middlewareUrl}}</div>
                     </mat-card>
 
                 </mat-card-content>

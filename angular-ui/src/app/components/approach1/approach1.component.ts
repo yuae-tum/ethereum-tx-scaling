@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {TxData} from '../../model/TxData';
 import {EthereumService} from '../../services/ethereum.service';
-import {TxPool} from "../../model/TxPool";
+import {TxPool} from '../../model/TxPool';
 
 @Component({
     selector: 'app-approach1',
@@ -12,9 +12,9 @@ import {TxPool} from "../../model/TxPool";
 })
 export class Approach1Component implements OnInit {
 
-    numberRequestMachines = 1;
-    requestMachines: RequestMachine[] = [];
-    creatingMachine = new CreatingMachine();
+    numberMachines = 1;
+    machines: MachineData[] = [];
+    middleware = new Middleware();
 
     @Input()
     results = new Map<string, TxData>();
@@ -27,12 +27,12 @@ export class Approach1Component implements OnInit {
                 private etherService: EthereumService) { }
 
     ngOnInit(): void {
-        this.updateRequestMachines();
+        this.updateNumberOfMachines();
     }
 
-    setBaseUrlCreationMachine(url: string): void {
+    setBaseUrlMiddleware(url: string): void {
         this.http.get(url + '/node-version', { responseType: 'text' }).subscribe(response => {
-            this.creatingMachine.url = url;
+            this.middleware.url = url;
             console.log('geth node version: ' + response);
             this.snackbar.open('Connection successful');
             this.getCurrentAccount();
@@ -44,10 +44,10 @@ export class Approach1Component implements OnInit {
     }
 
     getCurrentAccount(): void {
-        this.http.get<any>(this.creatingMachine.url + '/account').subscribe(response => {
-            this.creatingMachine.accountAddress = response.address;
-            this.creatingMachine.publicKey = response.publicKey;
-            this.creatingMachine.privateKey = response.privateKey;
+        this.http.get<any>(this.middleware.url + '/account').subscribe(response => {
+            this.middleware.accountAddress = response.address;
+            this.middleware.publicKey = response.publicKey;
+            this.middleware.privateKey = response.privateKey;
         }, error => {
             console.log(error);
             this.snackbar.open('Error while fetching Account');
@@ -55,10 +55,10 @@ export class Approach1Component implements OnInit {
     }
 
     setAccount(privateKey: string): void {
-        this.http.post<any>(this.creatingMachine.url + '/account', privateKey).subscribe(response => {
-            this.creatingMachine.accountAddress = response.address;
-            this.creatingMachine.publicKey = response.publicKey;
-            this.creatingMachine.privateKey = response.privateKey;
+        this.http.post<any>(this.middleware.url + '/account', privateKey).subscribe(response => {
+            this.middleware.accountAddress = response.address;
+            this.middleware.publicKey = response.publicKey;
+            this.middleware.privateKey = response.privateKey;
         }, error => {
             console.log(error);
             this.snackbar.open('Error while setting Account');
@@ -66,8 +66,8 @@ export class Approach1Component implements OnInit {
     }
 
     getCurrentContractAddress(): void {
-        this.http.get(this.creatingMachine.url + '/contract', { responseType: 'text' }).subscribe(response => {
-            this.creatingMachine.contractAddress = response;
+        this.http.get(this.middleware.url + '/contract', { responseType: 'text' }).subscribe(response => {
+            this.middleware.contractAddress = response;
         }, error => {
             console.log(error);
             this.snackbar.open('Error while fetching contract address');
@@ -75,37 +75,37 @@ export class Approach1Component implements OnInit {
     }
 
     setContractAddress(contractAddress: string): void {
-        this.http.post(this.creatingMachine.url + '/contract', contractAddress, { responseType: 'text' }).subscribe(response => {
-            this.creatingMachine.contractAddress = response;
+        this.http.post(this.middleware.url + '/contract', contractAddress, { responseType: 'text' }).subscribe(response => {
+            this.middleware.contractAddress = response;
         }, error => {
             console.log(error);
             this.snackbar.open('Error while setting contract address');
         });
     }
 
-    updateRequestMachines(): void {
+    updateNumberOfMachines(): void {
         // tslint:disable-next-line:triple-equals
-        if (this.numberRequestMachines == undefined || this.numberRequestMachines < 0) {
+        if (this.numberMachines == undefined || this.numberMachines < 0) {
             return;
         }
-        while (this.requestMachines.length !== this.numberRequestMachines) {
-            if (this.requestMachines.length < this.numberRequestMachines) {
-                const machine = new RequestMachine();
-                machine.index = this.requestMachines.length;
-                this.requestMachines.push(machine);
+        while (this.machines.length !== this.numberMachines) {
+            if (this.machines.length < this.numberMachines) {
+                const machine = new MachineData();
+                machine.index = this.machines.length;
+                this.machines.push(machine);
             } else {
-                this.requestMachines.pop();
+                this.machines.pop();
             }
         }
     }
 
-    setBaseUrlRequestingMachine(machine: RequestMachine, url: string): void {
+    setBaseUrlTxCreatingMachine(machine: MachineData, url: string): void {
         machine.url = url;
-        this.getRequestingMachineId(machine);
-        this.getTxCreationMachineUrl(machine);
+        this.getTxCreatingMachineId(machine);
+        this.getMiddlewareUrl(machine);
     }
 
-    getRequestingMachineId(machine: RequestMachine): void {
+    getTxCreatingMachineId(machine: MachineData): void {
         this.http.get(machine.url + '/machineId', { responseType: 'text' }).subscribe(response => {
             machine.machineId = response;
         }, error => {
@@ -114,59 +114,62 @@ export class Approach1Component implements OnInit {
         });
     }
 
-    getTxCreationMachineUrl(machine: RequestMachine): void {
+    getMiddlewareUrl(machine: MachineData): void {
         this.http.get(machine.url + '/txCreationMachineUrl', {responseType: 'text'}).subscribe(response => {
-            machine.txCreationUrl = response;
+            machine.middlewareUrl = response;
         }, error => {
             console.log(error);
             this.snackbar.open('Error while fetching url');
         });
     }
 
-    setTxCreationMachineUrl(machine: RequestMachine, url: string): void {
+    setMiddlewareUrl(machine: MachineData, url: string): void {
         this.http.post(machine.url + '/txCreationMachineUrl', url, {responseType: 'text'}).subscribe(response => {
-            machine.txCreationUrl = response;
+            machine.middlewareUrl = response;
         }, error => {
             console.log(error);
             this.snackbar.open('Error while updating url');
         });
     }
 
-    startTxRequesting(machine: RequestMachine): void {
+    startTxCreation(machine: MachineData): void {
         this.http.get<void>(machine.url + '/start-tx-creation').subscribe(reponse => {
             machine.isRunning = true;
-            this.snackbar.open('Started TX Requesting on Machine ' + machine.index);
+            this.snackbar.open('Started TX creation on Machine ' + (machine.index + 1));
         }, error => {
             console.log(error);
-            this.snackbar.open('Error while starting TX Requesting on Machine ' + machine.index);
+            this.snackbar.open('Error while starting TX creation on Machine ' + (machine.index + 1));
         });
     }
 
-    stopTxRequesting(machine: RequestMachine): void {
+    stopTxCreation(machine: MachineData): void {
         this.http.get<void>(machine.url + '/stop-tx-creation').subscribe(reponse => {
             machine.isRunning = false;
-            this.snackbar.open('Stopped TX Requesting on Machine ' + machine.index);
+            this.snackbar.open('Stopped TX creation on Machine ' + (machine.index + 1));
         }, error => {
             console.log(error);
-            this.snackbar.open('Error while stopping TX Requesting on Machine ' + machine.index);
+            this.snackbar.open('Error while stopping TX creation on Machine ' + (machine.index + 1));
         });
     }
 
     startAllMachines(): void {
-        this.requestMachines.forEach(machine => this.startTxRequesting(machine));
+        this.machines.forEach(machine => this.startTxCreation(machine));
     }
 
     stopAllMachines(): void {
-        this.requestMachines.forEach(machine => this.stopTxRequesting(machine));
+        this.machines.forEach(machine => this.stopTxCreation(machine));
     }
 
     fetchResults(): void {
-        this.etherService.fetchResults(this.creatingMachine.url + '/receipts', this.results);
+        this.etherService.fetchResults(this.middleware.url + '/receipts', this.results);
     }
 
     downloadResultsAsJsonFile(): void {
-        /*
-        const sJson = JSON.stringify(this.results);
+        const content = {
+            txData: [...this.results.values()],
+            miningNodeData: this.txPoolStatus
+        };
+        const sJson = JSON.stringify(content);
         const element = document.createElement('a');
         element.style.display = 'none';
         element.setAttribute('href', 'data:text/json;charset=UTF-8,' + encodeURIComponent(sJson));
@@ -174,22 +177,21 @@ export class Approach1Component implements OnInit {
         document.body.appendChild(element);
         element.click(); // simulate click
         document.body.removeChild(element);
-        */
         console.log(this.txPoolStatus);
-        console.log(this.results);
+        console.log([...this.results.values()]);
     }
 
 }
 
-class RequestMachine {
+class MachineData {
     index: number;
     machineId: string;
     url: string;
-    txCreationUrl: string;
+    middlewareUrl: string;
     isRunning = false;
 }
 
-class CreatingMachine {
+class Middleware {
     url: string;
     privateKey: string;
     publicKey: string;
