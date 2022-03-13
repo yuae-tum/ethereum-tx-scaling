@@ -31,17 +31,25 @@ public class TxCreationThread extends Thread {
 
     @Override
     public void run() {
+
+        // logs number of TX created during the last 5 seconds
         this.threadpool.scheduleAtFixedRate(() -> {
             log.info("created " + this.numberSentTX + " tx requests in 5 seconds");
             this.numberSentTX = 0;
         }, 0, 5, TimeUnit.SECONDS);
+
+        // create transactions until stopped
         while(this.sendTxRequests) {
+
+            // create new transaction
             TxData txData = new TxData();
             txData.created = new Date().getTime();
             txData.content = this.random.nextInt(100);
             txData.machineId = this.properties.machineId;
+
             try {
-                this.client.sendTransactionRequest(txData);
+                // forward transaction to middleware
+                this.client.forwardTxToMiddleware(txData);
                 this.numberSentTX++;
             } catch (Exception e) {
                 log.error("Error while sending TX Request", e);
@@ -49,8 +57,8 @@ public class TxCreationThread extends Thread {
                 this.sendTxRequests = false;
                 return;
             }
-
         }
+
         this.threadpool.shutdown();
     }
 }

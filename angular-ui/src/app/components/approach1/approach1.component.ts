@@ -115,7 +115,7 @@ export class Approach1Component implements OnInit {
     }
 
     getMiddlewareUrl(machine: MachineData): void {
-        this.http.get(machine.url + '/txCreationMachineUrl', {responseType: 'text'}).subscribe(response => {
+        this.http.get(machine.url + '/middlewareUrl', {responseType: 'text'}).subscribe(response => {
             machine.middlewareUrl = response;
         }, error => {
             console.log(error);
@@ -124,7 +124,7 @@ export class Approach1Component implements OnInit {
     }
 
     setMiddlewareUrl(machine: MachineData, url: string): void {
-        this.http.post(machine.url + '/txCreationMachineUrl', url, {responseType: 'text'}).subscribe(response => {
+        this.http.post(machine.url + '/middlewareUrl', url, {responseType: 'text'}).subscribe(response => {
             machine.middlewareUrl = response;
         }, error => {
             console.log(error);

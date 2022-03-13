@@ -26,7 +26,7 @@ public class MiddlewareService {
 
     private final Web3jConfiguration config;
     private RawTransactionManager transactionManager;
-    private BigInteger currentNonce = BigInteger.ZERO;
+    private BigInteger currentNonce;
 
     private LinkedList<TxData> txRecords = new LinkedList<>();
 
@@ -38,6 +38,10 @@ public class MiddlewareService {
         this.config = config;
     }
 
+    /**
+     * returns the version of the Ethereum Node
+     * @return version of the Ethereum Node
+     */
     public String getNodeVersion() {
         Web3j web3j = this.config.getWeb3jInstance();
         try {
@@ -49,6 +53,11 @@ public class MiddlewareService {
         }
     }
 
+    /**
+     * adds the nonce to a transaction object, signs it, and forwards it to the Ethereum Network
+     * @param txData the transaction object
+     * @throws IOException if fetching of the current nonce or forwarding of the transaction fails
+     */
     public void submitTransaction(TxData txData) throws IOException {
 
         BigInteger nonce = this.getNonceAndIncrement();
@@ -73,20 +82,21 @@ public class MiddlewareService {
         synchronized (listLock) {
             this.txRecords.add(txData);
         }
-
-        /*this.config.getWeb3jInstance().ethSendRawTransaction(this.getTransactionManager().sign(rawTransaction))
-                .sendAsync().thenAccept(tx -> {
-                    log.info("{} Transaction submitted, hash: {}", txData.nonce, tx.getTransactionHash());
-                    txData.txhash = tx.getTransactionHash();
-                    this.txRecords.add(txData);
-                });*/
     }
 
+    /**
+     * returns the collected data about all created transactions
+     * @return list of transaction information
+     */
     public List<TxData> collectReceipts() {
         log.info("collecting receipts of " + this.txRecords.size() + " TXs");
         return txRecords;
     }
 
+    /**
+     * clears the collected data about the created transactions
+     * @return list of transaction information
+     */
     public List<TxData> deleteReceipts() {
         log.info("Deleting " + this.txRecords.size() + " receipts");
         LinkedList<TxData> receipts = this.txRecords;
@@ -94,14 +104,25 @@ public class MiddlewareService {
         return receipts;
     }
 
-    private BigInteger getNonceAndIncrement() {
+    /**
+     * returns value of the local nonce counter and increases it by one
+     * @return current nonce
+     */
+    private BigInteger getNonceAndIncrement() throws IOException {
         synchronized (nonceLock) {
+            if(this.currentNonce == null) {
+                this.fetchCurrentNonce();
+            }
             BigInteger nonce = this.currentNonce;
             this.currentNonce = this.currentNonce.add(BigInteger.ONE);
             return nonce;
         }
     }
 
+    /**
+     * fetches the current account nonce from the Ethereum Network and updates the local nonce counter
+     * @throws IOException if the fetching of the nonce fails
+     */
     private void fetchCurrentNonce() throws IOException {
         this.currentNonce = this.config.getWeb3jInstance()
                 .ethGetTransactionCount(this.config.getCredentials().getAddress(), DefaultBlockParameterName.PENDING)
@@ -109,6 +130,11 @@ public class MiddlewareService {
         log.info("current nonce: " + this.currentNonce.intValue());
     }
 
+    /**
+     * returns an instance of the web3j-RawTransactionManager, creates a new one of non exists yet;
+     * the RawTransactionManager can be used to sign transactions and send them to the Ethereum Network
+     * @return web3j-RawTransactionManager
+     */
     private RawTransactionManager getTransactionManager() {
         if(this.transactionManager == null) {
             String chainId;

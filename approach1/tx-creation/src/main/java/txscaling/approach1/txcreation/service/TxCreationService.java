@@ -23,6 +23,9 @@ public class TxCreationService {
         this.properties = properties;
     }
 
+    /**
+     * starts a new thread that continuously creates transactions
+     */
     public void startTransactionRequests() {
 
         if(this.txCreationThread != null && this.txCreationThread.isAlive()) {
@@ -34,6 +37,9 @@ public class TxCreationService {
         this.txCreationThread.start();
     }
 
+    /**
+     * stops the thread that creates transactions
+     */
     public void stopTransactionRequests() {
         if(this.txCreationThread != null) {
             this.txCreationThread.sendTxRequests = false;

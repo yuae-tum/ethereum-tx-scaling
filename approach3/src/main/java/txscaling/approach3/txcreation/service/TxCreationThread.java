@@ -1,6 +1,6 @@
 package txscaling.approach3.txcreation.service;
 
-import txscaling.approach2.txcreation.contracts.DappBackend;
+import txscaling.approach3.txcreation.contracts.DappBackend;
 import txscaling.approach3.txcreation.config.Web3jConfiguration;
 import txscaling.approach3.txcreation.web.TxData;
 import lombok.extern.slf4j.Slf4j;
@@ -47,10 +47,14 @@ public class TxCreationThread extends Thread {
 
     @Override
     public void run() {
+
+        // logs number of TX created during the last 5 seconds
         this.threadpool.scheduleAtFixedRate(() -> {
             log.info("created " + this.numberSentTX + " tx requests in 5 seconds");
             this.numberSentTX = 0;
         }, 0, 5, TimeUnit.SECONDS);
+
+        // create transactions until stopped
         while (this.createTransactions) {
             try {
                 this.submitTransaction();
@@ -65,10 +69,16 @@ public class TxCreationThread extends Thread {
         this.threadpool.shutdown();
     }
 
+    /**
+     * creates a new transaction and forwards it to the Ethereum Network
+     * @throws IOException if forwarding of the transaction fails
+     */
     private void submitTransaction() throws IOException {
 
         TxData txData = new TxData();
         txData.machineId = this.config.getMachineId();
+
+        // fetch current nonce from the Nonce Manager and increase it by one
         txData.nonce = this.nonceManager.getAndIncrement();
         txData.content = random.nextInt(100);
 
@@ -90,12 +100,5 @@ public class TxCreationThread extends Thread {
         txData.created = new Date().getTime();
         txData.txhash = this.transactionManager.signAndSend(rawTransaction).getTransactionHash();
         this.txRecords.add(txData);
-
-        /*this.config.getWeb3jInstance().ethSendRawTransaction(this.transactionManager.sign(rawTransaction))
-                .sendAsync().thenAccept(tx -> {
-                    log.debug("{} Transaction submitted, hash: {}", txData.nonce, tx.getTransactionHash());
-                    txData.txhash = tx.getTransactionHash();
-                    this.txRecords.add(txData);
-                });*/
     }
 }

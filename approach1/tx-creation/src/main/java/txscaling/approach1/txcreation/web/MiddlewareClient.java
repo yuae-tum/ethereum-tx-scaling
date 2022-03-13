@@ -12,7 +12,7 @@ import java.util.Date;
 @Slf4j
 public class MiddlewareClient {
 
-    private String txCreationMachineUrl;
+    private String middlewareUrl;
 
     private final WebClient client;
     private final AppProperties properties;
@@ -23,9 +23,13 @@ public class MiddlewareClient {
         this.properties = properties;
     }
 
-    public void sendTransactionRequest(TxData txData) {
+    /**
+     * forwards a transaction object to the middlware
+     * @param txData the transaction object
+     */
+    public void forwardTxToMiddleware(TxData txData) {
         String url = this.getUrl();
-        log.debug("Sending tx request to url " + url);
+        log.debug("forwarding tx to middleware: " + url);
         String response = this.client.post()
                 .uri(url)
                 .bodyValue(txData)
@@ -36,17 +40,26 @@ public class MiddlewareClient {
         log.debug(response);
     }
 
+    /**
+     * sets the middleware's URL
+     * @param url new URL
+     * @return updated URL
+     */
     public String setUrl(String url) {
-        this.txCreationMachineUrl = url + "/submit-tx";
-        log.info("Set URL for transaction creating machine: " + this.txCreationMachineUrl);
-        return this.txCreationMachineUrl;
+        this.middlewareUrl = url + "/submit-tx";
+        log.info("Set URL for middleware: " + this.middlewareUrl);
+        return this.middlewareUrl;
     }
 
+    /**
+     * returns the middleware's URL
+     * @return current URL
+     */
     public String getUrl() {
-        if(this.txCreationMachineUrl == null) {
-            this.txCreationMachineUrl = this.properties.middlewareUrl + "/submit-tx";
-            log.info("Set URL for transaction creating machine: " + this.txCreationMachineUrl);
+        if(this.middlewareUrl == null) {
+            this.middlewareUrl = this.properties.middlewareUrl + "/submit-tx";
+            log.info("Set URL for middleware: " + this.middlewareUrl);
         }
-        return this.txCreationMachineUrl;
+        return this.middlewareUrl;
     }
 }

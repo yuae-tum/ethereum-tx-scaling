@@ -1,6 +1,6 @@
 package txscaling.approach4.txcreation.config;
 
-import txscaling.approach2.txcreation.contracts.DappBackend;
+import txscaling.approach4.txcreation.contracts.DappBackend;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,6 +31,12 @@ public class Web3jConfiguration {
         this.appProperties = appProperties;
     }
 
+
+    /**
+     * returns the web3j instance, creates a new instance if there is non yet;
+     * the web3j instance acts as an interface to the Ethereum Node
+     * @return the web3j instance
+     */
     public Web3j getWeb3jInstance() {
         if(this.web3jInstance == null) {
             System.out.println("node url: " + this.appProperties.nodeUrl);
@@ -45,6 +51,11 @@ public class Web3jConfiguration {
         return this.web3jInstance;
     }
 
+    /**
+     * returns the web3j-credentials object, creates one if there is non yet;
+     * the web3j-credentials object represents the Ethereum account used to issue transactions
+     * @return web3j-credentials object
+     */
     public Credentials getCredentials() {
         if(this.credentials == null) {
             this.credentials = Credentials.create(this.appProperties.privateKey);
@@ -56,6 +67,11 @@ public class Web3jConfiguration {
         return this.credentials;
     }
 
+    /**
+     * updates the web3j-credentials object, which represents an Ethereum used to issue transactions
+     * @param privateKey account's private key
+     * @return web3j-credentials object
+     */
     public Credentials setCredentials(String privateKey) {
         this.credentials = Credentials.create(privateKey);
         log.info("using account with address: {},\npublic key: {},\nprivate key: {}",
@@ -70,6 +86,10 @@ public class Web3jConfiguration {
         return this.credentials;
     }
 
+    /**
+     * returns the address of the Smart Contract; creates a new representation of the Smart Contract if there is non yet
+     * @return address of the Smart Contract
+     */
     public String getSmartContractAddress() {
         if(this.contract == null) {
             this.contract = DappBackend.load(this.appProperties.contractAddress, this.getWeb3jInstance(), this.getCredentials(), this.gasProvider);
@@ -78,12 +98,21 @@ public class Web3jConfiguration {
         return this.contract.getContractAddress();
     }
 
+    /**
+     * updates the address of the Smart Contract
+     * @param contractAddress new address
+     * @return updated address
+     */
     public String setSmartContractAddress(String contractAddress) {
         this.contract = DappBackend.load(contractAddress, this.getWeb3jInstance(), this.getCredentials(), this.gasProvider);
         log.info("created contract reference to contract at address: " + this.contract.getContractAddress());
         return this.contract.getContractAddress();
     }
 
+    /**
+     * returns the nonce contingents' size
+     * @return current size
+     */
     public int getContingentSize() {
         if(this.contingentSize == -1) {
             this.contingentSize = this.appProperties.contingentSize;
@@ -95,6 +124,11 @@ public class Web3jConfiguration {
         return this.contingentSize;
     }
 
+    /**
+     * updates the nonce contingents' size
+     * @param newSize new size
+     * @return updated size
+     */
     public int setContingentSize(int newSize) {
         if(newSize < 1) {
             throw new RuntimeException("nonce contingent size can not be smaller than 1 ms");
@@ -104,6 +138,10 @@ public class Web3jConfiguration {
         return this.contingentSize;
     }
 
+    /**
+     * returns the machine's id
+     * @return id
+     */
     public String getMachineId() {
         return this.appProperties.machineId;
     }

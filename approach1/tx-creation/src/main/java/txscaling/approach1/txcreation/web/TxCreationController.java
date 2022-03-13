@@ -23,28 +23,53 @@ public class TxCreationController {
         this.properties = properties;
     }
 
-    @GetMapping("/txCreationMachineUrl")
+    /**
+     * Endpoint to request the URL of the Middleware
+     * @return current URL
+     */
+    @GetMapping("/middlewareUrl")
     public ResponseEntity<String> getUrl() {
         return ResponseEntity.ok(this.client.getUrl());
     }
 
-    @PostMapping("/txCreationMachineUrl")
+
+    /**
+     * Endpoint to set the URL of the Middleware
+     * @param url new URL
+     * @return updated URL
+     */
+    @PostMapping("/middlewareUrl")
     public ResponseEntity<String> setUrl(@RequestBody String url) {
         return ResponseEntity.ok(this.client.setUrl(url));
     }
 
+
+    /**
+     * Endpoint to start transaction creation
+     * @return empty
+     */
     @GetMapping("/start-tx-creation")
     public ResponseEntity<Void> startTxRequests() {
         this.service.startTransactionRequests();
         return ResponseEntity.noContent().build();
     }
 
+
+    /**
+     * Endpoint to stop transaction creation
+     * @return empty
+     */
     @GetMapping("/stop-tx-creation")
     public ResponseEntity<Void> stopTxRequests() {
         this.service.stopTransactionRequests();
         return ResponseEntity.noContent().build();
     }
 
+
+    /**
+     * Endpoint to request the machine's id
+     * @return id
+     */
     @GetMapping("/machineId")
     public ResponseEntity<String> getMachineId() {
         return ResponseEntity.ok(this.properties.machineId);

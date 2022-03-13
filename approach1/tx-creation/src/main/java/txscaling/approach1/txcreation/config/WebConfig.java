@@ -14,6 +14,7 @@ import reactor.netty.resources.ConnectionProvider;
 @EnableWebFlux
 public class WebConfig implements WebFluxConfigurer {
 
+    // enables Cross-Origin-Requests
     @Override
     public void addCorsMappings(CorsRegistry corsRegistry) {
         corsRegistry.addMapping("/**")
@@ -22,9 +23,10 @@ public class WebConfig implements WebFluxConfigurer {
                 .maxAge(3600);
     }
 
+    // provides web client to communicate with the middleware
     @Bean
     public WebClient getWebclient() {
-        // increase maxConnections to 3000 (default 1000)
+        // increase maxConnections to 5000 (default 1000)
         HttpClient httpClient = HttpClient.create(
                 ConnectionProvider.create("connectionProvider", 5000)
         );

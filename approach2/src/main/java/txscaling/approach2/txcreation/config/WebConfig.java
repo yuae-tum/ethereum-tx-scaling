@@ -9,6 +9,7 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 @EnableWebFlux
 public class WebConfig implements WebFluxConfigurer {
 
+    // enables Cross-Origin-Requests
     @Override
     public void addCorsMappings(CorsRegistry corsRegistry) {
         corsRegistry.addMapping("/**")

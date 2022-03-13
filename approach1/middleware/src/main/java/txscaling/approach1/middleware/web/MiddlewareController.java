@@ -26,11 +26,22 @@ public class MiddlewareController {
         this.service = service;
     }
 
+    /**
+     * Endpoint to request the current version of the Ethereum Node;
+     * can be used to check if the transaction-creating machine is connected to a node
+     * @return Ethereum node version
+     */
     @GetMapping("/node-version")
     public ResponseEntity<String> getNodeVersion() {
         return ResponseEntity.ok(this.service.getNodeVersion());
     }
 
+
+    /**
+     * Endpoint to set the Ethereum account that should be used to issue transactions
+     * @param privateKey the account's private key
+     * @return new account
+     */
     @PostMapping("/account")
     public ResponseEntity<Account> setAccount(@RequestBody String privateKey) {
         Credentials credentials = this.config.setCredentials(privateKey);
@@ -40,6 +51,11 @@ public class MiddlewareController {
                 credentials.getAddress()));
     }
 
+
+    /**
+     * Endpoint to request the current Ethereum account that is used to issue transactions
+     * @return current account
+     */
     @GetMapping("/account")
     public ResponseEntity<Account> getAccount() {
         Credentials credentials = this.config.getCredentials();
@@ -49,16 +65,33 @@ public class MiddlewareController {
                 credentials.getAddress()));
     }
 
+
+    /**
+     * Endpoint to set the address of the Smart Contract
+     * @param contractAddress new contract address
+     * @return updated contract address
+     */
     @PostMapping("/contract")
     public ResponseEntity<String> setContractAddress(@RequestBody String contractAddress) {
         return ResponseEntity.ok(this.config.setSmartContractAddress(contractAddress));
     }
 
+
+    /**
+     * Endpoint to request the address of the Smart Contract
+     * @return current contract address
+     */
     @GetMapping("/contract")
     public ResponseEntity<String> getContractAddress() {
         return ResponseEntity.ok(this.config.getSmartContractAddress());
     }
 
+
+    /**
+     * Endpoint to submit a new transaction for setting the nonce and forwarding it to the Ethereum Node
+     * @param txData the transaction
+     * @return empty
+     */
     @PostMapping("/submit-tx")
     public ResponseEntity<Void> submitTransaction(@RequestBody TxData txData) {
         try {
@@ -71,11 +104,21 @@ public class MiddlewareController {
         }
     }
 
+
+    /**
+     * Endpoint to collect data about the created transactions
+     * @return List of transaction information
+     */
     @GetMapping("/receipts")
     public ResponseEntity<List<TxData>> getReceipts() {
         return ResponseEntity.ok(this.service.collectReceipts());
     }
 
+
+    /**
+     * Endpoint to clear data about the created transactions
+     * @return List of transaction information
+     */
     @DeleteMapping("/receipts")
     public ResponseEntity<List<TxData>> deleteReceipts() {
         return ResponseEntity.ok(this.service.deleteReceipts());

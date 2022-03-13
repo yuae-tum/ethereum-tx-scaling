@@ -24,12 +24,8 @@ public class TxCreationService {
     private RawTransactionManager transactionManager;
 
     private TxCreationThread txCreationThread;
-    //private Disposable blockListener;
 
     private LinkedList<TxData> txRecords = new LinkedList<>();
-    //private LinkedList<EthBlock.Block> minedBlocks = new LinkedList<>();
-
-    private final Random random = new Random();
 
     @Autowired
     public TxCreationService(Web3jConfiguration config, RedisAtomicLong nonceManager) {
@@ -37,6 +33,10 @@ public class TxCreationService {
         this.nonceManager = nonceManager;
     }
 
+    /**
+     * returns the version of the Ethereum Node
+     * @return version of the Ethereum Node
+     */
     public String getNodeVersion() {
         Web3j web3j = this.config.getWeb3jInstance();
         try {
@@ -47,6 +47,9 @@ public class TxCreationService {
         }
     }
 
+    /**
+     * starts a new thread that continuously creates transactions
+     */
     public void startTransactionCreation() {
 
         if(this.txCreationThread != null && this.txCreationThread.isAlive()) {
@@ -54,55 +57,32 @@ public class TxCreationService {
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        /*if(this.blockListener == null || this.blockListener.isDisposed()) {
-            this.blockListener = this.config.getWeb3jInstance().blockFlowable(false).subscribe(block -> {
-                log.info("new block with number {} mined", block.getBlock().getNumber().toString());
-                this.minedBlocks.add(block.getBlock());
-            }, error -> {
-                log.error("error while listening for new blocks", error);
-                this.blockListener.dispose();
-            });
-        }*/
-
         this.txCreationThread = new TxCreationThread(this.nonceManager, this.config, this.getTransactionManager(), this.txRecords);
         this.txCreationThread.start();
     }
 
+    /**
+     * stops the thread that creates transactions
+     */
     public void stopTransactionCreation() {
         if(this.txCreationThread != null) {
             this.txCreationThread.createTransactions = false;
         }
     }
 
+    /**
+     * returns the collected data about all created transactions
+     * @return list of transaction information
+     */
     public List<TxData> collectReceipts() {
         log.info("Collecting receipts of " + this.txRecords.size() + " TXs");
         return this.txRecords;
-
-        /*this.blockListener.dispose();
-
-        HashMap<String, Tuple2<Integer, Long>> blockData = new HashMap<>();
-        this.minedBlocks.forEach(block -> {
-            Tuple2<Integer, Long> numberAndTimestamp = Tuples.of(block.getNumber().intValue(), block.getTimestamp().longValue() * 1000);
-            block.getTransactions().forEach(tx -> blockData.put(((EthBlock.TransactionHash) tx).get(), numberAndTimestamp));
-        });
-
-        for(TxData txData : this.txRecords) {
-            Tuple2<Integer, Long> numberAndTimestamp = blockData.get(txData.txhash);
-            if(numberAndTimestamp != null) {
-                txData.blocknumber = numberAndTimestamp.getT1();
-                txData.mined = numberAndTimestamp.getT2();
-                txData.succeeded = true;
-                txData.waitingTime = txData.mined - txData.created;
-            }
-        }
-
-        List<TxData> result = this.txRecords;
-        this.minedBlocks = new LinkedList<>();
-        this.txRecords = new LinkedList<>();
-
-        return result;*/
     }
 
+    /**
+     * clears the collected data about the created transactions
+     * @return list of transaction information
+     */
     public List<TxData> deleteReceipts() {
         if(this.txCreationThread == null || !this.txCreationThread.createTransactions) {
             log.info("Deleting receipts of " + this.txRecords.size() + " TXs");
@@ -114,6 +94,11 @@ public class TxCreationService {
         }
     }
 
+    /**
+     * requests the current account nonce from the Ethereum Network and updates the counter
+     * stored at the Nonce Manager accordingly
+     * @return current nonce
+     */
     public long synchronizeNonce() {
         try {
             long nonce = this.config.getWeb3jInstance()
@@ -129,6 +114,11 @@ public class TxCreationService {
         }
     }
 
+    /**
+     * returns an instance of the web3j-RawTransactionManager, creates a new one of non exists yet;
+     * the RawTransactionManager can be used to sign transactions and send them to the Ethereum Network
+     * @return web3j-RawTransactionManager
+     */
     private RawTransactionManager getTransactionManager() {
         if(this.transactionManager == null) {
             String chainId;
