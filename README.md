@@ -1,6 +1,6 @@
 # Bachelor Thesis - Scaling of Transaction-Creating Machines
 
-4 different approaches to realize horizontal scaling of transaction creation
+[[_TOC_]]
 
 ## How to start the application
 
@@ -170,6 +170,10 @@ the dev-console, so you can do some simple tests right there, such as comparing 
 number of transactions with the number of succeeded transactions to find out if some
 transactions failed.
 
+Before you start a new test run with this or one of the other approaches,
+make sure to close the browser tab to clear the data
+from the previous run.
+
 
 
 
@@ -220,6 +224,10 @@ the dev-console, so you can do some simple tests right there, such as comparing 
 number of transactions with the number of succeeded transactions to find out if some
 transactions failed.
 
+Before you start a new test run with this or one of the other approaches,
+make sure to close the browser tab to clear the data
+from the previous run.
+
 
 
 
@@ -267,6 +275,10 @@ This will download a json-file containing the results. The results will also be 
 the dev-console, so you can do some simple tests right there, such as comparing the overall
 number of transactions with the number of succeeded transactions to find out if some
 transactions failed.
+
+Before you start a new test run with this or one of the other approaches,
+make sure to close the browser tab to clear the data
+from the previous run.
 
 
 
@@ -320,15 +332,34 @@ the dev-console, so you can do some simple tests right there, such as comparing 
 number of transactions with the number of succeeded transactions to find out if some
 transactions failed.
 
+Before you start a new test run with this or one of the other approaches,
+make sure to close the browser tab to clear the data
+from the previous run.
+
 
 
 
 ## How to stop the application
 
-To stop the application, just execute:
+Keep in mind that all data will be lost after stopping the application. The geth node
+will create a fresh Blockchain on the next startup.
+
+### without docker swarm
+
+To stop the application, execute:
 ```bash
 docker-compose -f <docker-compose-file> down
 ```
-Replace <docker-compose-file> with the file that you used to start the application. Keep
-in mind that all data will be lost after stopping the application. The geth node
-will create a fresh Blockchain on the next startup.
+Replace <docker-compose-file> with the file that you used to start the application. 
+
+### with docker swarm
+
+To stop the application, execute:
+```bash
+docker stack rm tx-scaling
+```
+
+If you don't want to test any other approaches, you can remove the registry with:
+```bash
+docker service rm registry
+```
