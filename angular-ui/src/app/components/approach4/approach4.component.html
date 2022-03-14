@@ -84,8 +84,8 @@
                                 <mat-label>Nonce Contingent Size</mat-label>
                                 <input #contingentSizeInput matInput type="number">
                             </mat-form-field>
-                            <button mat-raised-button color="primary" (click)="setContingentSize(machine, contingentSizeInput.value)">Set Interval</button>
-                            <button mat-raised-button color="accent" (click)="getContingentSize(machine)">Fetch Interval</button>
+                            <button mat-raised-button color="primary" (click)="setContingentSize(machine, contingentSizeInput.value)">Set Size</button>
+                            <button mat-raised-button color="accent" (click)="getContingentSize(machine)">Fetch Size</button>
                         </div>
                         <div>current contingent size: {{machine.contingentSize}}</div>
                     </mat-card>

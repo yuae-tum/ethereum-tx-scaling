@@ -164,16 +164,7 @@ export class Approach3Component implements OnInit {
             txData: [...this.results.values()],
             miningNodeData: this.txPoolStatus
         };
-        const sJson = JSON.stringify(content);
-        const element = document.createElement('a');
-        element.style.display = 'none';
-        element.setAttribute('href', 'data:text/json;charset=UTF-8,' + encodeURIComponent(sJson));
-        element.setAttribute('download', 'result.json');
-        document.body.appendChild(element);
-        element.click(); // simulate click
-        document.body.removeChild(element);
-        console.log(this.txPoolStatus);
-        console.log([...this.results.values()]);
+        this.etherService.downloadResults(content);
     }
 
 }

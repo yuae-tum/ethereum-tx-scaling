@@ -13,7 +13,6 @@ export class EthereumService {
 
     fetchResults(url: string, results: Map<string, TxData>): void {
         this.http.get<TxData[]>(url).subscribe(response => {
-            this.snackBar.open('Successful');
             response.forEach(txData => {
                 const resultTx = results.get(txData.txhash);
                 if (!resultTx) {
@@ -26,10 +25,24 @@ export class EthereumService {
                     resultTx.machineId = txData.machineId;
                 }
             });
+            this.snackBar.open('Successful');
+            console.log('Successfully fetched results');
         }, error => {
             console.log(error);
             this.snackBar.open('Error while fetching results');
         });
+    }
+
+    downloadResults(content: any): void {
+        const contentString = JSON.stringify(content);
+        const element = document.createElement('a');
+        element.style.display = 'none';
+        element.setAttribute('href', 'data:text/json;charset=UTF-8,' + encodeURIComponent(contentString));
+        element.setAttribute('download', 'result.json');
+        document.body.appendChild(element);
+        element.click(); // simulate click
+        document.body.removeChild(element);
+        console.log(content);
     }
 
 }
