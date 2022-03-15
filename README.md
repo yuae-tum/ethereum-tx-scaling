@@ -77,6 +77,7 @@ Wait for the command to finish.
 
 
 
+
 ### without docker swarm
 
 If you don't use docker swarm, you can only run a single transaction-creating machine instance.
@@ -147,6 +148,7 @@ Now, the application is ready to start the test run. Press the "Listen for new B
 in the top-right. In the dev-console of your browser, a message is printed every time a new
 block is mined, containing the blocknumber, the number of transactions in the block and the
 number of currently pending and queued transactions.
+
 ![console output of the block listener](./images/blockListenerConsoleOutput.png)
 
 Start the transaction-creating machine(s) by pressing the "Start all Machines"-button. It is
@@ -201,6 +203,7 @@ Now, the application is ready to start the test run. Press the "Listen for new B
 in the top-right. In the dev-console of your browser, a message is printed every time a new
 block is mined, containing the blocknumber, the number of transactions in the block and the
 number of currently pending and queued transactions.
+
 ![console output of the block listener](./images/blockListenerConsoleOutput.png)
 
 Start the transaction-creating machine(s) by pressing the "Start all Machines"-button. It is
@@ -253,6 +256,7 @@ Now, the application is ready to start the test run. Press the "Listen for new B
 in the top-right. In the dev-console of your browser, a message is printed every time a new
 block is mined, containing the blocknumber, the number of transactions in the block and the
 number of currently pending and queued transactions.
+
 ![console output of the block listener](./images/blockListenerConsoleOutput.png)
 
 Start the transaction-creating machine(s) by pressing the "Start all Machines"-button. It is
@@ -309,6 +313,7 @@ Now, the application is ready to start the test run. Press the "Listen for new B
 in the top-right. In the dev-console of your browser, a message is printed every time a new
 block is mined, containing the blocknumber, the number of transactions in the block and the
 number of currently pending and queued transactions.
+
 ![console output of the block listener](./images/blockListenerConsoleOutput.png)
 
 Start the transaction-creating machine(s) by pressing the "Start all Machines"-button. It is
@@ -362,4 +367,37 @@ docker stack rm tx-scaling
 If you don't want to test any other approaches, you can remove the registry with:
 ```bash
 docker service rm registry
+```
+
+
+
+
+## Troubleshooting
+
+By default, the two Smart Contracts should be linked correctly. If this is not the case,
+you can manually overwrite the stored address for the Auth Contract inside the
+DappBackend. Find out the docker container id for the geth node with 'docker ps'
+and execute consecutively:
+```bash
+docker exec -ti <container-id> sh
+
+cd /truffle
+
+truffle console
+```
+This will give you access to the geth node via the CLI. Now, execute consecutively:
+```js
+let auth = await AuthContract.deployed()
+
+let backend = await DappBackend.deployed()
+
+backend.setAuthContract(auth.address)
+```
+
+Afterwards, the two Smart Contracts will be linked correctly.
+To exit the CLI, execute:
+```bash
+.exit
+
+exit
 ```

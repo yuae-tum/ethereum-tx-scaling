@@ -11,6 +11,12 @@ export class EthereumService {
     constructor(private http: HttpClient, private snackBar: MatSnackBar) {
     }
 
+    /**
+     * fetches recorded information about the created transactions from a transaction-creating machine and merges
+     * it with the information obtained by the block listener
+     * @param url the machine's http endpoint
+     * @param results collection containing the transaction data from the block listener
+     */
     fetchResults(url: string, results: Map<string, TxData>): void {
         this.http.get<TxData[]>(url).subscribe(response => {
             response.forEach(txData => {
@@ -33,6 +39,10 @@ export class EthereumService {
         });
     }
 
+    /**
+     * writes data to a json file, which is then downloaded
+     * @param content the content to be written to the json file
+     */
     downloadResults(content: any): void {
         const contentString = JSON.stringify(content);
         const element = document.createElement('a');

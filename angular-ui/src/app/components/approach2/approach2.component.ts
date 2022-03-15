@@ -30,6 +30,9 @@ export class Approach2Component implements OnInit {
         this.updateMachines();
     }
 
+    /**
+     * adds or removes control panels for the transaction-creating machines to match the value of numberMachines
+     */
     updateMachines(): void {
       // tslint:disable-next-line:triple-equals
         if (this.numberMachines == undefined || this.numberMachines < 0) {
@@ -46,6 +49,13 @@ export class Approach2Component implements OnInit {
         }
     }
 
+    /**
+     * updates the base URL for a transaction-creating machine, checks if the URL is valid by requesting the node version
+     * from the machine. If the URL is valid, then this function also fetches the ID and the configured Ethereum account
+     * and Smart Contract address from the machine.
+     * @param machine the machine whose base URL should be updated
+     * @param url the new base URL
+     */
     setBaseUrl(machine: MachineData, url: string): void {
         this.http.get(url + '/node-version', { responseType: 'text' }).subscribe(response => {
             console.log(response);
@@ -61,6 +71,10 @@ export class Approach2Component implements OnInit {
         });
     }
 
+    /**
+     * fetches the ID of a transaction-creating machine
+     * @param machine the machine whose ID is fetched
+     */
     getMachineId(machine: MachineData): void {
         this.http.get(machine.url + '/machineId', { responseType: 'text' }).subscribe(response => {
             machine.machineId = response;
@@ -70,6 +84,10 @@ export class Approach2Component implements OnInit {
         });
     }
 
+    /**
+     * fetches the configured Ethereum account from a transaction-creating machine
+     * @param machine the machine to fetch the configured account from
+     */
     getCurrentAccount(machine: MachineData): void {
         this.http.get<any>(machine.url + '/account').subscribe(response => {
             machine.accountAddress = response.address;
@@ -81,6 +99,11 @@ export class Approach2Component implements OnInit {
         });
     }
 
+    /**
+     * overwrites the Ethereum account that the transaction-creating machine uses to create transactions
+     * @param machine the respective transaction-creating machine
+     * @param privateKey the account's private key
+     */
     setAccount(machine: MachineData, privateKey: string): void {
         this.http.post<any>(machine.url + '/account', privateKey).subscribe(response => {
             machine.accountAddress = response.address;
@@ -92,6 +115,10 @@ export class Approach2Component implements OnInit {
         });
     }
 
+    /**
+     * fetches the configured address of the Smart Contract from a transaction-creating machine
+     * @param machine the machine to fetch the address from
+     */
     getCurrentContractAddress(machine: MachineData): void {
         this.http.get(machine.url + '/contract', { responseType: 'text' }).subscribe(response => {
             machine.contractAddress = response;
@@ -101,6 +128,11 @@ export class Approach2Component implements OnInit {
         });
     }
 
+    /**
+     * overwrites the configured address of the Smart Contract on a transaction-creating machine
+     * @param machine the respective transaction-creating machine
+     * @param contractAddress the new address
+     */
     setContractAddress(machine: MachineData, contractAddress: string): void {
         this.http.post(machine.url + '/contract', contractAddress, { responseType: 'text' }).subscribe(response => {
             machine.contractAddress = response;
@@ -110,6 +142,10 @@ export class Approach2Component implements OnInit {
         });
     }
 
+    /**
+     * causes a transaction-creating machine to continuously create transactions
+     * @param machine the respective machine
+     */
     startTxCreation(machine: MachineData): void {
         this.http.get<void>(machine.url + '/start-tx-creation').subscribe(() => {
             machine.isRunning = true;
@@ -120,6 +156,10 @@ export class Approach2Component implements OnInit {
         });
     }
 
+    /**
+     * stops a transaction-creating machine from creating transactions
+     * @param machine the respective machine
+     */
     stopTxCreation(machine: MachineData): void {
         this.http.get(machine.url + '/stop-tx-creation').subscribe(() => {
             machine.isRunning = false;
@@ -130,10 +170,18 @@ export class Approach2Component implements OnInit {
         });
     }
 
+    /**
+     * fetches recorded information about the created transactions from a transaction-creating machine and merges
+     * it with the information obtained by the block listener
+     * @param machine the respective machine
+     */
     fetchResults(machine: MachineData): void {
         this.etherService.fetchResults(machine.url + '/receipts', this.results);
     }
 
+    /**
+     * starts transaction creation on all known transaction-creating machines
+     */
     startAllMachines(): void {
         if (this.machines.some(machine => machine.url == null)) {
             this.snackBar.open('Failed, set base URL for all machines');
@@ -142,14 +190,24 @@ export class Approach2Component implements OnInit {
         }
     }
 
+    /**
+     * stops transaction creation on all known transaction-creating machines
+     */
     stopAllMachines(): void {
         this.machines.forEach(machine => this.stopTxCreation(machine));
     }
 
+    /**
+     * fetches recorded information about the created transactions from all transaction-creating machines and merges
+     * it with the information obtained by the block listener
+     */
     fetchAllResults(): void {
         this.machines.forEach(machine => this.fetchResults(machine));
     }
 
+    /**
+     * writes data about the created transactions and the transaction pool to a json file, which is then downloaded
+     */
     downloadResultsAsJsonFile(): void {
         const content = {
             txData: [...this.results.values()],

@@ -27,9 +27,15 @@ export class Approach1Component implements OnInit {
                 private etherService: EthereumService) { }
 
     ngOnInit(): void {
-        this.updateNumberOfMachines();
+        this.updateMachines();
     }
 
+    /**
+     * updates the base URL for the middleware, checks if the URL is valid by requesting the node version
+     * from the middleware. If the URL is valid, then this function also fetches the configured Ethereum account
+     * and Smart Contract address from the middleware.
+     * @param url the new base URL
+     */
     setBaseUrlMiddleware(url: string): void {
         this.http.get(url + '/node-version', { responseType: 'text' }).subscribe(response => {
             this.middleware.url = url;
@@ -43,6 +49,9 @@ export class Approach1Component implements OnInit {
         });
     }
 
+    /**
+     * fetches the configured Ethereum account from the middleware
+     */
     getCurrentAccount(): void {
         this.http.get<any>(this.middleware.url + '/account').subscribe(response => {
             this.middleware.accountAddress = response.address;
@@ -54,6 +63,10 @@ export class Approach1Component implements OnInit {
         });
     }
 
+    /**
+     * overwrites the Ethereum account that the middleware uses to create transactions
+     * @param privateKey the account's private key
+     */
     setAccount(privateKey: string): void {
         this.http.post<any>(this.middleware.url + '/account', privateKey).subscribe(response => {
             this.middleware.accountAddress = response.address;
@@ -65,6 +78,9 @@ export class Approach1Component implements OnInit {
         });
     }
 
+    /**
+     * fetches the configured address of the Smart Contract from the middleware
+     */
     getCurrentContractAddress(): void {
         this.http.get(this.middleware.url + '/contract', { responseType: 'text' }).subscribe(response => {
             this.middleware.contractAddress = response;
@@ -74,6 +90,10 @@ export class Approach1Component implements OnInit {
         });
     }
 
+    /**
+     * overwrites the configured address of the Smart Contract on the middleware
+     * @param contractAddress the new address
+     */
     setContractAddress(contractAddress: string): void {
         this.http.post(this.middleware.url + '/contract', contractAddress, { responseType: 'text' }).subscribe(response => {
             this.middleware.contractAddress = response;
@@ -83,7 +103,10 @@ export class Approach1Component implements OnInit {
         });
     }
 
-    updateNumberOfMachines(): void {
+    /**
+     * adds or removes control panels for the transaction-creating machines to match the value of numberMachines
+     */
+    updateMachines(): void {
         // tslint:disable-next-line:triple-equals
         if (this.numberMachines == undefined || this.numberMachines < 0) {
             return;
@@ -99,12 +122,23 @@ export class Approach1Component implements OnInit {
         }
     }
 
+    /**
+     * updates the base URL for a transaction-creating machine, checks if the URL is valid by requesting the node version
+     * from the machine. If the URL is valid, then this function also fetches the ID and the configured URL to the
+     * middleware from the machine.
+     * @param machine the machine whose base URL should be updated
+     * @param url the new base URL
+     */
     setBaseUrlTxCreatingMachine(machine: MachineData, url: string): void {
         machine.url = url;
         this.getTxCreatingMachineId(machine);
         this.getMiddlewareUrl(machine);
     }
 
+    /**
+     * fetches the ID of a transaction-creating machine
+     * @param machine the machine whose ID is fetched
+     */
     getTxCreatingMachineId(machine: MachineData): void {
         this.http.get(machine.url + '/machineId', { responseType: 'text' }).subscribe(response => {
             machine.machineId = response;
@@ -114,6 +148,10 @@ export class Approach1Component implements OnInit {
         });
     }
 
+    /**
+     * fetches the configured URL to the middleware from a transaction-creating machine
+     * @param machine the machine to fetch the URL from
+     */
     getMiddlewareUrl(machine: MachineData): void {
         this.http.get(machine.url + '/middlewareUrl', {responseType: 'text'}).subscribe(response => {
             machine.middlewareUrl = response;
@@ -123,6 +161,11 @@ export class Approach1Component implements OnInit {
         });
     }
 
+    /**
+     * overwrites the configured URL to the middleware on a transaction-creating machine
+     * @param machine the respective machine
+     * @param url the new URL
+     */
     setMiddlewareUrl(machine: MachineData, url: string): void {
         this.http.post(machine.url + '/middlewareUrl', url, {responseType: 'text'}).subscribe(response => {
             machine.middlewareUrl = response;
@@ -132,6 +175,10 @@ export class Approach1Component implements OnInit {
         });
     }
 
+    /**
+     * causes a transaction-creating machine to continuously create transactions
+     * @param machine the respective machine
+     */
     startTxCreation(machine: MachineData): void {
         this.http.get<void>(machine.url + '/start-tx-creation').subscribe(reponse => {
             machine.isRunning = true;
@@ -142,6 +189,10 @@ export class Approach1Component implements OnInit {
         });
     }
 
+    /**
+     * stops a transaction-creating machine from creating transactions
+     * @param machine the respective machine
+     */
     stopTxCreation(machine: MachineData): void {
         this.http.get<void>(machine.url + '/stop-tx-creation').subscribe(reponse => {
             machine.isRunning = false;
@@ -152,18 +203,31 @@ export class Approach1Component implements OnInit {
         });
     }
 
+    /**
+     * starts transaction creation on all known transaction-creating machines
+     */
     startAllMachines(): void {
         this.machines.forEach(machine => this.startTxCreation(machine));
     }
 
+    /**
+     * stops transaction creation on all known transaction-creating machines
+     */
     stopAllMachines(): void {
         this.machines.forEach(machine => this.stopTxCreation(machine));
     }
 
+    /**
+     * fetches recorded information about the created transactions from the middleware and merges
+     * it with the information obtained by the block listener
+     */
     fetchResults(): void {
         this.etherService.fetchResults(this.middleware.url + '/receipts', this.results);
     }
 
+    /**
+     * writes data about the created transactions and the transaction pool to a json file, which is then downloaded
+     */
     downloadResultsAsJsonFile(): void {
         const content = {
             txData: [...this.results.values()],

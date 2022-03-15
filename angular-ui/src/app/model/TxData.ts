@@ -1,3 +1,6 @@
+/**
+ * represents an Ethereum transaction
+ */
 export class TxData {
     machineId: string;
     txhash: string;
