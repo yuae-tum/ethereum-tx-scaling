@@ -1,6 +1,4 @@
-# Bachelor Thesis - Scaling of Transaction-Creating Machines
-
-[[_TOC_]]
+# Horizontal Scaling of Transaction-Creating Machines
 
 ## How to start the application
 
