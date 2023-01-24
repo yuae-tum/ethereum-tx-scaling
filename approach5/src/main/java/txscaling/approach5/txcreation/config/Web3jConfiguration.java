@@ -30,7 +30,7 @@ public class Web3jConfiguration {
     private final ContractGasProvider gasProvider = new StaticGasProvider(BigInteger.ONE, BigInteger.valueOf(999999999));
 
 	//new var for approach 5
-	private int machineNumber = 0;
+	//private int machineNumber = 0;
 	private Map<String, Integer> machineMap = new HashMap<>();
 	private Map<Integer, Long> nonceMap = new HashMap<>();
 	private long currentNonce;
@@ -162,15 +162,15 @@ public class Web3jConfiguration {
 	 * 
 	 */
 	public int registerMachine(String address) {
-		machineMap.put(address, machineNumber);
-		nonceMap.put(machineNumber, currentNonce + machineNumber);
-		machineNumber++;
-		log.info("new machine with address " + address + " is registered at order " + machineMap.get(address) + " with starting nonce " + nonceMap.get(machineNumber));
+		machineMap.put(address, machineMap.size());
+		nonceMap.put(machineMap.size(), currentNonce + machineMap.size());
+		//machineNumber++;
+		log.info("new machine with address " + address + " is registered at order " + machineMap.get(address) + " with starting nonce " + nonceMap.get(machineMap.size()));
         return machineMap.get(address);
 	}
 
 	public int getMachineNumber() {
-		return machineNumber;
+		return machineMap.size();
 	}
 
 	public void setCurrentNonce(long nonce) {
