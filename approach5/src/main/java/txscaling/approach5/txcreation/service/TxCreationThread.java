@@ -37,14 +37,12 @@ public class TxCreationThread extends Thread {
     public TxCreationThread(RedisAtomicLong nonceManager,
                             Web3jConfiguration config,
                             RawTransactionManager transactionManager,
-                            List<TxData> txRecords,
-							String address) {
+                            List<TxData> txRecords) {
 
         this.nonceManager = nonceManager;
         this.config = config;
         this.transactionManager = transactionManager;
         this.txRecords = txRecords;
-		this.address = address;
     }
 
     @Override

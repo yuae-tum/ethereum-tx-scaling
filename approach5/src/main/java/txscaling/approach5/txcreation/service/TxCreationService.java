@@ -50,14 +50,14 @@ public class TxCreationService {
     /**
      * starts a new thread that continuously creates transactions
      */
-    public void startTransactionCreation(String address) {
+    public void startTransactionCreation() {
 
         if(this.txCreationThread != null && this.txCreationThread.isAlive()) {
             log.error("cannot start transaction creation: already running");
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        this.txCreationThread = new TxCreationThread(this.nonceManager, this.config, this.getTransactionManager(), this.txRecords, address);
+        this.txCreationThread = new TxCreationThread(this.nonceManager, this.config, this.getTransactionManager(), this.txRecords);
         this.txCreationThread.start();
     }
 

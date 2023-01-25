@@ -122,9 +122,9 @@ public class TxCreationController {
      * Endpoint to start transaction creation
      * @return empty
      */
-    @GetMapping("/start-tx-creation/{address}")
-    public ResponseEntity<Void> startTransactionCreation(@PathVariable String address) {
-        this.service.startTransactionCreation(address);
+    @GetMapping("/start-tx-creation")
+    public ResponseEntity<Void> startTransactionCreation() {
+        this.service.startTransactionCreation();
         return ResponseEntity.noContent().build();
     }
 
