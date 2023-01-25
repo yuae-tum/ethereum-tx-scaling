@@ -164,7 +164,7 @@ public class Web3jConfiguration {
 		this.order = index;
 		this.machineNumber = num;
 		log.info("total tx machine: " + this.machineNumber);
-		this.currentNonce = this.machineNumber - this.order;
+		this.currentNonce = this.order;
 		log.info("machine index: " + this.order);
 		log.info("current nonce: " + this.currentNonce);
         return this.order;
