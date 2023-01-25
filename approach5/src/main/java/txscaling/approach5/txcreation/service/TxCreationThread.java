@@ -34,9 +34,6 @@ public class TxCreationThread extends Thread {
     private int numberSentTX = 0;
     private final ScheduledExecutorService threadpool = Executors.newScheduledThreadPool(1);
 
-	// extra var for approach 5
-	private final String address;
-
     public TxCreationThread(RedisAtomicLong nonceManager,
                             Web3jConfiguration config,
                             RawTransactionManager transactionManager,
