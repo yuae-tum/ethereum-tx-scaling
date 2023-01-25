@@ -30,9 +30,8 @@ public class Web3jConfiguration {
     private final ContractGasProvider gasProvider = new StaticGasProvider(BigInteger.ONE, BigInteger.valueOf(999999999));
 
 	//new var for approach 5
-	//private int machineNumber = 0;
-	private Map<String, Integer> machineMap = new HashMap<>();
-	private Map<Integer, Long> nonceMap = new HashMap<>();
+	private int machineNumber;
+	private int order;
 	private long currentNonce;
 
     @Autowired
@@ -161,16 +160,22 @@ public class Web3jConfiguration {
 	 * functions for approach 5
 	 * 
 	 */
-	public int registerMachine(String address) {
-		machineMap.put(address, machineMap.size());
-		nonceMap.put(machineMap.size(), currentNonce + machineMap.size());
-		//machineNumber++;
-		log.info("new machine with address " + address + " is registered at order " + machineMap.get(address) + " with starting nonce " + nonceMap.get(machineMap.size()));
-        return machineMap.get(address);
+	public int registerMachine(int index, int num) {
+		this.order = index;
+		this.machineNumber = num;
+		log.info("total tx machine: " + this.machineNumber);
+		this.currentNonce = this.machineNumber - this.order;
+		log.info("machine index: " + this.order);
+		log.info("current nonce: " + this.currentNonce);
+        return this.order;
 	}
 
 	public int getMachineNumber() {
-		return machineMap.size();
+		return this.machineNumber;
+	}
+
+	public int getOrder(String address) {
+		return this.order;
 	}
 
 	public void setCurrentNonce(long nonce) {
@@ -178,26 +183,7 @@ public class Web3jConfiguration {
 	}
 
 	public long getCurrentNonce() {
-		return currentNonce;
-	}
-
-	public int getOrder(String address) {
-		return machineMap.get(address);
-	}
-
-	public void getMoreNonce(String address, RedisAtomicLong nonceManager) {
-		int machineOrder = machineMap.get(address);
-		long machineNonce = nonceMap.get(machineOrder);
-		if ((this.currentNonce - machineNonce + machineOrder) < getContingentSize()) {
-			// fetch the current nonce from the Nonce Manager and increase it by the configured nonce contingent size
-			long updateNonce = nonceManager.getAndAdd(getContingentSize());
-			setCurrentNonce(updateNonce);
-		}
-		nonceMap.put(machineOrder, nonceMap.get(machineOrder) + getContingentSize());
-	}
-
-	public long getCurrentMachineNonce(String address) {
-		return nonceMap.get(machineMap.get(address));
+		return this.currentNonce;
 	}
 }
 

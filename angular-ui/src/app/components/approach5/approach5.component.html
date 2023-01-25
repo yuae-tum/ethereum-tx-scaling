@@ -26,7 +26,7 @@
                 <mat-card-title class="d-flex justify-content-between align-content-center">
                     <span>Machine {{i+1}}</span>
                     <button *ngIf="i === 0" mat-raised-button color="primary" (click)="synchronizeNonce(machine)">Sync nonce</button>
-                    <button mat-raised-button color="primary" (click)="register(machine)">Register</button>
+                    <button mat-raised-button color="primary" (click)="register(machine, machines.length)">Register</button>
                 </mat-card-title>
                 <mat-card-content class="d-flex flex-column mt-3">
 
@@ -85,7 +85,7 @@
                                 <mat-label>Nonce Contingent Size</mat-label>
                                 <input #contingentSizeInput matInput type="number">
                             </mat-form-field>
-							<button *ngIf="i === 0" mat-raised-button color="primary" (click)="setContingentSize(machine, contingentSizeInput.value)">Set Size</button>
+							<button mat-raised-button color="primary" (click)="setContingentSize(machine, contingentSizeInput.value)">Set Size</button>
                             <button mat-raised-button color="accent" (click)="getContingentSize(machine)">Fetch Size</button>
                         </div>
                         <div>current contingent size: {{machine.contingentSize}}</div>

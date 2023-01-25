@@ -264,11 +264,11 @@ export class Approach5Component implements OnInit {
 	/**
 	 * register machine to the config, new function for approach 5
 	 */
-	register(machine: MachineData): void {
-		console.log(machine.url);
-        this.http.post<any>(machine.url + '/register', machine.url.substring(7)).subscribe(response => {
-            console.log('order: ' + response);
-            this.snackBar.open('registered at ' + response);
+	register(machine: MachineData, num: number): void {
+		//console.log(machine);
+        this.http.post<any>(machine.url + '/register/' + machine.index, num).subscribe(response => {
+            console.log(response);
+            this.snackBar.open('registered as machine ' + response);
         }, error => {
             console.log(error);
             this.snackBar.open('error while registing');

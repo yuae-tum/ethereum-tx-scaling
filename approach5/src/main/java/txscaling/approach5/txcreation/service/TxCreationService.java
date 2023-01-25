@@ -106,7 +106,6 @@ public class TxCreationService {
                     .send().getTransactionCount().longValue();
             this.nonceManager.set(nonce);
             nonce = this.nonceManager.get();
-			this.config.setCurrentNonce(nonce);
             log.info("current nonce: " + nonce);
             return nonce;
         } catch (IOException e) {

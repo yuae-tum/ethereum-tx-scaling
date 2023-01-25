@@ -63,7 +63,7 @@ public class TxCreationThread extends Thread {
         while (true) {
 			int machineNum = this.config.getMachineNumber();
 
-			long nonce = this.config.getCurrentMachineNonce(address);
+			long nonce = this.config.getCurrentNonce();
 
             // calculate upper bound of the nonce contingent
             long boundary = nonce + this.config.getContingentSize();
@@ -87,8 +87,8 @@ public class TxCreationThread extends Thread {
                 return;
             }
 
-			// ask for more nonce
-			this.config.getMoreNonce(address, nonceManager);
+			// update nonce
+			this.config.setCurrentNonce(nonce);
         }
     }
 

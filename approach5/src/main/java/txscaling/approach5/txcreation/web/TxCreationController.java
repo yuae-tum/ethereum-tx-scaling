@@ -169,9 +169,9 @@ public class TxCreationController {
         return ResponseEntity.ok(this.config.getMachineId());
     }
 
-	@PostMapping("/register")
-    public ResponseEntity<Integer> sregisterMachine(@RequestBody String address) {
-        return ResponseEntity.ok(this.config.registerMachine(address));
+	@PostMapping("/register/{index}")
+    public ResponseEntity<Integer> sregisterMachine(@PathVariable int index, @RequestBody int num) {
+        return ResponseEntity.ok(this.config.registerMachine(index, num));
     }
 
     private static class Account {
