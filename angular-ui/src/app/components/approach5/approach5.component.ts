@@ -192,7 +192,7 @@ export class Approach5Component implements OnInit {
      * @param machine the respective machine
      */
     startTxCreation(machine: MachineData): void {
-        this.http.get(machine.url + '/start-tx-creation/' + machine.url.substring(7)).subscribe(() => {
+        this.http.get(machine.url + '/start-tx-creation').subscribe(() => {
             machine.isRunning = true;
             this.snackBar.open('Started TX creation on Machine ' + (machine.index + 1));
         }, error => {
