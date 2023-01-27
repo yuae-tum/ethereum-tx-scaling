@@ -357,7 +357,7 @@ However, you can change the nonce contingent size in the control panels if you d
 to run the test with the default size of 100. Just make sure that the size is same for
 every machine.
 
-Inside the control panel of the first machine, press the "Synch nonce"-button. This will
+Inside the control panel of the first machine, press the "Sync nonce"-button. This will
 fetch the current nonce from the Ethereum network and store it at the Redis Nonce Manager.
 
 After that, press the "register" for each control panel. This will let the TX Creating machine
