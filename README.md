@@ -339,7 +339,61 @@ Before you start a new test run with this or one of the other approaches,
 make sure to close the browser tab to clear the data
 from the previous run.
 
+### Approach 5
 
+![Approach 5: Nav Bar](./images/approach5-navBar.png)
+If you decided to test approach 5 (i.e. you used docker-compose.approach5.yml), then choose Approach 5
+in the navigation bar directly under the text box for the geth node address.
+
+![Approach 5: Transaction-Creating Machines](./images/txCreatingMachines-approach5.png)
+Below, you can configure the number of transaction-creating machines. This does not actually
+add or remove instances of the machines. It only adds or removes the respective "control panels" for
+the machines in the UI. Inside the control panels, you can set the base URL for the transaction-creating machines. Find
+out the port for the machine(s) with docker ps and specify the location, e.g.
+"http://localhost:49153". Afterwards, you can configure some additional paramaters, but again,
+the default configuration should work just fine if you didn't change settings anywhere else.
+
+However, you can change the nonce contingent size in the control panels if you don't want
+to run the test with the default size of 100. Just make sure that the size is same for
+every machine.
+
+Inside the control panel of the first machine, press the "Synch nonce"-button. This will
+fetch the current nonce from the Ethereum network and store it at the Redis Nonce Manager.
+
+After that, press the "register" for each control panel. This will let the TX Creating machine
+know its index and total machine for this test.
+
+Now, the application is ready to start the test run. Press the "Listen for new Blocks"-button
+in the top-right. In the dev-console of your browser, a message is printed every time a new
+block is mined, containing the blocknumber, the number of transactions in the block and the
+number of currently pending and queued transactions.
+
+![console output of the block listener](./images/blockListenerConsoleOutput-approach5.png)
+
+Start the transaction-creating machine(s) by pressing the "Start all Machines"-button. It is
+important that the frontend is listening for new blocks BEFORE you start the machines.
+Otherwise, some data about the transactions might be missing later, such as the time when
+they were included in the blockchain, and it will appear as if they failed. Of course, you
+can fetch the missing information manually from the geth node later, but it is much more
+convenient to let the frontend do this work for you.
+
+To finish the test run, press the "Stop all machines"-button. Wait until the number of included,
+pending transactions is 0 in the dev-console logs. Then, press the "Stop Listening
+For Blocks"-button. It is normal that there will be queued transaction that's being there forever.
+Just ignore them.
+
+To download the collected data, press "Fetch Results"-button on the middleware control panel.
+Don't press this button more than once, that might corrupt the data. Wait for the
+"Successful"-message shows up. Depending on the number of created transactions, this
+might take a few seconds, because the data from the middleware and the data from the block
+listener have to be combined. Afterwards, you can press the "Download results"-button.
+This will download a json-file containing the results. The results will also be logged in
+the dev-console, so you can do some simple tests right there, such as comparing the overall
+number of transactions with the number of succeeded transactions to find out if some
+transactions failed.
+
+Before you start a new test run with this or one of the other approaches,
+make sure to restart the whole application so the result of next test is affected.
 
 
 ## How to stop the application
