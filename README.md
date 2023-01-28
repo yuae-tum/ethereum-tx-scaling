@@ -352,6 +352,8 @@ the machines in the UI. Inside the control panels, you can set the base URL for 
 out the port for the machine(s) with docker ps and specify the location, e.g.
 "http://localhost:49153". Afterwards, you can configure some additional paramaters, but again,
 the default configuration should work just fine if you didn't change settings anywhere else.
+It is important when deploy the whole app using docker stack, deploy the tx-creation to different nodes to the geth node.
+One observation is that if a tx-creation is deployed on the same node as the geth node, it will affect the result hugely.
 
 However, you can change the nonce contingent size in the control panels if you don't want
 to run the test with the default size of 100. Just make sure that the size is same for

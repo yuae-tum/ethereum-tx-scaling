@@ -48,6 +48,7 @@ def dataAnalysisAndVisualization():
 			#continue
 			m3_throughput_list.append([result[0], result[2], result[4], result[6]])
 			m3_latency_list.append([result[1], result[3], result[5], result[7]])
+
 	'''
 	print('throughput list')
 	print(m1_throughput_list)
@@ -57,50 +58,50 @@ def dataAnalysisAndVisualization():
 	print(m1_latency_list)
 	print(m2_latency_list)
 	print(m3_latency_list)
-	
-	m1_throughput_fig = generateFig(['a1', 'a2', 'a3', 'a4-100' ,'a4-1000', 'a4-10000'], [m1_throughput_list[0], m1_throughput_list[1], m1_throughput_list[2], m1_throughput_list[5], m1_throughput_list[4], m1_throughput_list[3]], "Throughput m=1")
+	'''
+	m1_throughput_fig = generateFig(['a1', 'a2', 'a3', 'a4-100' ,'a4-1000', 'a4-10000'], [m1_throughput_list[0], m1_throughput_list[1], m1_throughput_list[2], m1_throughput_list[5], m1_throughput_list[4], m1_throughput_list[3]], "Throughput (tps)", "Throughput m=1")
 	m1_throughput_fig.show()
-	m2_throughput_fig = generateFig(['a1', 'a2', 'a3', 'a4-100' ,'a4-1000', 'a4-10000'], [m2_throughput_list[0][0], m2_throughput_list[1][0], m2_throughput_list[2][0], m2_throughput_list[5][0], m2_throughput_list[4][0], m2_throughput_list[3][0]], "Throughput m=2")
+	m2_throughput_fig = generateFig(['a1', 'a2', 'a3', 'a4-100' ,'a4-1000', 'a4-10000'], [m2_throughput_list[0][0], m2_throughput_list[1][0], m2_throughput_list[2][0], m2_throughput_list[5][0], m2_throughput_list[4][0], m2_throughput_list[3][0]], "Throughput (tps)", "Throughput m=2")
 	m2_throughput_fig.show()
-	m2_per_machine_throughput_fig = generatePerMachineFig(['a1', 'a2', 'a3', 'a4-100', 'a4-1000', 'a4-10000'], ['m1', 'm2'], [[m2_throughput_list[0][1], m2_throughput_list[0][2]], [m2_throughput_list[1][1], m2_throughput_list[1][2]], [m2_throughput_list[2][1], m2_throughput_list[2][2]], [m2_throughput_list[5][1], m2_throughput_list[5][2]], [m2_throughput_list[4][1], m2_throughput_list[4][2]], [m2_throughput_list[3][1], m2_throughput_list[3][2]]], "Throughput per machine m=2")
+	m2_per_machine_throughput_fig = generatePerMachineFig(['a1', 'a2', 'a3', 'a4-100', 'a4-1000', 'a4-10000'], ['m1', 'm2'], [[m2_throughput_list[0][1], m2_throughput_list[0][2]], [m2_throughput_list[1][1], m2_throughput_list[1][2]], [m2_throughput_list[2][1], m2_throughput_list[2][2]], [m2_throughput_list[5][1], m2_throughput_list[5][2]], [m2_throughput_list[4][1], m2_throughput_list[4][2]], [m2_throughput_list[3][1], m2_throughput_list[3][2]]], "Throughput (tps)", "Throughput per Machine (m=2)")
 	m2_per_machine_throughput_fig.show()
-	m3_throughput_fig = generateFig(['a1', 'a2', 'a3', 'a4-100' ,'a4-1000', 'a4-10000'], [m3_throughput_list[0][0], m3_throughput_list[1][0], m3_throughput_list[2][0], m3_throughput_list[5][0], m3_throughput_list[4][0], m3_throughput_list[3][0]], "Throughput m=3")
+	m3_throughput_fig = generateFig(['a1', 'a2', 'a3', 'a4-100' ,'a4-1000', 'a4-10000'], [m3_throughput_list[0][0], m3_throughput_list[1][0], m3_throughput_list[2][0], m3_throughput_list[5][0], m3_throughput_list[4][0], m3_throughput_list[3][0]], "Throughput (tps)", "Throughput m=3")
 	m3_throughput_fig.show()
-	m3_per_machine_throughput_fig = generatePerMachineFig(['a1', 'a2', 'a3', 'a4-100', 'a4-1000', 'a4-10000'], ['m1', 'm2', 'm3'], [[m3_throughput_list[0][1], m3_throughput_list[0][2], m3_throughput_list[0][3]], [m3_throughput_list[1][1], m3_throughput_list[1][2], m3_throughput_list[1][3]], [m3_throughput_list[2][1], m3_throughput_list[2][2], m3_throughput_list[2][3]], [m3_throughput_list[5][1], m3_throughput_list[5][2], m3_throughput_list[5][3]], [m3_throughput_list[4][1], m3_throughput_list[4][2], m3_throughput_list[4][3]], [m3_throughput_list[3][1], m3_throughput_list[3][2], m3_throughput_list[3][3]]], "Throughput per machine m=3")
+	m3_per_machine_throughput_fig = generatePerMachineFig(['a1', 'a2', 'a3', 'a4-100', 'a4-1000', 'a4-10000'], ['m1', 'm2', 'm3'], [[m3_throughput_list[0][1], m3_throughput_list[0][2], m3_throughput_list[0][3]], [m3_throughput_list[1][1], m3_throughput_list[1][2], m3_throughput_list[1][3]], [m3_throughput_list[2][1], m3_throughput_list[2][2], m3_throughput_list[2][3]], [m3_throughput_list[5][1], m3_throughput_list[5][2], m3_throughput_list[5][3]], [m3_throughput_list[4][1], m3_throughput_list[4][2], m3_throughput_list[4][3]], [m3_throughput_list[3][1], m3_throughput_list[3][2], m3_throughput_list[3][3]]], "Throughput (tps)", "Throughput per Machine (m=3)")
 	m3_per_machine_throughput_fig.show()
 
-	m1_latency_fig = generateFig(['a1', 'a2', 'a3', 'a4-100' ,'a4-1000', 'a4-10000'], [m1_latency_list[0], m1_latency_list[1], m1_latency_list[2], m1_latency_list[5], m1_latency_list[4], m1_latency_list[3]], "Latency m=1")
+	m1_latency_fig = generateFig(['a1', 'a2', 'a3', 'a4-100' ,'a4-1000', 'a4-10000'], [m1_latency_list[0], m1_latency_list[1], m1_latency_list[2], m1_latency_list[5], m1_latency_list[4], m1_latency_list[3]], "Latency (sec)", "Latency m=1")
 	m1_latency_fig.show()
-	m2_latency_fig = generateFig(['a1', 'a2', 'a3', 'a4-100' ,'a4-1000', 'a4-10000'], [m2_latency_list[0][0], m2_latency_list[1][0], m2_latency_list[2][0], m2_latency_list[5][0], m2_latency_list[4][0], m2_latency_list[3][0]], "Latency m=2")
+	m2_latency_fig = generateFig(['a1', 'a2', 'a3', 'a4-100' ,'a4-1000', 'a4-10000'], [m2_latency_list[0][0], m2_latency_list[1][0], m2_latency_list[2][0], m2_latency_list[5][0], m2_latency_list[4][0], m2_latency_list[3][0]], "Latency (sec)", "Latency m=2")
 	m2_latency_fig.show()
-	m2_per_machine_latency_fig = generatePerMachineFig(['a1', 'a2', 'a3', 'a4-100', 'a4-1000', 'a4-10000'], ['m1', 'm2'], [[m2_latency_list[0][1], m2_latency_list[0][2]], [m2_latency_list[1][1], m2_latency_list[1][2]], [m2_latency_list[2][1], m2_latency_list[2][2]], [m2_latency_list[5][1], m2_latency_list[5][2]], [m2_latency_list[4][1], m2_latency_list[4][2]], [m2_latency_list[3][1], m2_latency_list[3][2]]], "latency per machine m=2")
+	m2_per_machine_latency_fig = generatePerMachineFig(['a1', 'a2', 'a3', 'a4-100', 'a4-1000', 'a4-10000'], ['m1', 'm2'], [[m2_latency_list[0][1], m2_latency_list[0][2]], [m2_latency_list[1][1], m2_latency_list[1][2]], [m2_latency_list[2][1], m2_latency_list[2][2]], [m2_latency_list[5][1], m2_latency_list[5][2]], [m2_latency_list[4][1], m2_latency_list[4][2]], [m2_latency_list[3][1], m2_latency_list[3][2]]], "Latency (sec)", "Latency per Machine (m=2)")
 	m2_per_machine_latency_fig.show()
-	m2_latency_fig = generateFig(['a1', 'a2', 'a3', 'a4-100' ,'a4-1000', 'a4-10000'], [m3_latency_list[0][0], m3_latency_list[1][0], m3_latency_list[2][0], m3_latency_list[5][0], m3_latency_list[4][0], m3_latency_list[3][0]], "Latency m=3")
+	m2_latency_fig = generateFig(['a1', 'a2', 'a3', 'a4-100' ,'a4-1000', 'a4-10000'], [m3_latency_list[0][0], m3_latency_list[1][0], m3_latency_list[2][0], m3_latency_list[5][0], m3_latency_list[4][0], m3_latency_list[3][0]], "Latency (sec)", "Latency m=3")
 	m2_latency_fig.show()
-	m3_per_machine_latency_fig = generatePerMachineFig(['a1', 'a2', 'a3', 'a4-100', 'a4-1000', 'a4-10000'], ['m1', 'm2', 'm3'], [[m3_latency_list[0][1], m3_latency_list[0][2], m3_latency_list[0][3]], [m3_latency_list[1][1], m3_latency_list[1][2], m3_latency_list[1][3]], [m3_latency_list[2][1], m3_latency_list[2][2], m3_latency_list[2][3]], [m3_latency_list[5][1], m3_latency_list[5][2], m3_latency_list[5][3]], [m3_latency_list[4][1], m3_latency_list[4][2], m3_latency_list[4][3]], [m3_latency_list[3][1], m3_latency_list[3][2], m3_latency_list[3][3]]], "latency per machine m=3")
+	m3_per_machine_latency_fig = generatePerMachineFig(['a1', 'a2', 'a3', 'a4-100', 'a4-1000', 'a4-10000'], ['m1', 'm2', 'm3'], [[m3_latency_list[0][1], m3_latency_list[0][2], m3_latency_list[0][3]], [m3_latency_list[1][1], m3_latency_list[1][2], m3_latency_list[1][3]], [m3_latency_list[2][1], m3_latency_list[2][2], m3_latency_list[2][3]], [m3_latency_list[5][1], m3_latency_list[5][2], m3_latency_list[5][3]], [m3_latency_list[4][1], m3_latency_list[4][2], m3_latency_list[4][3]], [m3_latency_list[3][1], m3_latency_list[3][2], m3_latency_list[3][3]]], "Latency (sec)", "Latency per Machine (m=3)")
 	m3_per_machine_latency_fig.show()
-	'''
+	
 	# graph generation for approach 5
-	a5_m1_throughput_fig = generateFig(['a2', 'a4-100' ,'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], [m1_throughput_list[1], m1_throughput_list[5], m1_throughput_list[4], m1_throughput_list[3], m1_throughput_list[8], m1_throughput_list[7], m1_throughput_list[6]], "Throughput m=1")
+	a5_m1_throughput_fig = generateFig(['a2', 'a4-100' ,'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], [m1_throughput_list[1], m1_throughput_list[5], m1_throughput_list[4], m1_throughput_list[3], m1_throughput_list[8], m1_throughput_list[7], m1_throughput_list[6]], "Throughput (tps)", "Throughput m=1")
 	a5_m1_throughput_fig.show()
-	a5_m2_throughput_fig = generateFig(['a2', 'a4-100' ,'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], [m2_throughput_list[1][0], m2_throughput_list[5][0], m2_throughput_list[4][0], m2_throughput_list[3][0], m2_throughput_list[8][0], m2_throughput_list[7][0], m2_throughput_list[6][0]], "Throughput m=2")
+	a5_m2_throughput_fig = generateFig(['a2', 'a4-100' ,'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], [m2_throughput_list[1][0], m2_throughput_list[5][0], m2_throughput_list[4][0], m2_throughput_list[3][0], m2_throughput_list[8][0], m2_throughput_list[7][0], m2_throughput_list[6][0]], "Throughput (tps)", "Throughput m=2")
 	a5_m2_throughput_fig.show()
-	a5_m2_per_machine_throughput_fig = generateA5PerMachineFig(['a2', 'a4-100', 'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], ['m1', 'm2'], [[m2_throughput_list[1][1], m2_throughput_list[1][2]], [m2_throughput_list[5][1], m2_throughput_list[5][2]], [m2_throughput_list[4][1], m2_throughput_list[4][2]], [m2_throughput_list[3][1], m2_throughput_list[3][2]], [m2_throughput_list[8][1], m2_throughput_list[8][2]], [m2_throughput_list[7][1], m2_throughput_list[7][2]], [m2_throughput_list[6][1], m2_throughput_list[6][2]]], "Throughput per machine m=2")
+	a5_m2_per_machine_throughput_fig = generateA5PerMachineFig(['a2', 'a4-100', 'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], ['m1', 'm2'], [[m2_throughput_list[1][1], m2_throughput_list[1][2]], [m2_throughput_list[5][1], m2_throughput_list[5][2]], [m2_throughput_list[4][1], m2_throughput_list[4][2]], [m2_throughput_list[3][1], m2_throughput_list[3][2]], [m2_throughput_list[8][1], m2_throughput_list[8][2]], [m2_throughput_list[7][1], m2_throughput_list[7][2]], [m2_throughput_list[6][1], m2_throughput_list[6][2]]], "Throughput (tps)", "Throughput per Machine (m=2)")
 	a5_m2_per_machine_throughput_fig.show()
-	a5_m3_throughput_fig = generateFig(['a2', 'a4-100' ,'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], [m3_throughput_list[1][0], m3_throughput_list[5][0], m3_throughput_list[4][0], m3_throughput_list[3][0], m3_throughput_list[8][0], m3_throughput_list[7][0], m3_throughput_list[6][0]], "Throughput m=3")
+	a5_m3_throughput_fig = generateFig(['a2', 'a4-100' ,'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], [m3_throughput_list[1][0], m3_throughput_list[5][0], m3_throughput_list[4][0], m3_throughput_list[3][0], m3_throughput_list[8][0], m3_throughput_list[7][0], m3_throughput_list[6][0]], "Throughput (tps)", "Throughput m=3")
 	a5_m3_throughput_fig.show()
-	a5_m3_per_machine_throughput_fig = generateA5PerMachineFig(['a2', 'a4-100', 'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], ['m1', 'm2', 'm3'], [[m3_throughput_list[1][1], m3_throughput_list[1][2], m3_throughput_list[1][3]], [m3_throughput_list[5][1], m3_throughput_list[5][2], m3_throughput_list[5][3]], [m3_throughput_list[4][1], m3_throughput_list[4][2], m3_throughput_list[4][3]], [m3_throughput_list[3][1], m3_throughput_list[3][2], m3_throughput_list[3][3]], [m3_throughput_list[8][1], m3_throughput_list[8][2], m3_throughput_list[8][3]], [m3_throughput_list[7][1], m3_throughput_list[7][2], m3_throughput_list[7][3]], [m3_throughput_list[6][1], m3_throughput_list[6][2], m3_throughput_list[6][3]]], "Throughput per machine m=3")
+	a5_m3_per_machine_throughput_fig = generateA5PerMachineFig(['a2', 'a4-100', 'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], ['m1', 'm2', 'm3'], [[m3_throughput_list[1][1], m3_throughput_list[1][2], m3_throughput_list[1][3]], [m3_throughput_list[5][1], m3_throughput_list[5][2], m3_throughput_list[5][3]], [m3_throughput_list[4][1], m3_throughput_list[4][2], m3_throughput_list[4][3]], [m3_throughput_list[3][1], m3_throughput_list[3][2], m3_throughput_list[3][3]], [m3_throughput_list[8][1], m3_throughput_list[8][2], m3_throughput_list[8][3]], [m3_throughput_list[7][1], m3_throughput_list[7][2], m3_throughput_list[7][3]], [m3_throughput_list[6][1], m3_throughput_list[6][2], m3_throughput_list[6][3]]], "Throughput (tps)", "Throughput per Machine (m=3)")
 	a5_m3_per_machine_throughput_fig.show()
 
-	a5_m1_latency_fig = generateFig(['a2', 'a4-100' ,'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], [m1_latency_list[1], m1_latency_list[5], m1_latency_list[4], m1_latency_list[3], m1_latency_list[8], m1_latency_list[7], m1_latency_list[6]], "Latency m=1")
+	a5_m1_latency_fig = generateFig(['a2', 'a4-100' ,'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], [m1_latency_list[1], m1_latency_list[5], m1_latency_list[4], m1_latency_list[3], m1_latency_list[8], m1_latency_list[7], m1_latency_list[6]], "Latency (sec)", "Latency m=1")
 	a5_m1_latency_fig.show()
-	a5_m2_latency_fig = generateFig(['a2', 'a4-100' ,'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], [m2_latency_list[1][0], m2_latency_list[5][0], m2_latency_list[4][0], m2_latency_list[3][0], m2_latency_list[8][0], m2_latency_list[7][0], m2_latency_list[6][0]], "Latency m=2")
+	a5_m2_latency_fig = generateFig(['a2', 'a4-100' ,'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], [m2_latency_list[1][0], m2_latency_list[5][0], m2_latency_list[4][0], m2_latency_list[3][0], m2_latency_list[8][0], m2_latency_list[7][0], m2_latency_list[6][0]], "Latency (sec)", "Latency m=2")
 	a5_m2_latency_fig.show()
-	a5_m2_per_machine_latency_fig = generateA5PerMachineFig(['a2', 'a4-100', 'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], ['m1', 'm2'], [[m2_latency_list[1][1], m2_latency_list[1][2]], [m2_latency_list[5][1], m2_latency_list[5][2]], [m2_latency_list[4][1], m2_latency_list[4][2]], [m2_latency_list[3][1], m2_latency_list[3][2]], [m2_latency_list[8][1], m2_latency_list[8][2]], [m2_latency_list[7][1], m2_latency_list[7][2]], [m2_latency_list[6][1], m2_latency_list[6][2]]], "latency per machine m=2")
+	a5_m2_per_machine_latency_fig = generateA5PerMachineFig(['a2', 'a4-100', 'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], ['m1', 'm2'], [[m2_latency_list[1][1], m2_latency_list[1][2]], [m2_latency_list[5][1], m2_latency_list[5][2]], [m2_latency_list[4][1], m2_latency_list[4][2]], [m2_latency_list[3][1], m2_latency_list[3][2]], [m2_latency_list[8][1], m2_latency_list[8][2]], [m2_latency_list[7][1], m2_latency_list[7][2]], [m2_latency_list[6][1], m2_latency_list[6][2]]], "Latency (sec)", "Latency per Machine (m=2)")
 	a5_m2_per_machine_latency_fig.show()
-	a5_m2_latency_fig = generateFig(['a2', 'a4-100' ,'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], [m3_latency_list[1][0], m3_latency_list[5][0], m3_latency_list[4][0], m3_latency_list[3][0], m3_latency_list[8][0], m3_latency_list[7][0], m3_latency_list[6][0]], "Latency m=3")
+	a5_m2_latency_fig = generateFig(['a2', 'a4-100' ,'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], [m3_latency_list[1][0], m3_latency_list[5][0], m3_latency_list[4][0], m3_latency_list[3][0], m3_latency_list[8][0], m3_latency_list[7][0], m3_latency_list[6][0]], "Latency (sec)", "Latency m=3")
 	a5_m2_latency_fig.show()
-	a5_m3_per_machine_latency_fig = generateA5PerMachineFig(['a2', 'a4-100', 'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], ['m1', 'm2', 'm3'], [[m3_latency_list[1][1], m3_latency_list[1][2], m3_latency_list[1][3]], [m3_latency_list[5][1], m3_latency_list[5][2], m3_latency_list[5][3]], [m3_latency_list[4][1], m3_latency_list[4][2], m3_latency_list[4][3]], [m3_latency_list[3][1], m3_latency_list[3][2], m3_latency_list[3][3]], [m3_latency_list[8][1], m3_latency_list[8][2], m3_latency_list[8][3]], [m3_latency_list[7][1], m3_latency_list[7][2], m3_latency_list[7][3]], [m3_latency_list[6][1], m3_latency_list[6][2], m3_latency_list[6][3]]], "latency per machine m=3")
+	a5_m3_per_machine_latency_fig = generateA5PerMachineFig(['a2', 'a4-100', 'a4-1000', 'a4-10000', 'a5-100', 'a5-1000', 'a5-10000'], ['m1', 'm2', 'm3'], [[m3_latency_list[1][1], m3_latency_list[1][2], m3_latency_list[1][3]], [m3_latency_list[5][1], m3_latency_list[5][2], m3_latency_list[5][3]], [m3_latency_list[4][1], m3_latency_list[4][2], m3_latency_list[4][3]], [m3_latency_list[3][1], m3_latency_list[3][2], m3_latency_list[3][3]], [m3_latency_list[8][1], m3_latency_list[8][2], m3_latency_list[8][3]], [m3_latency_list[7][1], m3_latency_list[7][2], m3_latency_list[7][3]], [m3_latency_list[6][1], m3_latency_list[6][2], m3_latency_list[6][3]]], "Latency (sec)", "Latency per Machine (m=3)")
 	a5_m3_per_machine_latency_fig.show()
 
 def loadFiles(folder): 
@@ -218,23 +219,24 @@ def transactionCalculation(transactions, ramp, machines):
 def calculateThroughput(transactions, ramp):
 	period = elapsed_time - 2 * ramp
 	#throughput = len(transactions) / period
-	return len(transactions) / period
+	return round(len(transactions) / period, 0)
 
 def calculateLatency(transactions):
 	mean_latency = np.mean([tx["waitingTime"] for tx in transactions]) / 1000
-	return mean_latency
+	return round(mean_latency,2)
 
-def generateFig(x_vals, y_vals, title_val):
+def generateFig(x_vals, y_vals, y_title, title_val):
 	fig = plt.bar(
             x = x_vals, 
 			y = y_vals,
 			text=y_vals, 
-			text_auto=True,
-			title=title_val
+			text_auto=True
         )
+	fig.update_layout(title=title_val, xaxis_title='Approaches', yaxis_title=y_title)
+	fig.update_traces(textposition='inside', textfont_size=18)
 	return fig
 
-def generatePerMachineFig(x_vals, machine_vals, y_vals, title_val):
+def generatePerMachineFig(x_vals, machine_vals, y_vals, y_title, title_val):
 	#print(y_vals)
 	
 	if len(machine_vals) == 2:
@@ -278,10 +280,11 @@ def generatePerMachineFig(x_vals, machine_vals, y_vals, title_val):
 				text=m3
 			)
 		])
-	
+	fig.update_layout(title=title_val, xaxis_title='Approaches', yaxis_title=y_title)
+	fig.update_traces(textposition='inside', textfont_size=18)
 	return fig
 
-def generateA5PerMachineFig(x_vals, machine_vals, y_vals, title_val):
+def generateA5PerMachineFig(x_vals, machine_vals, y_vals, y_title, title_val):
 	#print(y_vals)
 	
 	if len(machine_vals) == 2:
@@ -325,7 +328,8 @@ def generateA5PerMachineFig(x_vals, machine_vals, y_vals, title_val):
 				text=m3
 			)
 		])
-	
+	fig.update_layout(title=title_val, xaxis_title='Approaches', yaxis_title=y_title)
+	fig.update_traces(textposition='inside', textfont_size=18)
 	return fig
 
 if __name__ == '__main__':
